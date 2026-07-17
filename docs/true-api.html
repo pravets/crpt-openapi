@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>True API — ГИС МТ «Честный знак»</title>
+</head>
+<body style="margin: 0;">
+  <div id="app"></div>
+  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+  <script>
+    Scalar.createApiReference('#app', {
+      url: './true-api.yaml',
+      theme: 'default',
+      metaData: {
+        title: 'True API — ГИС МТ «Честный знак»',
+        description: 'Спецификация True API системы маркировки «Честный знак» (ГИС МТ). Подача сведений, национальный каталог, СУЗ, выгрузки данных, ЭДО Лайт и др.',
+      },
+    })
+  </script>
+</body>
+</html>
