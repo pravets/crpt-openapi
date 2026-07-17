@@ -1,0 +1,200 @@
+info:
+  name: Метод получения краткой общедоступной информации о КИ по списку
+  type: http
+  seq: 4
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/list"
+  params:
+    - name: childsWithoutBrackets
+      value: ""
+      type: query
+      description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+      disabled: true
+    - name: values
+      value: "[]"
+      type: query
+      description: "Список КИ Значение АТК, КИ, КиЗ, КИТУ от 18 до 74 символов включительно без заключённых в скобки идентификаторов применений «01» и «21» для всех товарных групп. КиЗ для товарной группы «Товары из натурального меха» указывать в соответствии с 20-значным шаблоном: (RU|AM|BY|KZ|KG)[-]{1}[A-Z0-9]{6}[-]{1}[A-Z0-9]{10}. Пример: RU-430302-AAA7064491"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+        - name: values
+          value: "[]"
+          type: query
+          description: "Список КИ Значение АТК, КИ, КиЗ, КИТУ от 18 до 74 символов включительно без заключённых в скобки идентификаторов применений «01» и «21» для всех товарных групп. КиЗ для товарной группы «Товары из натурального меха» указывать в соответствии с 20-значным шаблоном: (RU|AM|BY|KZ|KG)[-]{1}[A-Z0-9]{6}[-]{1}[A-Z0-9]{10}. Пример: RU-430302-AAA7064491"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "requestedCis": "string",
+              "cis": "string",
+              "status": "INTRODUCED",
+              "statusEx": "EMPTY",
+              "gtin": "string",
+              "productGroup": "lp",
+              "productGroupId": 1,
+              "producedDate": "2022-01-12T00:00:00.000Z",
+              "packageType": "UNIT",
+              "producerInn": "string",
+              "producerName": "string",
+              "emissionDate": "2021-12-20T12:55:55.062Z",
+              "emissionType": "LOCAL",
+              "ownerInn": "string",
+              "ownerName": "string",
+              "tnVedEaes": "string",
+              "parent": "string",
+              "maxRetailPrice": null
+            }
+          ]
+  - name: 400 Response
+    description: "2.1. Код 400 при отсутствии обязательного параметра:"
+    request:
+      url: "{{baseUrl}}/cises/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+        - name: values
+          value: "[]"
+          type: query
+          description: "Список КИ Значение АТК, КИ, КиЗ, КИТУ от 18 до 74 символов включительно без заключённых в скобки идентификаторов применений «01» и «21» для всех товарных групп. КиЗ для товарной группы «Товары из натурального меха» указывать в соответствии с 20-значным шаблоном: (RU|AM|BY|KZ|KG)[-]{1}[A-Z0-9]{6}[-]{1}[A-Z0-9]{10}. Пример: RU-430302-AAA7064491"
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует обязательный параметр: values"
+          }
+  - name: 404 Response
+    description: "2.2. Код 404, если указанный КИ не найден:"
+    request:
+      url: "{{baseUrl}}/cises/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+        - name: values
+          value: "[]"
+          type: query
+          description: "Список КИ Значение АТК, КИ, КиЗ, КИТУ от 18 до 74 символов включительно без заключённых в скобки идентификаторов применений «01» и «21» для всех товарных групп. КиЗ для товарной группы «Товары из натурального меха» указывать в соответствии с 20-значным шаблоном: (RU|AM|BY|KZ|KG)[-]{1}[A-Z0-9]{6}[-]{1}[A-Z0-9]{10}. Пример: RU-430302-AAA7064491"
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "КИ не найдены"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+        - name: values
+          value: "[]"
+          type: query
+          description: "Список КИ Значение АТК, КИ, КиЗ, КИТУ от 18 до 74 символов включительно без заключённых в скобки идентификаторов применений «01» и «21» для всех товарных групп. КиЗ для товарной группы «Товары из натурального меха» указывать в соответствии с 20-значным шаблоном: (RU|AM|BY|KZ|KG)[-]{1}[A-Z0-9]{6}[-]{1}[A-Z0-9]{10}. Пример: RU-430302-AAA7064491"
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает информацию о списке запрашиваемых КИ / КиЗ: в одном запросе можно указать несколько КИ / КиЗ. Метод не предназначен для проверки сведений при сканировании КИ / КиЗ на ККТ при реализации маркированных товаров.
+
+  КиЗ для товарной группы «Товары из натурального меха» указывать в запросах в соответствии с шаблоном из 20 символов: (RU|AM|BY|KZ|KG)[-]{1}[A-Z0-9]{6}[-]{1}[A-Z0-9]{10}. Пример: RU-430302-AAA7064491.
+
+  Коды идентификации в запросе указываются в нормализованном виде (без скобок, обрамляющих идентификаторы применения).
+
+  Для товарных групп «Альтернативная табачная продукция», «Никотиносодержащая продукция» и «Табачная продукция» поиск КИ реализован с МРЦ и без МРЦ для единиц товаров и групповых упаковок. Если произойдёт совпадение КИ потребительской упаковки, указанного с учётом МРЦ или иной информации, с КИ транспортной упаковки, то в ответе будут выведены значения и по потребительской, и по транспортной упаковкам.
+
+  Общедоступная информация:
+
+  Пример запроса для публичного типа приватности
+
+  Пример: curl -X POST <url стенда v3>/cises/list?values=000000462106549OOv1s0XzlzIFDjtcXJjz5cB&values=00000046210654QuHCUeP
+  -H "accept: */*"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: с токеном авторизации.

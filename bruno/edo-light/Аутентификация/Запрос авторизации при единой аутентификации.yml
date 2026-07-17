@@ -1,0 +1,73 @@
+info:
+  name: Запрос авторизации при единой аутентификации
+  type: http
+  seq: 1
+  tags:
+    - Аутентификация
+
+http:
+  method: GET
+  url: "{{baseUrl}}/auth/key"
+  auth: inherit
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: https://markirovka.sandbox.crptech.ru/api/v3/true-api
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Уникальная пара «uuid — data» успешно сгенерирована
+    request:
+      url: "{{baseUrl}}/auth/key"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+            "data": "GNUFBAZBMPIUUMLXNMIOGSHTGFXZMT"
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/auth/key"
+      method: GET
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод используется для получения уникальной пары: UUID (идентификатора текущей аутентификации) и сгенерированных случайных данных,
+  которые в дальнейшем подписываются участником оборота товаров УКЭП и передаются в метод /auth/simpleSignIn для получения токена в формате UUID / JWT.
+
+  1. Получение пары «uuid — data», где «uuid» — идентификатор текущей аутентификации, «data» — строка на подпись пользователю.
+  2. Запрос авторизации обязателен для получения токена в формате JWT.
+  3. Отправка в Систему маркировки данных в том же виде, в котором они были получены (пара «uuid — data»), только теперь «data» — подписанная УКЭП строка.
+  4. Сервер отвечает сообщением с кодом 200 (ОК), либо сообщением об ошибке.
+
+  Примечание: получение токена в формате UUID без предварительного запроса на получение уникальной пары доступно до сентября 2026 года.

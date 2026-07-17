@@ -1,0 +1,301 @@
+info:
+  name: Загрузка файла титула покупателя УПДи (приказ № ЕД-7-26/970@ от 20.12.2023) в формате XML
+  type: http
+  seq: 8
+  tags:
+    - Входящие документы
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Ссылка на XML документ (файл информации / титула покупателя)
+      - name: doc_id
+        type: text
+        value: ""
+        description: Идентификатор документа файла информации продавца (UUID)
+      - name: signature
+        type: text
+        value: ""
+        description: Откреплённая УКЭП XML документа в формате base64
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Титул покупателя УПДи успешно загружен — код 201 и идентификатор созданного документа
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "000a0a00-0aaa-0a00-000a-0a00a0a0aa00"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Неверно указан получатель документа» / «Неверно указан получатель»;
+      - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+      - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+      - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+      - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+      - «Документ уже подписан» / «Документ ... не может быть подписан»;
+      - «Функция загружаемого титула не соответствует функции родительского документа»;
+      - «Отправитель документа не соответствует получателю загружаемого титула»;
+      - «Атрибут "КодИтога" не может принимать значение "3" при подписании исправлений УПД»;
+      - «Документ <идентификатор> не найден в базе».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 403 Response
+    description: Недостаточно прав для выполнения действия — в токене указана роль, которая не предусматривает выполнение данного запроса
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: «Не найден родительский документ <идентификатор документа>» — не найден УПД, для которого формируется титул
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 422 Response
+    description: |
+      Ошибка обработки документа. Типичные сообщения:
+      - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен титул с признаком PROS;
+      - «Обмен приглашениями абонентами в роуминге не завершен»;
+      - «Роуминг не настроен. Требуется обмен приглашениями между абонентами.».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод предназначен для загрузки файла титула покупателя УПДи согласно приказу ФНС № ЕД-7-26/970@ от 20.12.2023.
+
+  Неоднозначность документации: в таблице заголовков указан Content-Type «application/x-www-form-urlencoded»,
+  однако в примере запроса и по составу тела (загрузка файла) используется multipart/form-data — в спецификации принят multipart/form-data.

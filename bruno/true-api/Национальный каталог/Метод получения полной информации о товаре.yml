@@ -1,0 +1,1333 @@
+info:
+  name: Метод получения полной информации о товаре
+  type: http
+  seq: 7
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/product"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: cat_id
+      value: ""
+      type: query
+      description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: good_id
+      value: ""
+      type: query
+      description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+      disabled: true
+    - name: good_ids
+      value: ""
+      type: query
+      description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+      disabled: true
+    - name: gtin
+      value: ""
+      type: query
+      description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+      disabled: true
+    - name: gtins
+      value: ""
+      type: query
+      description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": [
+              {
+                "good_id": 95405923,
+                "identified_by": [
+                  {
+                    "value": "4600000000002",
+                    "type": "gtin",
+                    "multiplier": 1,
+                    "level": "trade-unit"
+                  },
+                  {
+                    "value": "4600000000001",
+                    "type": "gtin",
+                    "multiplier": 8,
+                    "level": "inner-pack"
+                  },
+                  {
+                    "value": "14600000000001",
+                    "type": "gtin",
+                    "multiplier": 22,
+                    "level": "box"
+                  },
+                  {
+                    "value": "24600000000001",
+                    "type": "gtin",
+                    "multiplier": 8,
+                    "level": "box"
+                  }
+                ],
+                "good_name": "сметана массовая доля жира 15 %",
+                "is_kit": false,
+                "is_set": false,
+                "set_gtins": [],
+                "good_url": "string",
+                "good_img": null,
+                "good_status": "published",
+                "create_date": "2021-10-07 03:46:33",
+                "update_date": "2022-09-07 10:22:43",
+                "categories": [
+                  {
+                    "cat_id": 230988,
+                    "cat_name": "Молочная продукция"
+                  },
+                  {
+                    "cat_id": 234287,
+                    "cat_name": "0403 Пахта, свернувшиеся молоко и сливки, йогурт, кефир и прочие ферментированные или сквашенные молоко и сливки, сгущенные или несгущенные, с добавлением или без добавления сахара или других подслащивающих веществ, со вкусо-аром�атическими добавками или б"
+                  },
+                  {
+                    "cat_id": 236248,
+                    "cat_name": "10.51.52.211 Сметана от 10,0 % до 17,0 % жирности"
+                  }
+                ],
+                "brand_id": 1046550,
+                "brand_name": "string",
+                "good_images": [],
+                "good_attrs": [
+                  {
+                    "attr_id": 2478,
+                    "attr_name": "Полное наименование товара",
+                    "attr_value": "сметана массовая доля жира 15 %",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362102,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 4424,
+                    "attr_name": "Наименование упаковки товара",
+                    "attr_value": "сметана массовая доля жира 15 % 8X",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362105,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "4600000000001",
+                    "multiplier": "8.00",
+                    "level": "inner-pack"
+                  },
+                  {
+                    "attr_id": 4424,
+                    "attr_name": "Наименование упаковки товара",
+                    "attr_value": "сметана массовая доля жира 15 % 22X",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362108,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "14600000000001",
+                    "multiplier": "22.00",
+                    "level": "box"
+                  },
+                  {
+                    "attr_id": 4424,
+                    "attr_name": "Наименование упаковки товара",
+                    "attr_value": "сметана массовая доля жира 15 % 8X",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362111,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "24600000000001",
+                    "multiplier": "8.00",
+                    "level": "box"
+                  },
+                  {
+                    "attr_id": 3793,
+                    "attr_name": "Базовая единица измерения",
+                    "attr_value": "ШТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362114,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 22269,
+                    "attr_name": "Товар с переменным количеством",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362117,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15448,
+                    "attr_name": "Заявленный объём / вес нетто",
+                    "attr_value": "400",
+                    "attr_value_type": "г",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362120,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2630,
+                    "attr_name": "Страна производства",
+                    "attr_value": "Россия",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "value_id": 788362123,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2504,
+                    "attr_name": "Товарный знак",
+                    "attr_value": "string",
+                    "attr_value_id": 1046550,
+                    "value_id": 788362126,
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Идентификация товара",
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2710,
+                    "attr_name": "Тип упаковки",
+                    "attr_value": "СТАКАН",
+                    "attr_value_type": "",
+                    "attr_group_id": 14,
+                    "attr_group_name": "Тип и материал упаковки",
+                    "value_id": 788362129,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "4600000000002",
+                    "multiplier": "1.00",
+                    "level": "trade-unit"
+                  },
+                  {
+                    "attr_id": 2710,
+                    "attr_name": "Тип упаковки",
+                    "attr_value": "ГОФРОКОРОБ",
+                    "attr_value_type": "",
+                    "attr_group_id": 14,
+                    "attr_group_name": "Тип и материал упаковки",
+                    "value_id": 788362132,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "4600000000001",
+                    "multiplier": "8.00",
+                    "level": "inner-pack"
+                  },
+                  {
+                    "attr_id": 2713,
+                    "attr_name": "Материал упаковки",
+                    "attr_value": "ПОЛИСТИРОЛ",
+                    "attr_value_type": "",
+                    "attr_group_id": 14,
+                    "attr_group_name": "Тип и материал упаковки",
+                    "value_id": 788362135,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "4600000000002",
+                    "multiplier": "1.00",
+                    "level": "trade-unit"
+                  },
+                  {
+                    "attr_id": 2713,
+                    "attr_name": "Материал упаковки",
+                    "attr_value": "ГОФРОКАРТОН ТРЕХСЛОЙНЫЙ",
+                    "attr_value_type": "",
+                    "attr_group_id": 14,
+                    "attr_group_name": "Тип и материал упаковки",
+                    "value_id": 788362138,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "4600000000001",
+                    "multiplier": "8.00",
+                    "level": "inner-pack"
+                  },
+                  {
+                    "attr_id": 15281,
+                    "attr_name": "Тип продукта",
+                    "attr_value": "СМЕТАНА",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362141,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15320,
+                    "attr_name": "Заменитель молочного жира",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362144,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 13,
+                    "attr_name": "Происхождение сырья",
+                    "attr_value": "КОРОВА",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362147,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 14,
+                    "attr_name": "Жирность, %",
+                    "attr_value": "15%",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362150,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15305,
+                    "attr_name": "Продукция для детского питания",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362153,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15897,
+                    "attr_name": "Специализированная пищевая продукция",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362156,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15287,
+                    "attr_name": "Тип сырья / обработки",
+                    "attr_value": "НОРМАЛИЗОВАННЫЙ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362159,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 7,
+                    "attr_name": "Вкус",
+                    "attr_value": "кисломолочный",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362162,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15290,
+                    "attr_name": "Тип хранения",
+                    "attr_value": "СКОРОПОРТЯЩИЕСЯ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362165,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2634,
+                    "attr_name": "Органический продукт",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362168,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 3971,
+                    "attr_name": "Содержит пальмовое масло",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362171,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 4400,
+                    "attr_name": "Аллергены",
+                    "attr_value": "МОЛОКО И ПРОДУКТЫ ЕГО ПЕРЕРАБОТКИ (ВКЛЮЧАЯ ЛАКТОЗУ)",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362174,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 822,
+                    "attr_name": "Содержит ГМО",
+                    "attr_value": "НЕТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 788362177,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 5,
+                    "attr_name": "Белки",
+                    "attr_value": "2,6",
+                    "attr_value_type": "г/100г",
+                    "attr_group_id": 6,
+                    "attr_group_name": "Пищевая ценность",
+                    "value_id": 788362180,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 1,
+                    "attr_name": "Жиры",
+                    "attr_value": "15",
+                    "attr_value_type": "г/100г",
+                    "attr_group_id": 6,
+                    "attr_group_name": "Пищевая ценность",
+                    "value_id": 788362183,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 6,
+                    "attr_name": "Углеводы",
+                    "attr_value": "3,6",
+                    "attr_value_type": "г/100г",
+                    "attr_group_id": 6,
+                    "attr_group_name": "Пищевая ценность",
+                    "value_id": 788362186,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 34,
+                    "attr_name": "Энергетическая ценность",
+                    "attr_value": "160",
+                    "attr_value_type": "ккал/100г",
+                    "attr_group_id": 6,
+                    "attr_group_name": "Пищевая ценность",
+                    "value_id": 788362189,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 34,
+                    "attr_name": "Энергетическая ценность",
+                    "attr_value": "660",
+                    "attr_value_type": "кДж/100г",
+                    "attr_group_id": 6,
+                    "attr_group_name": "Пищевая ценность",
+                    "value_id": 788362192,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2483,
+                    "attr_name": "Состав",
+                    "attr_value": "сливки нормализованные, закваска на чистых культурах молочнокислых микроорганизмов.",
+                    "attr_value_type": "",
+                    "attr_group_id": 26,
+                    "attr_group_name": "Состав",
+                    "value_id": 788362195,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 21500,
+                    "attr_name": "Срок хранения до 40 суток (включительно)",
+                    "attr_value": "ДА",
+                    "attr_value_type": "",
+                    "attr_group_id": 7,
+                    "attr_group_name": "Эксплуатация и условия хранения",
+                    "value_id": 788362198,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 71,
+                    "attr_name": "Срок годности",
+                    "attr_value": "20",
+                    "attr_value_type": "сут.",
+                    "attr_group_id": 7,
+                    "attr_group_name": "Эксплуатация и условия хранения",
+                    "value_id": 788362201,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 790,
+                    "attr_name": "Мин. температура, С",
+                    "attr_value": "2",
+                    "attr_value_type": "",
+                    "attr_group_id": 7,
+                    "attr_group_name": "Эксплуатация и условия хранения",
+                    "value_id": 788362204,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 820,
+                    "attr_name": "Макс. температура, С",
+                    "attr_value": "6",
+                    "attr_value_type": "",
+                    "attr_group_id": 7,
+                    "attr_group_name": "Эксплуатация и условия хранения",
+                    "value_id": 788362207,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 3959,
+                    "attr_name": "Группа ТНВЭД",
+                    "attr_value": "0403",
+                    "attr_value_type": "",
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 788362210,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 13933,
+                    "attr_name": "Код ТНВЭД",
+                    "attr_value": 403906900,
+                    "attr_value_type": "",
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 788362213,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 3961,
+                    "attr_name": "Код ОКПД2",
+                    "attr_value": "10.51.52.211",
+                    "attr_value_type": "",
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 788362216,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 4404,
+                    "attr_name": "ГОСТ / ТУ / СТО / Спецификация",
+                    "attr_value": "31452-2012",
+                    "attr_value_type": "ГОСТ",
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 788362219,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15653,
+                    "attr_name": "Подлежит ветеринарному контролю (надзору)",
+                    "attr_value": "ДА",
+                    "attr_value_type": "",
+                    "attr_group_id": 1024,
+                    "attr_group_name": "Данные для ФГИС ВетИС",
+                    "value_id": 788362222,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15952,
+                    "attr_name": "Тип продукции",
+                    "attr_value": "Пищевые продукты",
+                    "attr_value_type": "",
+                    "attr_group_id": 1024,
+                    "attr_group_name": "Данные для ФГИС ВетИС",
+                    "value_id": 788362225,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15955,
+                    "attr_name": "Продукция",
+                    "attr_value": "Молоко и молочная продукция",
+                    "attr_value_type": "",
+                    "attr_group_id": 1024,
+                    "attr_group_name": "Данные для ФГИС ВетИС",
+                    "value_id": 788362228,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15958,
+                    "attr_name": "Вид продукции",
+                    "attr_value": "сметана, полученная из молока, подвергнутого пастеризации",
+                    "attr_value_type": "",
+                    "attr_group_id": 1024,
+                    "attr_group_name": "Данные для ФГИС ВетИС",
+                    "value_id": 788362231,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15961,
+                    "attr_name": "Категория продукции",
+                    "attr_value": "Готовая продукция",
+                    "attr_value_type": "",
+                    "attr_group_id": 1024,
+                    "attr_group_name": "Данные для ФГИС ВетИС",
+                    "value_id": 788362234,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15973,
+                    "attr_name": "ГОСТ",
+                    "attr_value": "31452",
+                    "attr_value_type": "ГОСТ",
+                    "attr_group_id": 1024,
+                    "attr_group_name": "Данные для ФГИС ВетИС",
+                    "value_id": 788362237,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15964,
+                    "attr_name": "ХС-производитель",
+                    "attr_value": "11111111-1111-1111-1111-111111111111",
+                    "attr_value_type": "",
+                    "attr_group_id": 84,
+                    "attr_group_name": "ФГИС ВетИС",
+                    "value_id": 788362240,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15970,
+                    "attr_name": "Массовая доля белка, %",
+                    "attr_value": "2.5",
+                    "attr_value_type": "Точное значение",
+                    "attr_group_id": 84,
+                    "attr_group_name": "ФГИС ВетИС",
+                    "value_id": 788362243,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 15976,
+                    "attr_name": "Массовая доля жира, %",
+                    "attr_value": "15",
+                    "attr_value_type": "Точное значение",
+                    "attr_group_id": 84,
+                    "attr_group_name": "ФГИС ВетИС",
+                    "value_id": 788362246,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2503,
+                    "attr_name": "Производитель",
+                    "attr_value": "string",
+                    "attr_value_id": "",
+                    "value_id": 788362249,
+                    "attr_value_type": "",
+                    "attr_group_id": 25,
+                    "attr_group_name": "Идентификация Участников Оборота Товаров",
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 13797,
+                    "attr_name": "Код товара в учетной системе поставщика",
+                    "attr_value": "м0000005404",
+                    "attr_value_type": "",
+                    "attr_group_id": 114,
+                    "attr_group_name": "Дополнительная информация",
+                    "value_id": 788362252,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 2480,
+                    "attr_name": "Наименование товара в учетной системе поставщика",
+                    "attr_value": "Сметана 15% 400 г",
+                    "attr_value_type": "",
+                    "attr_group_id": 114,
+                    "attr_group_name": "Дополнительная информация",
+                    "value_id": 788362255,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 3787,
+                    "attr_name": "Ставка НДС",
+                    "attr_value": "10%",
+                    "attr_value_type": "",
+                    "attr_group_id": 114,
+                    "attr_group_name": "Дополнительная информация",
+                    "value_id": 788362258,
+                    "published_date": "2021-10-22T12:53:32+03:00"
+                  },
+                  {
+                    "attr_id": 13763,
+                    "attr_name": "Идентификатор вложения в упаковку (GTIN)",
+                    "attr_value": "4600000000002",
+                    "attr_value_type": "",
+                    "attr_group_id": 81,
+                    "attr_group_name": "Содержимое упаковки",
+                    "value_id": 788362261,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "4600000000001",
+                    "multiplier": "8.00",
+                    "level": "inner-pack"
+                  },
+                  {
+                    "attr_id": 13763,
+                    "attr_name": "Идентификатор вложения в упаковку (GTIN)",
+                    "attr_value": "4600000000002",
+                    "attr_value_type": "",
+                    "attr_group_id": 81,
+                    "attr_group_name": "Содержимое упаковки",
+                    "value_id": 788362264,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "14600000000001",
+                    "multiplier": "22.00",
+                    "level": "box"
+                  },
+                  {
+                    "attr_id": 13763,
+                    "attr_name": "Идентификатор вложения в упаковку (GTIN)",
+                    "attr_value": "4600000000002",
+                    "attr_value_type": "",
+                    "attr_group_id": 81,
+                    "attr_group_name": "Содержимое упаковки",
+                    "value_id": 788362267,
+                    "published_date": "2021-10-22T12:53:32+03:00",
+                    "gtin": "24600000000001",
+                    "multiplier": "8.00",
+                    "level": "box"
+                  },
+                  {
+                    "attr_id": 5821,
+                    "attr_name": "Идентификатор товара в ФГИС ВетИС (GUID ProductItem)",
+                    "attr_value": "00000000-0000-0000-0000-000000000000",
+                    "attr_value_type": "",
+                    "attr_group_id": 84,
+                    "attr_group_name": "ФГИС ВетИС",
+                    "value_id": 1289857536,
+                    "published_date": "2022-09-07T10:22:43+03:00"
+                  }
+                ],
+                "remainder_type": null,
+                "is_tech_gtin": false,
+                "first_sign_date": "2021-10-22 12:53:34"
+              }
+            ]
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <item>
+                      <good_id>672136</good_id>
+                      <identified_by>
+                          <item>
+                              <value>11033</value>
+                              <type>gtin</type>
+                              <multiplier>1</multiplier>
+                              <good_id>672136</good_id>
+                              <level>trade-unit</level>
+                          </item>
+                          <item>
+                              <value>14600000000001</value>
+                              <type>gtin</type>
+                              <multiplier>12</multiplier>
+                              <good_id>672136</good_id>
+                              <level>box</level>
+                          </item>
+                      </identified_by>
+                      <good_name>string</good_name>
+                      <good_url>string</good_url>
+                      <good_img>string</good_img>
+                      <categories>
+                          <item>
+                              <cat_id>14786</cat_id>
+                              <cat_name>Порошки</cat_name>
+                          </item>
+                          <item>
+                              <party_cat_id>241000</party_cat_id>
+                              <party_cat_name>Порошки</party_cat_name>
+                          </item>
+                      </categories>
+                      <brand_id>1</brand_id>
+                      <brand_name>brand_name</brand_name>
+                      <good_rating>4,33333</good_rating>
+                      <good_images>
+                          <item>
+                              <photo_type>default</photo_type>
+                              <photo_date>2016-07-20T16:26:30+00:00</photo_date>
+                              <photo_url>string</photo_url>
+                              <barcode>0000000000000</barcode>
+                          </item>
+                          <item>
+                              <photo_type>3ds</photo_type>
+                              <photo_date>2016-07-20T16:26:30+00:00</photo_date>
+                              <photo_url>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.0.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.1.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.2.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.3.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.4.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.5.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.6.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.7.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.8.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.9.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.10.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.11.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.12.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.13.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.14.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.15.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.16.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.17.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.18.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.19.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.20.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.21.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.22.jpg</item>
+                                  <item>https://национальный-каталог.рф/i/med/3d/63d3beae-b0be-db33-f86b-65a0e37da584.3d.23.jpg</item>
+                              </photo_url>
+                              <barcode>0000000000000</barcode>
+                          </item>
+                          <item>
+                              <photo_type>left</photo_type>
+                              <photo_date>2016-07-20T16:26:30+00:00</photo_date>
+                              <photo_url>https://национальный-каталог.рф/i/med/63d3beae-b0be-db33-f86b-65a0e37da584.6.jpg</photo_url>
+                              <barcode>0000000000000</barcode>
+                          </item>
+                          <item>
+                              <photo_type>right</photo_type>
+                              <photo_date>2016-07-20T16:26:30+00:00</photo_date>
+                              <photo_url>https://национальный-каталог.рф/i/med/63d3beae-b0be-db33-f86b-65a0e37da584.18.jpg</photo_url>
+                              <barcode>0000000000000</barcode>
+                          </item>
+                          <item>
+                              <photo_type>back</photo_type>
+                              <photo_date>2016-07-20T16:26:30+00:00</photo_date>
+                              <photo_url>string</photo_url>
+                              <barcode>0000000000000</barcode>
+                          </item>
+                      </good_images>
+                      <good_attrs>
+                          <item>
+                              <attr_id>18</attr_id>
+                              <attr_name>Вес брутто</attr_name>
+                              <attr_value>1.506</attr_value>
+                              <value_id>7824938</value_id>
+                              <attr_value_type>кг</attr_value_type>
+                              <attr_group_id>19</attr_group_id>
+                              <attr_group_name>Cubiscan-атрибуты</attr_group_name>
+                              <measure_date>2018-02-01T16:39:04+00:00</measure_date>
+                              <published_date>2018-02-03T13:22:11+00:00</published_date>
+                              <effective_date>2018-02-05T16:39:04+00:00</effective_date>
+                              <expired_date>2018-08-05T16:39:04+00:00</expired_date>
+                              <location_id>532</location_id>
+                              <party_location_id>Store #53</party_location_id>
+                              <level>trade-unit</level>
+                              <gtin>4000000000001</gtin>
+                              <multiplier>1.00</multiplier>
+                          </item>
+                          <item>
+                              <attr_id>19</attr_id>
+                              <attr_name>Высота</attr_name>
+                              <attr_value>29.2</attr_value>
+                              <value_id>8214928</value_id>
+                              <attr_value_type>см</attr_value_type>
+                              <attr_group_id>19</attr_group_id>
+                              <attr_group_name>Cubiscan-атрибуты</attr_group_name>
+                              <measure_date>2018-02-01T16:39:04+00:00</measure_date>
+                              <published_date>2018-02-03T13:22:11+00:00</published_date>
+                              <effective_date>2018-02-05T16:39:04+00:00</effective_date>
+                              <expired_date>2018-08-05T16:39:04+00:00</expired_date>
+                              <location_id>532</location_id>
+                              <party_location_id>Store #53</party_location_id>
+                              <level>trade-unit</level>
+                              <gtin>4000000000001</gtin>
+                              <multiplier>1.00</multiplier>
+                          </item>
+                          <item>
+                              <attr_id>20</attr_id>
+                              <attr_name>Глубина</attr_name>
+                              <attr_value>attr_value</attr_value>
+                              <value_id>5325635</value_id>
+                              <attr_value_type>см</attr_value_type>
+                              <attr_group_id>19</attr_group_id>
+                              <attr_group_name>Cubiscan-атрибуты</attr_group_name>
+                              <measure_date>2018-02-01T16:39:04+00:00</measure_date>
+                              <published_date>2018-02-03T13:22:11+00:00</published_date>
+                              <effective_date>2018-02-05T16:39:04+00:00</effective_date>
+                              <expired_date>2018-08-05T16:39:04+00:00</expired_date>
+                              <location_id>532</location_id>
+                              <party_location_id>Store #53</party_location_id>
+                              <level>trade-unit</level>
+                              <gtin>4000000000001</gtin>
+                              <multiplier>1.00</multiplier>
+                          </item>
+                          <item>
+                              <attr_id>21</attr_id>
+                              <attr_name>Ширина</attr_name>
+                              <attr_value>20.7</attr_value>
+                              <value_id>1224735</value_id>
+                              <attr_value_type>см</attr_value_type>
+                              <attr_group_id>19</attr_group_id>
+                              <attr_group_name>Cubiscan-атрибуты</attr_group_name>
+                              <measure_date>2018-02-01T16:39:04+00:00</measure_date>
+                              <published_date>2018-02-03T13:22:11+00:00</published_date>
+                              <effective_date>2018-02-05T16:39:04+00:00</effective_date>
+                              <expired_date>2018-08-05T16:39:04+00:00</expired_date>
+                              <location_id>532</location_id>
+                              <party_location_id>Store #53</party_location_id>
+                              <level>trade-unit</level>
+                              <gtin>4000000000001</gtin>
+                              <multiplier>1.00</multiplier>
+                          </item>
+                          <item>
+                              <attr_id>2503</attr_id>
+                              <attr_name>Производитель</attr_name>
+                              <attr_value_id>3408</attr_value>
+                              <value_id>7812631</value_id>
+                              <attr_value>ООО ООО</attr_value>
+                              <attr_value_type>attr_value_type</attr_value_type>
+                              <attr_group_id>25</attr_group_id>
+                              <attr_group_name>Стороны</attr_group_name>
+                              <published_date>2017-12-10 15:35:08</published_date>
+                              <location_id>532</location_id>
+                              <party_location_id>Store #53</party_location_id>
+                          </item>
+                          <item>
+                              <attr_id>2813</attr_id>
+                              <attr_name>Единый реестр сертификатов соответствия</attr_name>
+                              <attr_value>string</attr_value>
+                              <value_id>1624735</value_id>
+                              <attr_group_id>41</attr_group_id>
+                              <attr_group_name>Сертификаты</attr_group_name>
+                              <published_date>2017-12-15 17:14:01</published_date>
+                              <location_id>532</location_id>
+                              <party_location_id>Store #53</party_location_id>
+                              <certificate_number>С-RU.АЮ64.В.01026</certificate_number>
+                              <certificate_issued_date>24.07.2017</certificate_issued_date>
+                              <certificate_valid_until_date>23.07.2022</certificate_valid_until_date>
+                              <certificate_applicant>string</certificate_applicant>
+                              <certificate_manufacturer>string</certificate_manufacturer>
+                              <certificate_product_description>Кабель судовой безгалогенный, не распространяющий горение...</certificate_product_description>
+                          </item>
+                      </good_attrs>
+                      <good_reviews>
+                          <item>
+                              <review_id>286</review_id>
+                              <review_author>Evgeniy</review_author>
+                              <review_rating>4</review_rating>
+                              <review_text>string</review_text>
+                              <review_date>2016-11-28T09:31:54+00:00</review_date>
+                              <review_author_img>string</review_author_img>
+                              <review_replies>
+                                  <item>
+                                      <review_id>288</review_id>
+                                      <review_author>Maxim</review_author>
+                                      <review_rating>4</review_rating>
+                                      <review_text>string</review_text>
+                                      <review_date>2016-11-28T09:49:39+00:00</review_date>
+                                      <review_author_img>string</review_author_img>
+                                  </item>
+                              </review_replies>
+                          </item>
+                          <item>
+                              <review_id>282</review_id>
+                              <review_author>Maria</review_author>
+                              <review_rating>5</review_rating>
+                              <review_text>string</review_text>
+                              <review_date>2016-11-17T11:19:48+00:00</review_date>
+                              <review_author_img>string</review_author_img>
+                          </item>
+                      </good_reviews>
+                      <good_reviews_count>3</good_reviews_count>
+                      <good_prices/>
+                  </item>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.4. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "У�казан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.6. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: 404 Response
+    description: "2.7. Код 404, если не найден продукт:"
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Данные не найдены"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «gtin» («Код товара»); «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает краткую или полную информацию о продукте (товаре) и требует обязательного указания одного из следующих параметров: идентификатор товара или код товара (штрих-код) товара.
+
+  Если указан один из параметров gtin или good_id и один из параметров gtins или good_ids, то возвращается ошибка 400.
+
+  Если указаны оба обязательных параметра, то возвращается результат выборки, соответствующий параметру good_id . Если карточка товара с данным идентификатором не обнаружена, то возвращается ошибка 404 независимо от указания кода товара в запросе.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/product?gtin=0000000000000"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

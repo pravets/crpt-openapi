@@ -1,0 +1,202 @@
+info:
+  name: Метод получения квитанции результата обработки чека по идентификатору чека
+  type: http
+  seq: 2
+  tags:
+    - Квитанции
+
+http:
+  method: GET
+  url: "{{baseUrl}}/receipt/documents"
+  params:
+    - name: id
+      value: ""
+      type: query
+      description: ID чека
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/receipt/documents"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID чека
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "resultDocId": "UTXMNGR00000000000000000011-1111",
+            "resultDocDate": "2021-03-19T09:20:52.105Z",
+            "sourceDocId": "URCPT00000000000000000022-2222",
+            "sourceDocDate": "2021-03-18T16:10:57.190Z",
+            "state": "IN_PROGRESS",
+            "code": 2,
+            "description": "Document in processing",
+            "operations": [
+              {
+                "operationId": "3dd33333-3333-3333-3333-33d333d33d33",
+                "operationType": "RECEIPT_VALIDATION",
+                "operationDate": "2021-03-18T16:10:57.219Z",
+                "details": {
+                  "ofdInn": "7777777777",
+                  "successful": "true",
+                  "documentType": "TICKET",
+                  "documentNumber": "19",
+                  "documentDateTime": "1564744080"
+                }
+              },
+              {
+                "operationId": "4aa44444-4444-4444-4444-44a444a44a44",
+                "operationType": "RECEIPT_ROUTED",
+                "operationDate": "2021-03-18T16:10:57.411Z",
+                "details": {
+                  "productGroups": [
+                    "shoes"
+                  ],
+                  "successful": "true"
+                }
+              }
+            ]
+          }
+  - name: 401 Response
+    description: "2.1. Код 401: для доступа к ресурсу требуется полная аутентификация."
+    request:
+      url: "{{baseUrl}}/receipt/documents"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID чека
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <UnauthorizedException>
+            <error>unauthorized</error>
+            <error_description>Full authentication is required to access this resource</error_description>
+          </UnauthorizedException>
+  - name: 403 Response
+    description: "2.2. Код 403: документ недоступен."
+    request:
+      url: "{{baseUrl}}/receipt/documents"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID чека
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "code": 403,
+            "timestamp": 1595487274974,
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: 404 Response
+    description: "2.3. Код 404: запрашиваемая информация не найдена в ГИС МТ либо допущена ошибка в указании URL метода."
+    request:
+      url: "{{baseUrl}}/receipt/documents"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID чека
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "code": 404,
+            "description": "Document with id 123 is missing"
+          }
+  - name: 500 Response
+    description: "2.4. Код 500: внутренняя ошибка сервиса."
+    request:
+      url: "{{baseUrl}}/receipt/documents"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID чека
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "code": 500,
+            "timestamp": 1595487274974,
+            "error_message": "Ошибка при выполнении запроса"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/receipt/documents"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID чека
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения квитанции по ID чека, обработанного в ГИС МТ. Получение квитанции по ID чека мелкооптовой продажи доступно как продавцу, так и покупателю, если ИНН из токена совпадает с ИНН продавца или покупателя из чека для всех товарных групп, которым доступна работа с чеками, кроме «Алкоголь» и «Пиво, напитки, изготавливаемые на основе пива, слабоалкогольные напитки» (для продукции в кегах).
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда v3>/receipt/documents?id=000000000000000001"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

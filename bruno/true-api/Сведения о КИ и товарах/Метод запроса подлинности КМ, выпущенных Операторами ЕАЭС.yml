@@ -1,0 +1,151 @@
+info:
+  name: Метод запроса подлинности КМ, выпущенных Операторами ЕАЭС
+  type: http
+  seq: 5
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/eaes/info"
+  params:
+    - name: country
+      value: ""
+      type: query
+      description: 'Числовой код страны по ОКСМ Возможные значения: 112 — Республика Беларусь; 398 — Республика Казахстан. При указании значения "398" (Республика Казахстан), в параметре "pg" может быть указано только значение "shoes" ("Обувные товары"). Все коды маркировки, указанные в теле запроса в параметре "cis", проходят валидацию на соответствие шаблону кодов маркировки страны, указанной в параметре "country"'
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "cis": "0104655555555555212FFFFFFFFFFFF\u001d91LlLl\u001d9212345TtTtT12345TtTtT12345TtTtT12345TtTtTtTt="
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/eaes/info"
+      method: POST
+      params:
+        - name: country
+          value: ""
+          type: query
+          description: 'Числовой код страны по ОКСМ Возможные значения: 112 — Республика Беларусь; 398 — Республика Казахстан. При указании значения "398" (Республика Казахстан), в параметре "pg" может быть указано только значение "shoes" ("Обувные товары"). Все коды маркировки, указанные в теле запроса в параметре "cis", проходят валидацию на соответствие шаблону кодов маркировки страны, указанной в параметре "country"'
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "cis": "0104655555555555212FFFFFFFFFFFF\u001d91LlLl\u001d9212345TtTtT12345TtTtT12345TtTtT12345TtTtTtTt="
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "cis": "string",
+            "authenticity": true,
+            "cisStatusId": "1",
+            "cisStatusName": "в обороте в стране Е�АЭС",
+            "gtin": "04655555555555",
+            "productName": "Шина",
+            "brand": "Бренд",
+            "tnvedGroup": "0000",
+            "expireDate": "2021-10-10",
+            "registered": true,
+            "cisStatus": "INTRODUCED",
+            "emissionType": "CROSSBORDER",
+            "statusEx": "WAIT_SHIPMENT"
+          }
+  - name: 400 Response
+    description: Ошибка 400
+    request:
+      url: "{{baseUrl}}/cises/eaes/info"
+      method: POST
+      params:
+        - name: country
+          value: ""
+          type: query
+          description: 'Числовой код страны по ОКСМ Возможные значения: 112 — Республика Беларусь; 398 — Республика Казахстан. При указании значения "398" (Республика Казахстан), в параметре "pg" может быть указано только значение "shoes" ("Обувные товары"). Все коды маркировки, указанные в теле запроса в параметре "cis", проходят валидацию на соответствие шаблону кодов маркировки страны, указанной в параметре "country"'
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "cis": "0104655555555555212FFFFFFFFFFFF\u001d91LlLl\u001d9212345TtTtT12345TtTtT12345TtTtT12345TtTtTtTt="
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Для доступа к этому ресурсу требуется полная аутентификация"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/eaes/info"
+      method: POST
+      params:
+        - name: country
+          value: ""
+          type: query
+          description: 'Числовой код страны по ОКСМ Возможные значения: 112 — Республика Беларусь; 398 — Республика Казахстан. При указании значения "398" (Республика Казахстан), в параметре "pg" может быть указано только значение "shoes" ("Обувные товары"). Все коды маркировки, указанные в теле запроса в параметре "cis", проходят валидацию на соответствие шаблону кодов маркировки страны, указанной в параметре "country"'
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "cis": "0104655555555555212FFFFFFFFFFFF\u001d91LlLl\u001d9212345TtTtT12345TtTtT12345TtTtT12345TtTtTtTt="
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для проверки валидности КМ, выпущенных Операторами государств-членов ЕАЭС:
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

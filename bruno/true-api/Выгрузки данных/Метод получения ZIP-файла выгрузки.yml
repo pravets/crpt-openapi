@@ -1,0 +1,134 @@
+info:
+  name: Метод получения ZIP-файла выгрузки
+  type: http
+  seq: 6
+  tags:
+    - Выгрузки данных
+
+http:
+  method: GET
+  url: "{{baseUrl}}/dispenser/results/:resultId/file"
+  params:
+    - name: resultId
+      value: ""
+      type: path
+      description: Параметр пути URL (см. документацию)
+    - name: downloadFormat
+      value: ""
+      type: query
+      description: "Формат выгрузки файла Применимо только для выгрузок: «ACS_DOCUMENTS» («Документы, на основании которых была оформлена передача и получение кодов идентификации по агентско-комиссионной схеме»); «CIS_ACS» («Данные о кодах идентификации, переданных и полученных по агентско-комиссионной схеме»). Если не указан, выгрузка формируется в формате * .csv. Допустимое значение: «XLSX»"
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Значение должно совпадать с «productGroupCode» («Товарная группа») задания на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+      disabled: true
+    - name: resultFilePartId
+      value: ""
+      type: query
+      description: Идентификатор дополнительного файла выгрузки Параметр заполняется для выгрузки, состоящей из нескольких файлов
+      disabled: true
+    - name: result_id
+      value: ""
+      type: query
+      description: Идентификатор выгрузки Идентификатор возвращается в ответе метода « Метод получения результирующих ID выгрузок данных »
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/results/:resultId/file"
+      method: GET
+      params:
+        - name: resultId
+          value: ""
+          type: path
+          description: Параметр пути URL (см. документацию)
+        - name: downloadFormat
+          value: ""
+          type: query
+          description: "Формат выгрузки файла Применимо только для выгрузок: «ACS_DOCUMENTS» («Документы, на основании которых была оформлена передача и получение кодов идентификации по агентско-комиссионной схеме»); «CIS_ACS» («Данные о кодах идентификации, переданных и полученных по агентско-комиссионной схеме»). Если не указан, выгрузка формируется в формате * .csv. Допустимое значение: «XLSX»"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Значение должно совпадать с «productGroupCode» («Товарная группа») задания на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+        - name: resultFilePartId
+          value: ""
+          type: query
+          description: Идентификатор дополнительного файла выгрузки Параметр заполняется для выгрузки, состоящей из нескольких файлов
+          disabled: true
+        - name: result_id
+          value: ""
+          type: query
+          description: Идентификатор выгрузки Идентификатор возвращается в ответе метода « Метод получения результирующих ID выгрузок данных »
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/zip
+      body:
+        type: text
+        data: ""
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/results/:resultId/file"
+      method: GET
+      params:
+        - name: resultId
+          value: ""
+          type: path
+          description: Параметр пути URL (см. документацию)
+        - name: downloadFormat
+          value: ""
+          type: query
+          description: "Формат выгрузки файла Применимо только для выгрузок: «ACS_DOCUMENTS» («Документы, на основании которых была оформлена передача и получение кодов идентификации по агентско-комиссионной схеме»); «CIS_ACS» («Данные о кодах идентификации, переданных и полученных по агентско-комиссионной схеме»). Если не указан, выгрузка формируется в формате * .csv. Допустимое значение: «XLSX»"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Значение должно совпадать с «productGroupCode» («Товарная группа») задания на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+        - name: resultFilePartId
+          value: ""
+          type: query
+          description: Идентификатор дополнительного файла выгрузки Параметр заполняется для выгрузки, состоящей из нескольких файлов
+          disabled: true
+        - name: result_id
+          value: ""
+          type: query
+          description: Идентификатор выгрузки Идентификатор возвращается в ответе метода « Метод получения результирующих ID выгрузок данных »
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предоставляет возможность скачивания выгрузки в статусе «COMPLETED» («Выполнено») по идентификатору выгрузки, полученному в ответе метода « Метод получения результирующих ID выгрузок данных ».
+
+  Максимальное количество запросов в минуту — 12.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>dispenser/results/00000000-0000-0000-0000-000000000000/file?pg=3"
+  -H "accept: */*"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

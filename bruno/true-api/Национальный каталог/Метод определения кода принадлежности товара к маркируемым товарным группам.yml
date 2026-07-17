@@ -1,0 +1,401 @@
+info:
+  name: Метод определения кода принадлежности товара к маркируемым товарным группам
+  type: http
+  seq: 19
+  tags:
+    - Национальный каталог
+
+http:
+  method: POST
+  url: "{{baseUrl}}/nk/mark-check"
+  body:
+    type: json
+    data: |-
+      {
+        "gtins": [
+          "04610043553256",
+          4610043553287,
+          3331436808029,
+          783320402685,
+          "3234567890126",
+          38000232671,
+          4640076801444,
+          4640076801352,
+          "4810978019678",
+          2900001633116,
+          "7891024188279"
+        ],
+        "tnveds": [
+          "63",
+          "0401",
+          "6302",
+          "040410",
+          "0404100200",
+          "6404",
+          "9001200000"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/mark-check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [
+              "04610043553256",
+              4610043553287,
+              3331436808029,
+              783320402685,
+              "3234567890126",
+              38000232671,
+              4640076801444,
+              4640076801352,
+              "4810978019678",
+              2900001633116,
+              "7891024188279"
+            ],
+            "tnveds": [
+              "63",
+              "0401",
+              "6302",
+              "040410",
+              "0404100200",
+              "6404",
+              "9001200000"
+            ]
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "gtins": [
+                {
+                  "gtin": "783320402685",
+                  "tnved": "3303",
+                  "is_marked": "Товар подлежит маркировке",
+                  "is_marked_code": 1
+                },
+                {
+                  "gtin": "3234567890126",
+                  "tnved": null,
+                  "is_marked": "Товар не найден",
+                  "is_marked_code": 2
+                }
+              ],
+              "tnveds": [
+                {
+                  "tnved": "63",
+                  "is_marked": "По указанному коду ТНВЭД невозможно установить необходимость маркировки. Уточните код ТНВЭД товара",
+                  "is_marked_code": 3
+                },
+                {
+                  "tnved": "6302",
+                  "is_marked": "Товар с указанным кодом ТНВЭД подлежит маркировке",
+                  "is_marked_code": 1
+                },
+                {
+                  "tnved": "040410",
+                  "is_marked": "ТНВЭД не найден",
+                  "is_marked_code": 2
+                },
+                {
+                  "tnved": "2008",
+                  "is_marked": "Товар с указанным кодом ТНВЭД не подлежит маркировке",
+                  "is_marked_code": 0
+                }
+              ]
+            }
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/mark-check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [
+              "04610043553256",
+              4610043553287,
+              3331436808029,
+              783320402685,
+              "3234567890126",
+              38000232671,
+              4640076801444,
+              4640076801352,
+              "4810978019678",
+              2900001633116,
+              "7891024188279"
+            ],
+            "tnveds": [
+              "63",
+              "0401",
+              "6302",
+              "040410",
+              "0404100200",
+              "6404",
+              "9001200000"
+            ]
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <gtins>
+                      <item>
+                          <gtin>783320402685</gtin>
+                          <tnved>3303</tnved>
+                          <is_marked>Товар подлежит маркировке</is_marked>
+                          <is_marked_code>1</is_marked_code>
+                      </item>
+                      <item>
+                          <gtin>3234567890126</gtin>
+                          <tnved>tnved</tnved>
+                          <is_marked>Товар не найден</is_marked>
+                          <is_marked_code>2</is_marked_code>
+                      </item>
+                  </gtins>
+                  <tnveds>
+                      <item>
+                          <tnved>63</tnved>
+                          <is_marked>По указанному коду ТНВЭД невозможно установить необходимость маркировки. Уточните код ТНВЭД товара</is_marked>
+                          <is_marked_code>3</is_marked_code>
+                      </item>
+                      <item>
+                          <tnved>6302</tnved>
+                          <is_marked>Товар с указанным кодом ТНВЭД подлежит маркировке</is_marked>
+                          <is_marked_code>1</is_marked_code>
+                      </item>
+                      <item>
+                          <tnved>040410</tnved>
+                          <is_marked>ТНВЭД не найден</is_marked>
+                          <is_marked_code>2</is_marked_code>
+                      </item>
+                      <item>
+                          <tnved>2008</tnved>
+                          <is_marked>Товар с указанным кодом ТНВЭД не подлежит маркировке</is_marked>
+                          <is_marked_code>0</is_marked_code>
+                      </item>
+                  </tnveds>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/mark-check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [
+              "04610043553256",
+              4610043553287,
+              3331436808029,
+              783320402685,
+              "3234567890126",
+              38000232671,
+              4640076801444,
+              4640076801352,
+              "4810978019678",
+              2900001633116,
+              "7891024188279"
+            ],
+            "tnveds": [
+              "63",
+              "0401",
+              "6302",
+              "040410",
+              "0404100200",
+              "6404",
+              "9001200000"
+            ]
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/mark-check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [
+              "04610043553256",
+              4610043553287,
+              3331436808029,
+              783320402685,
+              "3234567890126",
+              38000232671,
+              4640076801444,
+              4640076801352,
+              "4810978019678",
+              2900001633116,
+              "7891024188279"
+            ],
+            "tnveds": [
+              "63",
+              "0401",
+              "6302",
+              "040410",
+              "0404100200",
+              "6404",
+              "9001200000"
+            ]
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/mark-check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [
+              "04610043553256",
+              4610043553287,
+              3331436808029,
+              783320402685,
+              "3234567890126",
+              38000232671,
+              4640076801444,
+              4640076801352,
+              "4810978019678",
+              2900001633116,
+              "7891024188279"
+            ],
+            "tnveds": [
+              "63",
+              "0401",
+              "6302",
+              "040410",
+              "0404100200",
+              "6404",
+              "9001200000"
+            ]
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/mark-check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [
+              "04610043553256",
+              4610043553287,
+              3331436808029,
+              783320402685,
+              "3234567890126",
+              38000232671,
+              4640076801444,
+              4640076801352,
+              "4810978019678",
+              2900001633116,
+              "7891024188279"
+            ],
+            "tnveds": [
+              "63",
+              "0401",
+              "6302",
+              "040410",
+              "0404100200",
+              "6404",
+              "9001200000"
+            ]
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для определения принадлежности товара с указанными кодами товаров (GTIN) или кодами ТН ВЭД к маркируемым товарным группам.
+
+  В одном запросе не может быть суммарно указано более 100 КИ и кодов ТН ВЭД.
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/nk/mark-check?format=json"
+  -H "accept: application/json"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+  --data-raw "{\"gtins\":[\"string\"],\"tnveds\":[\"string\"]}"
+
+  Тип приватности: приватный.

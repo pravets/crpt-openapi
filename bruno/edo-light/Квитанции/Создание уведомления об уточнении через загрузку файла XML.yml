@@ -1,0 +1,216 @@
+info:
+  name: Создание уведомления об уточнении через загрузку файла XML
+  type: http
+  seq: 6
+  tags:
+    - Квитанции
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/incoming-documents/xml/uvtoch"
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Ссылка на XML документ (файл DP_UVUTOCH)
+      - name: doc_id
+        type: text
+        value: ""
+        description: Идентификатор документа, для которого создаётся уведомление (UUID)
+      - name: signature
+        type: text
+        value: ""
+        description: Откреплённая УКЭП XML-документа в формате base64
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Уведомление об уточнении успешно создано
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/uvtoch"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл DP_UVUTOCH)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, для которого создаётся уведомление (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML-документа в формате base64
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "875b2e45-3aad-4c55-831b-2c58a5d7bb40"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+      - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+      - «Неверный формат параметра запроса 'doc_id'»;
+      - «Неверный формат параметра "signature"»;
+      - «Нет прав на подписание квитанции».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/uvtoch"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл DP_UVUTOCH)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, для которого создаётся уведомление (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML-документа в формате base64
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/uvtoch"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл DP_UVUTOCH)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, для которого создаётся уведомление (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML-документа в формате base64
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: Документ или квитанция не найдены в базе данных
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/uvtoch"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл DP_UVUTOCH)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, для которого создаётся уведомление (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML-документа в формате base64
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/uvtoch"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл DP_UVUTOCH)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, для которого создаётся уведомление (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML-документа в формате base64
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: Метод предназначен для создания уведомления об уточнении (DP_UVUTOCH) к входящему документу через загрузку XML-файла.

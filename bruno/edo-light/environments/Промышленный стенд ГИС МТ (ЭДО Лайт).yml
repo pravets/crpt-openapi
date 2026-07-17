@@ -1,0 +1,4 @@
+name: Промышленный стенд ГИС МТ (ЭДО Лайт)
+variables:
+  - name: baseUrl
+    value: https://edo-gismt.crpt.ru

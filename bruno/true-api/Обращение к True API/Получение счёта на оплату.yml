@@ -1,0 +1,111 @@
+info:
+  name: Получение счёта на оплату
+  type: http
+  seq: 12
+  tags:
+    - Обращение к True API
+    - Счета и договоры
+
+http:
+  method: POST
+  url: "{{baseUrl}}/elk/crm-api/prequests"
+  body:
+    type: json
+    data: |-
+      {
+        "contractId": "1111111",
+        "sendto": "email",
+        "amount": "111"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/crm-api/prequests"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "contractId": "1111111",
+            "sendto": "email",
+            "amount": "111"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "status": 200
+          }
+  - name: 401 Response
+    description: "2.1. Код 401 В случае, если не указан токен:"
+    request:
+      url: "{{baseUrl}}/elk/crm-api/prequests"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "contractId": "1111111",
+            "sendto": "email",
+            "amount": "111"
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <UnauthorizedException>
+          <error>unauthorized</error>
+          <error_description>Full authentication is required to access this
+          resource</error_description>
+          </UnauthorizedException>
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/crm-api/prequests"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "contractId": "1111111",
+            "sendto": "email",
+            "amount": "111"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  При успешном выполнении запроса на указанный в запросе e-mail отправляется файл со счётом на оплату.
+
+  Content-Type: application/json
+
+  Тип приватности: приватный.

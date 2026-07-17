@@ -1,0 +1,168 @@
+info:
+  name: Метод проверки статуса места осуществления деятельности организации
+  type: http
+  seq: 4
+  tags:
+    - Обращение к True API
+
+http:
+  method: POST
+  url: "{{baseUrl}}/mods/info"
+  body:
+    type: json
+    data: |-
+      {
+        "pg": [
+          "beer"
+        ],
+        "inn": "1234567890",
+        "kpp": [
+          "123456789"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/mods/info"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": [
+              "beer"
+            ],
+            "inn": "1234567890",
+            "kpp": [
+              "123456789"
+            ]
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "productGroupInfo": [
+              {
+                "productGroup": "beer",
+                "status": "active"
+              }
+            ],
+            "mods": [
+              {
+                "kpp": "123456789",
+                "productGroup": "beer",
+                "isBlocked": false,
+                "address": "string"
+              }
+            ]
+          }
+  - name: 400 Response
+    description: "2.1. Код 400, если не заполнен параметр тела запроса «pg» («Массив товарных групп»):"
+    request:
+      url: "{{baseUrl}}/mods/info"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": [
+              "beer"
+            ],
+            "inn": "1234567890",
+            "kpp": [
+              "123456789"
+            ]
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Не указан обязательный параметр <наименование_параметра>"
+          }
+  - name: 404 Response
+    description: "2.7. Код 404, если в параметре тела запроса «inn» («ИНН») указан ИНН, по которому нет информации в ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/mods/info"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": [
+              "beer"
+            ],
+            "inn": "1234567890",
+            "kpp": [
+              "123456789"
+            ]
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указанный ИНН не найден"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/mods/info"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": [
+              "beer"
+            ],
+            "inn": "1234567890",
+            "kpp": [
+              "123456789"
+            ]
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения статуса блокировки участника оборота товаров, его мест осуществления деятельности (МОД) и данных по блокировке в ЕГАИС.
+
+  Если в запросе не указан параметр «kpp» («Массив КПП МОД») или «fiasId» («Массив идентификаторов ФИАС адресов МОД»), то в ответе возвращаются данные по блокировке участника оборота товаров, осуществляющего запрос.
+
+  Метод доступен только для товарной группы «Пиво, напитки, изготавливаемые на основе пива, слабоалкогольные напитки».
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

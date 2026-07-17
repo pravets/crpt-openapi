@@ -1,0 +1,202 @@
+info:
+  name: Метод получения списка загруженных чеков ККТ на основании квитанций обработки
+  type: http
+  seq: 2
+  tags:
+    - Документы и чеки
+
+http:
+  method: POST
+  url: "{{baseUrl}}/receipt/search"
+  body:
+    type: json
+    data: |-
+      {
+        "filter": {
+          "transactionIds": [],
+          "resultDocDate": {
+            "from": "2023-12-13T07:33:07.618Z",
+            "to": "2023-12-13T07:33:07.618Z"
+          },
+          "sourceDocIds": [],
+          "sourceDocDate": {
+            "from": "2023-12-13T07:33:07.618Z",
+            "to": "2023-12-13T07:33:07.618Z"
+          },
+          "status": [],
+          "details": {
+            "receiptTypes": [],
+            "productGroups": [],
+            "documentNumbers": [],
+            "receiptDateTime": {
+              "from": "2023-12-13T07:33:07.618Z",
+              "to": "2023-12-13T07:33:07.618Z"
+            },
+            "receiptCodes": [],
+            "fiscalDriveNumbers": [],
+            "receiptUserInns": [],
+            "receiptBuyerInns": [],
+            "kktRegIds": []
+          }
+        },
+        "pagination": {
+          "perPage": 0,
+          "pageToken": "string"
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/receipt/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "transactionIds": [],
+              "resultDocDate": {
+                "from": "2023-12-13T07:33:07.618Z",
+                "to": "2023-12-13T07:33:07.618Z"
+              },
+              "sourceDocIds": [],
+              "sourceDocDate": {
+                "from": "2023-12-13T07:33:07.618Z",
+                "to": "2023-12-13T07:33:07.618Z"
+              },
+              "status": [],
+              "details": {
+                "receiptTypes": [],
+                "productGroups": [],
+                "documentNumbers": [],
+                "receiptDateTime": {
+                  "from": "2023-12-13T07:33:07.618Z",
+                  "to": "2023-12-13T07:33:07.618Z"
+                },
+                "receiptCodes": [],
+                "fiscalDriveNumbers": [],
+                "receiptUserInns": [],
+                "receiptBuyerInns": [],
+                "kktRegIds": []
+              }
+            },
+            "pagination": {
+              "perPage": 0,
+              "pageToken": "string"
+            }
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "nextPageToken": "string",
+            "prevPageToken": "string",
+            "results": [
+              {
+                "transactionId": "string",
+                "resultDocDate": "2023-12-13T07:33:07.633Z",
+                "sourceDocId": "string",
+                "sourceDocDate": "2023-12-13T07:33:07.633Z",
+                "status": 0,
+                "details": {
+                  "receiptTypeId": "string",
+                  "receiptProviderInns": [
+                    "string"
+                  ],
+                  "productGroups": [
+                    "string"
+                  ],
+                  "hasUnknownEaesCodes": true,
+                  "ofdInn": "string",
+                  "documentType": "string",
+                  "documentNumber": "string",
+                  "documentDateTime": "2023-12-13T07:33:07.633Z",
+                  "receiptDateTime": "2023-12-13T07:33:07.633Z",
+                  "receiptFiscalDocumentFormatVer": "string",
+                  "receiptOperationType": "string",
+                  "did": "string",
+                  "receiptCode": "string",
+                  "kktRegId": "string",
+                  "fiscalDriveNumber": "string",
+                  "receiptUserInn": "string",
+                  "receiptBuyerInn": "string"
+                }
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/receipt/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "transactionIds": [],
+              "resultDocDate": {
+                "from": "2023-12-13T07:33:07.618Z",
+                "to": "2023-12-13T07:33:07.618Z"
+              },
+              "sourceDocIds": [],
+              "sourceDocDate": {
+                "from": "2023-12-13T07:33:07.618Z",
+                "to": "2023-12-13T07:33:07.618Z"
+              },
+              "status": [],
+              "details": {
+                "receiptTypes": [],
+                "productGroups": [],
+                "documentNumbers": [],
+                "receiptDateTime": {
+                  "from": "2023-12-13T07:33:07.618Z",
+                  "to": "2023-12-13T07:33:07.618Z"
+                },
+                "receiptCodes": [],
+                "fiscalDriveNumbers": [],
+                "receiptUserInns": [],
+                "receiptBuyerInns": [],
+                "kktRegIds": []
+              }
+            },
+            "pagination": {
+              "perPage": 0,
+              "pageToken": "string"
+            }
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Этот метод позволяет:
+
+  Квитанции доступны с 1 мая 2020 года.
+
+  Примечание При ошибках с кодом 4xx требуется исправить запрос перед повторной отправкой. При ошибке с кодом 500 (внутренняя ошибка сервиса) требуется повторить запрос. Минимальное значение (в секундах) указано в параметре заголовка ответного сообщения — Retry-After. Если значение параметра Retry-After отсутствует — минимум через 30 секунд
+
+  Тип приватности: приватный.

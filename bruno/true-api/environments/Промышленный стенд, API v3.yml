@@ -1,0 +1,4 @@
+name: Промышленный стенд, API v3
+variables:
+  - name: baseUrl
+    value: https://markirovka.crpt.ru/api/v3/true-api

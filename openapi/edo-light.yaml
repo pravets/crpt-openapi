@@ -1,0 +1,2841 @@
+openapi: 3.0.3
+info:
+  title: ЭДО Лайт API (Честный знак / ГИС МТ)
+  description: |
+    Спецификация API «ЭДО Лайт» системы «Честный знак» (ГИС МТ, ЦРПТ) для работы с документами и квитанциями.
+
+    Источник: официальная документация https://docs.crpt.ru/gismt/Документация_по_API_ЭДО_Лайт/
+    Дата генерации спецификации: 2026-07-16.
+
+    Общие положения:
+    - Авторизация в ЭДО доступна только участникам оборота товаров, зарегистрированным в Системе маркировки (ГИС МТ и «ИР Маркировки»).
+    - Для использования методов API ЭДО Лайт необходимо получить токен аутентификации (срок действия — 10 часов) через методы True API: /auth/key и /auth/simpleSignIn (см. тег «Аутентификация»).
+    - Поля с датой и временем при создании/редактировании документа или квитанции передаются как integer в формате timestamp (секунды Unix-времени).
+    - При работе через API ЭДО Лайт действует ограничение на 1000 исходящих документов в год.
+  version: "1.0.0"
+servers:
+  - url: https://edo-gismt.crpt.ru
+    description: Промышленный стенд ГИС МТ (ЭДО Лайт)
+  - url: https://edo.sandbox.crptech.ru
+    description: Интеграционный стенд ГИС МТ (ЭДО Лайт)
+tags:
+  - name: Аутентификация
+    description: Методы True API для получения токена аутентификации (выполняются на отдельных базовых URL)
+  - name: Исходящие документы
+    description: Загрузка, подписание и получение исходящих документов (УПД, УПДи, УКД, УКДи)
+  - name: Входящие документы
+    description: Получение входящих документов и загрузка файлов информации (титулов) покупателя
+  - name: Квитанции
+    description: 'Работа с квитанциями: извещения о получении, уведомления об уточнении, аннулирование'
+  - name: Универсальные сообщения
+    description: Создание универсальных сообщений (УС) к документам и квитанциям
+  - name: МЧД
+    description: Получение данных о машиночитаемых доверенностях (МЧД)
+security:
+  - bearerAuth: []
+paths:
+  /auth/key:
+    servers:
+      - url: https://markirovka.sandbox.crptech.ru/api/v3/true-api
+        description: Демонстрационный контур (True API)
+      - url: https://markirovka.crpt.ru/api/v3/true-api
+        description: Промышленный контур (True API)
+    get:
+      tags:
+        - Аутентификация
+      summary: Запрос авторизации при единой аутентификации
+      description: |
+        Метод используется для получения уникальной пары: UUID (идентификатора текущей аутентификации) и сгенерированных случайных данных,
+        которые в дальнейшем подписываются участником оборота товаров УКЭП и передаются в метод /auth/simpleSignIn для получения токена в формате UUID / JWT.
+
+        1. Получение пары «uuid — data», где «uuid» — идентификатор текущей аутентификации, «data» — строка на подпись пользователю.
+        2. Запрос авторизации обязателен для получения токена в формате JWT.
+        3. Отправка в Систему маркировки данных в том же виде, в котором они были получены (пара «uuid — data»), только теперь «data» — подписанная УКЭП строка.
+        4. Сервер отвечает сообщением с кодом 200 (ОК), либо сообщением об ошибке.
+
+        Примечание: получение токена в формате UUID без предварительного запроса на получение уникальной пары доступно до сентября 2026 года.
+      operationId: getAuthKey
+      security: []
+      responses:
+        '200':
+          description: Уникальная пара «uuid — data» успешно сгенерирована
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthKeyResponse'
+              example:
+                uuid: a63ff582-b723-4da7-958b-453da27a6c62
+                data: GNUFBAZBMPIUUMLXNMIOGSHTGFXZMT
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /auth/simpleSignIn:
+    servers:
+      - url: https://markirovka.sandbox.crptech.ru/api/v3/true-api
+        description: Демонстрационный контур (True API)
+      - url: https://markirovka.crpt.ru/api/v3/true-api
+        description: Промышленный контур (True API)
+    post:
+      tags:
+        - Аутентификация
+      summary: Получение ключа сессии при единой аутентификации
+      description: |
+        Метод используется для получения токена аутентификации (ключа сессии) в формате JWT или UUID по подписанным УКЭП случайным данным,
+        полученным в методе /auth/key. Срок действия полученного токена — не более 10 часов с момента получения.
+
+        Для токена в формате UUID срок не может превышать дату и время окончания срока действия УКЭП и/или МЧД.
+        Если МЧД, на основании которой пользователю предоставлен доступ к системе, будет отозвана, токен будет автоматически аннулирован.
+        При каждом запросе выдаётся новый токен (срок действия существующего токена не продлевается).
+
+        Примечание: поддержка токена в формате JWT сохранена до конца 2026 года.
+      operationId: simpleSignIn
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SimpleSignInRequest'
+            example:
+              uuid: a63ff582-b723-4da7-958b-453da27a6c62
+              data: string
+              inn: string
+              details: string
+              unitedToken: true
+      responses:
+        '200':
+          description: |
+            Токен успешно получен.
+            - При запросе токена в формате JWT возвращается параметр «token» (JWT).
+            - При запросе токена в формате UUID (unitedToken = true) возвращаются параметры «token», «uuidToken» и «expireDate».
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SimpleSignInResponse'
+              examples:
+                jwt:
+                  summary: Токен в формате JWT
+                  value:
+                    token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e.........mk6qe0lB12w9zEs
+                uuid:
+                  summary: Токен в формате UUID
+                  value:
+                    token: string
+                    uuidToken: 123e4567-e89b-12d3-a456-426655440000
+                    expireDate: 2026-10-10T00:00:00.123Z
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения (в поле error_message):
+            - «В запросе отсутствует идентификатор авторизации (UUID)» — не указан параметр uuid;
+            - «В запросе отсутствует параметр data» — не указан параметр data;
+            - «В параметре inn должен быть передан ИНН организации, под которой планируется авторизация от МЧД» — ИНН не равен 10 или 12 цифрам;
+            - «Тело запроса не может быть пустым»;
+            - «UUID не найден в хранилище ключей» — переданный uuid не найден в хранилище;
+            - «Ошибка при проверке подписи» — data не подписан УКЭП или содержит не те данные;
+            - «Подпись не валидна» — в data передано некорректное значение.
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '403':
+          description: «Отсутствует доступ к ресурсу» — данные подписаны УКЭП сотрудника, не являющегося добавленным пользователем организации, под которой выполняется авторизация
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/outgoing-documents:
+    get:
+      tags:
+        - Исходящие документы
+      summary: Получение списка исходящих документов
+      description: Метод возвращает список групп исходящих документов, найденных по заданным параметрам фильтрации, с постраничной выдачей.
+      operationId: getOutgoingDocumentList
+      parameters:
+        - $ref: '#/components/parameters/LimitQuery'
+        - $ref: '#/components/parameters/OffsetQuery'
+        - $ref: '#/components/parameters/CreatedFromQuery'
+        - $ref: '#/components/parameters/CreatedToQuery'
+        - $ref: '#/components/parameters/PartnerInnQuery'
+        - $ref: '#/components/parameters/PartnerIdQuery'
+        - $ref: '#/components/parameters/StatusQuery'
+        - $ref: '#/components/parameters/TypeQuery'
+        - $ref: '#/components/parameters/FolderQuery'
+        - $ref: '#/components/parameters/SortByQuery'
+        - $ref: '#/components/parameters/AscQuery'
+        - $ref: '#/components/parameters/ProductGroupQuery'
+      responses:
+        '200':
+          description: Список групп документов, найденных по заданным параметрам
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+              example:
+                items:
+                  - id: 11ecae1e-1ff1-11c1-be11-1e1111111b1c
+                    created_at: 1582090925
+                    date: 1582059600
+                    documents:
+                      - id: 11ecae1e-1ff1-11c1-be11-1e1111111b1c
+                        created_at: 1582090925
+                        date: 1582059600
+                        number: номер документа
+                        processed_at: 1582097248
+                        status: 0
+                        total_price: 1930500
+                        total_vat_amount: 279500
+                        type: 504
+                    group_id: b22a22ce-2222-22ec-b22b-a222fd2bd22a
+                    number: номер документа
+                    recipient:
+                      id: 666666666
+                      extra_id: 00000000-23c4-3685-0000-000000000000
+                      inn: '0000000000'
+                      name: ООО
+                    status: 0
+                    total_price: 1930500
+                    total_vat_amount: 279500
+                    type: 504
+                    create_time_stamp: 1582059600
+                    export_time_stamp: 1582097248
+                  - id: 33a333ee-3cb3-3aae-3f33-d33ce333333c
+                    created_at: 1582097164
+                    date: 1582059600
+                    documents:
+                      - id: 220262cf-0fe7-4d3f-996a-038181ba7812
+                        created_at: 1776253164
+                        date: 1775077200
+                        number: УПД № группсы от 02.04.2026
+                        processed_at: 1776253164
+                        revision: null
+                        status: 3
+                        total_price: 100
+                        total_vat_amount: 0
+                        type: 520
+                        is_title_signed: false
+                        created_by: 0
+                        created_hub: false
+                        is_closed_lm_part: null
+                        package_status: null
+                        uni_new_msg: null
+                    group_id: 4d44444e-4d44-4444-4e44-a4cd444ed444
+                    number: номер документа
+                    recipient:
+                      id: 999999999
+                      extra_id: 00000000-23c4-3685-0000-000000000000
+                      inn: '0000000000'
+                      kpp: '111111111'
+                      ogrn: '1111111111111'
+                      name: ООО
+                      fio: null
+                      address: null
+                      legal_address: null
+                      status: REGISTERED
+                    status: 1
+                    total_price: 1930500
+                    total_vat_amount: 279500
+                    type: 504
+                    create_time_stamp: 1582059600
+                    export_time_stamp: 1582097180
+                    product_group: -1
+                    active_type: 0
+                has_next_page: true
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+    post:
+      tags:
+        - Исходящие документы
+      summary: Загрузка файла информации продавца УПД в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации продавца (титула продавца) УПД по формату Приказа ФНС России № ЕД-7-26/970@ от 19.12.2023.
+
+        При выполнении метода без параметра «signature» загруженный XML будет находиться в статусе «Черновик».
+        При выполнении метода с параметром «signature» («Откреплённая УКЭП XML документа в формате base64») загруженный документ будет находиться в статусе «Отправлен».
+
+        Метод не поддерживает загрузку УПД (ON_NSCHFDOPPRPROS) с признаком прослеживаемости (PROS).
+
+        В зависимости от идентификатора ЭДО получателя документа (в *.xml значение «СвУчДокОбор.ИдПол») документ будет доставлен получателю в «ЭДО Лайт»
+        или отправлен в роуминг; система проверит статус связи между отправителем и получателем в случае отправки документа в роуминг.
+
+        При заполненном заголовке «send_mchd_file» система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+        берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с УПД и подписью.
+
+        Форматы и XSD-схема размещены на сайте ФНС: https://www.nalog.gov.ru/rn77/about_fts/docs/8335278/
+      operationId: uploadUpdSellerXml
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SellerUpdForm'
+      responses:
+        '200':
+          description: |
+            Файл информации продавца успешно загружен.
+            Идентификатор возвращается при успешном создании нового файла, а также при повторной загрузке файла,
+            если файл с таким наименованием уже существует в системе (вернётся идентификатор ранее загруженного файла).
+            По данному идентификатору можно производить с документом необходимые действия (редактирование, подписание и т. д.).
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 00000000-0000-0000-0000-000000000000
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип загружаемого файла: Content-Type: (...)»;
+            - «Неверный тип документа загружаемого xml файла» (например, УПДи вместо УПД);
+            - «Неверный формат параметра "product_group" / "signature" / "folder"»;
+            - «Нет прав на подписание документа» — не пройдена проверка подписи;
+            - «Невозможно создать документ. <наименование организации> не зарегистрирован в ГИС МТ».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен УПД с признаком прослеживаемости (PROS);
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/updi:
+    post:
+      tags:
+        - Исходящие документы
+      summary: Загрузка файла информации продавца УПДи в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации продавца (титула продавца) УПДи по формату Приказа ФНС России № ЕД-7-26/970@ от 19.12.2023.
+
+        При выполнении метода без параметра «signature» загружаемый документ будет находиться в статусе «Черновик»,
+        с параметром «signature» — в статусе «Отправлен».
+
+        Метод не поддерживает загрузку УПДи (ON_NSCHFDOPPRPROS) с признаком прослеживаемости (PROS).
+      operationId: uploadUpdiSellerXml
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SellerUpdiForm'
+      responses:
+        '200':
+          description: Файл информации продавца УПДи успешно загружен (при повторной загрузке файла с тем же наименованием вернётся идентификатор ранее загруженного файла)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 00000000-0000-0000-0000-000000000000
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип загружаемого файла: Content-Type: (...)»;
+            - «Неверный тип документа загружаемого xml файла»;
+            - «Неверный формат параметра "product_group" / "signature" / "folder"»;
+            - «Неверный формат параметра запроса "parent_id"»;
+            - «Нет прав на подписание документа».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен УПДи с признаком PROS;
+            - «Идентификатор ЭДО получателя документа отличается от Идентификатора получателя, указанного в корректируемом документе...»;
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/ukd:
+    post:
+      tags:
+        - Исходящие документы
+      summary: Загрузка информации продавца УКД (приказ № 189 от 13.04.2016) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации продавца УКД. Формат УКД регламентируется Приказом ФНС от 13 апреля 2016 г. № ММВ-7-15/189
+        (https://www.nalog.gov.ru/rn77/about_fts/docs/6076582/).
+
+        При выполнении метода без параметра «signature» загруженный документ будет находиться в статусе «Черновик»,
+        с параметром «signature» — в статусе «Отправлен».
+      operationId: uploadUkdSellerXml189
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SellerUkdForm'
+      responses:
+        '200':
+          description: Файл информации продавца УКД успешно загружен (при повторной загрузке файла с тем же наименованием вернётся идентификатор ранее загруженного файла)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 00000000-0000-0000-0000-000000000000
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип загружаемого файла: Content-Type: (...)»;
+            - «Неверный тип документа загружаемого xml файла»;
+            - «Неверный формат параметра "product_group" / "signature" / "folder"»;
+            - «Неверный формат параметра запроса "parent_id"»;
+            - «Нет прав на подписание документа».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/ukd/736:
+    post:
+      tags:
+        - Исходящие документы
+      summary: Загрузка информации продавца УКД (приказ № 736 от 12.10.2020) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации продавца УКД. Формат УКД регламентируется Приказом ФНС от 12 октября 2020 г. № ЕД-7-26/736@
+        (https://www.nalog.gov.ru/rn77/about_fts/docs/10223010/).
+
+        При выполнении метода без параметра «signature» загруженный документ будет находиться в статусе «Черновик»,
+        с параметром «signature» — в статусе «Отправлен».
+
+        Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS).
+
+        По документации Content-Type: application/json — для интеграции с 1С; multipart/form-data — в остальных случаях
+        (структура JSON-тела для интеграции с 1С в документации не приведена).
+      operationId: uploadUkdSellerXml736
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SellerUkd736Form'
+          application/json:
+            schema:
+              type: object
+              description: Вариант тела запроса для интеграции с 1С (структура тела в документации ЭДО Лайт не приведена)
+      responses:
+        '200':
+          description: Файл информации продавца УКД успешно загружен (при повторной загрузке файла с тем же наименованием вернётся идентификатор ранее загруженного файла)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 00000000-0000-0000-0000-000000000000
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип загружаемого файла: Content-Type: (...)»;
+            - «Неверный тип документа загружаемого xml файла» (например, УКДи вместо УКД);
+            - «Неверный формат параметра "product_group" / "signature"»;
+            - «Неверный формат параметра запроса "parent_id"»;
+            - «Нет прав на подписание документа».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен УКД с признаком PROS;
+            - «Идентификатор ЭДО получателя документа отличается от Идентификатора получателя, указанного в корректируемом документе...»;
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/ukdi/736:
+    post:
+      tags:
+        - Исходящие документы
+      summary: Загрузка информации продавца УКДи (приказ № 736 от 12.10.2020) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации продавца УКДи. Формат УКД регламентируется Приказом ФНС от 12 октября 2020 г. № ЕД-7-26/736@
+        (https://www.nalog.gov.ru/rn77/about_fts/docs/10223010/).
+
+        При выполнении метода без параметра «signature» загруженный документ будет находиться в статусе «Черновик»,
+        с параметром «signature» — в статусе «Отправлен».
+
+        Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS).
+
+        По документации Content-Type: application/json — для интеграции с 1С; multipart/form-data — в остальных случаях.
+      operationId: uploadUkdiSellerXml736
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/SellerUkd736Form'
+          application/json:
+            schema:
+              type: object
+              description: Вариант тела запроса для интеграции с 1С (структура тела в документации ЭДО Лайт не приведена)
+      responses:
+        '200':
+          description: Файл информации продавца УКДи успешно загружен (при повторной загрузке файла с тем же наименованием вернётся идентификатор ранее загруженного файла)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 00000000-0000-0000-0000-000000000000
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип загружаемого файла: Content-Type: (...)»;
+            - «Неверный тип документа загружаемого xml файла»;
+            - «Неверный формат параметра "product_group" / "signature"»;
+            - «Неверный формат параметра запроса "parent_id"»;
+            - «Нет прав на подписание документа».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен УКДи с признаком PROS;
+            - «Идентификатор ЭДО получателя документа отличается от Идентификатора получателя, указанного в корректируемом документе...»;
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}/content:
+    get:
+      tags:
+        - Исходящие документы
+      summary: Получение содержимого XML исходящего документа
+      description: Метод возвращает содержимое исходящего документа в формате *.xml.
+      operationId: getOutgoingDocumentContent
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: Содержимое документа в формате XML
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: XML-документ (файл УПД/УПДи/УКД/УКДи)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/{doc_id}/content:
+    get:
+      tags:
+        - Входящие документы
+      summary: Получение содержимого XML входящего документа
+      description: |
+        Метод возвращает содержимое входящего документа в формате *.xml.
+
+        Вызов метода автоматически создаёт неподписанную квитанцию «Извещение о получении УПД» (DP_IZVPOL).
+      operationId: getIncomingDocumentContent
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: Содержимое документа в формате XML
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: XML-документ (файл УПД/УПДи/УКД/УКДи)
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}/signature:
+    post:
+      tags:
+        - Исходящие документы
+      summary: Подписание исходящего документа
+      description: |
+        Метод используется для добавления электронной откреплённой подписи к черновику файла информации продавца (УПД/УПДи/УКД/УКДи).
+        В результате выполнения метода к документу добавляется откреплённая подпись, после чего документ отправляется получателю.
+
+        Пример создания и подписания титула:
+        1. Создаётся черновик документа методами загрузки файла информации продавца (УПД/УПДи/УКД) — возвращается doc_id документа.
+        2. Запрашивается XML документа методом «Получение содержимого XML документа» с использованием doc_id — возвращается XML.
+        3. XML подписывается и отправляется с использованием doc_id.
+
+        Примечание: при попытке подписания и отправки документа участнику оборота товаров, не зарегистрированному в ГИС МТ,
+        возвращается ошибка с кодом 400 («Невозможно создать документ. <наименование организации> не зарегистрирован в ГИС МТ»).
+      operationId: signOutgoingDocument
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: 'Откреплённая УКЭП в формате base64 (передаётся строкой в теле запроса, заголовок Content-encoding: base64)'
+      responses:
+        '200':
+          description: Документ подписан и отправлен получателю
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Невозможно создать документ. <наименование организации> не зарегистрирован в ГИС МТ»;
+            - «Нет прав на подписание документа» — не пройдена проверка подписи.
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}/print:
+    get:
+      tags:
+        - Исходящие документы
+      summary: Получение печатной формы исходящего документа (УПД/УПДи/УКД)
+      description: |
+        Метод возвращает PDF-файл печатной формы исходящего документа.
+
+        Примечание: недоступно получение печатной формы для документов, сформированных по приказам № ММВ-7-15/155@ и № ММВ-7-15/189@.
+      operationId: getOutgoingDocumentPrintForm
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: PDF-файл печатной формы документа
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Создание печатной формы для УПД по приказу № ММВ-7-15/155@ невозможно»;
+            - «Создание печатной формы для УКД по приказу № ММВ-7-15/189@ невозможно».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/{doc_id}/print:
+    get:
+      tags:
+        - Входящие документы
+      summary: Получение печатной формы входящего документа (УПД/УПДи/УКД)
+      description: |
+        Метод возвращает PDF-файл печатной формы входящего документа.
+
+        Примечание: недоступно получение печатной формы для документов, сформированных по приказам № ММВ-7-15/155@ и № ММВ-7-15/189@.
+      operationId: getIncomingDocumentPrintForm
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: PDF-файл печатной формы документа
+          content:
+            application/pdf:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Создание печатной формы для УПД по приказу № ММВ-7-15/155@ невозможно»;
+            - «Создание печатной формы для УКД по приказу № ММВ-7-15/189@ невозможно».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}:
+    get:
+      tags:
+        - Исходящие документы
+      summary: Получение ZIP-архива с документооборотом исходящего документа (УПД/УПДи/УКД)
+      description: |
+        Метод возвращает ZIP-архив с документооборотом исходящего документа, в котором будет документ с подписью,
+        квитанции с подписями и печатная форма документа
+        (для документов, сформированных по приказам № ММВ-7-15/155@ и № ММВ-7-15/189@, печатная форма не будет сформирована).
+
+        Заголовок запроса: Accept: application/zip.
+      operationId: getOutgoingDocumentZip
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: ZIP-архив с документом, подписью, квитанциями с подписями и печатной формой документа
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/{doc_id}:
+    get:
+      tags:
+        - Входящие документы
+      summary: Получение ZIP-архива с документооборотом входящего документа (УПД/УПДи/УКД)
+      description: |
+        Метод возвращает ZIP-архив с документооборотом входящего документа, в котором будет документ с подписью,
+        квитанции с подписями и печатная форма документа
+        (для документов, сформированных по приказам № ММВ-7-15/155@ и № ММВ-7-15/189@, печатная форма не будет сформирована).
+
+        Заголовок запроса: Accept: application/zip.
+      operationId: getIncomingDocumentZip
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: ZIP-архив с документом, подписью, квитанциями с подписями и печатной формой документа
+          content:
+            application/zip:
+              schema:
+                type: string
+                format: binary
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents:
+    get:
+      tags:
+        - Входящие документы
+      summary: Получение списка входящих документов
+      description: Метод возвращает список групп входящих документов, найденных по заданным параметрам фильтрации, с постраничной выдачей.
+      operationId: getIncomingDocumentList
+      parameters:
+        - $ref: '#/components/parameters/LimitQuery'
+        - $ref: '#/components/parameters/OffsetQuery'
+        - $ref: '#/components/parameters/CreatedFromQuery'
+        - $ref: '#/components/parameters/CreatedToQuery'
+        - $ref: '#/components/parameters/PartnerInnQuery'
+        - $ref: '#/components/parameters/PartnerIdQuery'
+        - $ref: '#/components/parameters/StatusQuery'
+        - $ref: '#/components/parameters/TypeQuery'
+        - $ref: '#/components/parameters/FolderQuery'
+        - $ref: '#/components/parameters/SortByQuery'
+        - $ref: '#/components/parameters/AscQuery'
+        - $ref: '#/components/parameters/ProductGroupQuery'
+      responses:
+        '200':
+          description: Список групп документов, найденных по заданным параметрам
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentListResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/upd/title:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла информации покупателя УПД (приказ № 820 от 19.12.2018) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации покупателя УПД согласно приказу ФНС № ММВ-7-15/820@ от 19.12.2018.
+        В ответе возвращается идентификатор события (event_id), по которому можно производить с документом необходимые действия
+        (редактирование, подписание и т. д.).
+      operationId: uploadUpdBuyerInfo820
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+      responses:
+        '200':
+          description: Файл информации покупателя УПД успешно загружен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventIdResponse'
+              example:
+                event_id: 875b2e45-3aad-4c55-831b-2c58a5d7bb40
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» (документ в статусе 4) / «Документ ... не может быть подписан» (статус отличен от 3 или 13);
+            - «Функция документа и титула не совпадают»;
+            - «Документ [doc_id] не найден в базе»;
+            - «Неверный формат параметра запроса 'doc_id'».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>»;
+            - «Значение ИнфПок.ИдИнфПрод.ЭП не соответствует подписи под титулом продавца».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/updi/title:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла информации покупателя УПДи (приказ № 820 от 19.12.2018) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации покупателя УПДи согласно приказу ФНС № ММВ-7-15/820@ от 19.12.2018.
+        В ответе возвращается идентификатор события (event_id), по которому можно производить с документом необходимые действия
+        (редактирование, подписание и т. д.).
+      operationId: uploadUpdiBuyerInfo820
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+      responses:
+        '200':
+          description: Файл информации покупателя УПДи успешно загружен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventIdResponse'
+              example:
+                event_id: 875b2e45-3aad-4c55-831b-2c58a5d7bb40
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» / «Документ ... не может быть подписан»;
+            - «Функция документа и титула не совпадают»;
+            - «Документ [doc_id] не найден в базе»;
+            - «Неверный формат параметра запроса 'doc_id'».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>»;
+            - «Значение ИнфПок.ИдИнфПрод.ЭП не соответствует подписи под титулом продавца».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/upd/title/970:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла титула покупателя УПД (приказ № ЕД-7-26/970@ от 20.12.2023) в формате XML
+      description: |
+        Метод предназначен для загрузки файла титула покупателя УПД согласно приказу ФНС № ЕД-7-26/970@ от 20.12.2023.
+
+        Неоднозначность документации: в таблице заголовков указан Content-Type «application/x-www-form-urlencoded»,
+        однако в примере запроса и по составу тела (загрузка файла) используется multipart/form-data — в спецификации принят multipart/form-data.
+      operationId: uploadUpdBuyerTitle970
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+      responses:
+        '201':
+          description: Титул покупателя успешно загружен — код 201 и идентификатор созданного документа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 000a0a00-0aaa-0a00-000a-0a00a0a0aa00
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» (статус 4) / «Документ ... не может быть подписан» (статус отличен от 3 или 13);
+            - «Функция загружаемого титула не соответствует функции родительского документа»;
+            - «Отправитель документа не соответствует получателю загружаемого титула» / «Отправитель загружаемого титула не соответствует»;
+            - «Атрибут "КодИтога" не может принимать значение "3" при подписании исправлений УПД»;
+            - «Документ <идентификатор> не найден в базе».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: «Не найден родительский документ <идентификатор документа>» — не найден УПД, для которого формируется титул
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен титул с признаком PROS;
+            - «Обмен приглашениями абонентами в роуминге не завершен»;
+            - «Роуминг не настроен. Требуется обмен приглашениями между абонентами.».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/updi/title/970:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла титула покупателя УПДи (приказ № ЕД-7-26/970@ от 20.12.2023) в формате XML
+      description: |
+        Метод предназначен для загрузки файла титула покупателя УПДи согласно приказу ФНС № ЕД-7-26/970@ от 20.12.2023.
+
+        Неоднозначность документации: в таблице заголовков указан Content-Type «application/x-www-form-urlencoded»,
+        однако в примере запроса и по составу тела (загрузка файла) используется multipart/form-data — в спецификации принят multipart/form-data.
+      operationId: uploadUpdiBuyerTitle970
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+      responses:
+        '201':
+          description: Титул покупателя УПДи успешно загружен — код 201 и идентификатор созданного документа
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 000a0a00-0aaa-0a00-000a-0a00a0a0aa00
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» / «Документ ... не может быть подписан»;
+            - «Функция загружаемого титула не соответствует функции родительского документа»;
+            - «Отправитель документа не соответствует получателю загружаемого титула»;
+            - «Атрибут "КодИтога" не может принимать значение "3" при подписании исправлений УПД»;
+            - «Документ <идентификатор> не найден в базе».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: «Не найден родительский документ <идентификатор документа>» — не найден УПД, для которого формируется титул
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен титул с признаком PROS;
+            - «Обмен приглашениями абонентами в роуминге не завершен»;
+            - «Роуминг не настроен. Требуется обмен приглашениями между абонентами.».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/ukd/title:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла информации покупателя УКД (приказ № 189 от 13.04.2016) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации покупателя УКД согласно приказу ФНС № ММВ-7-15/189 от 13.04.2016.
+        В ответе возвращается идентификатор события (event_id), по которому можно производить с документом необходимые действия.
+
+        Неоднозначность документации: в таблице заголовков указан Content-Type «multipart/form-data»,
+        однако в примере curl указан заголовок «Content-Type: application/json;charset=UTF-8» — в спецификации принят multipart/form-data.
+      operationId: uploadUkdBuyerInfo189
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+      responses:
+        '200':
+          description: Файл информации покупателя УКД успешно загружен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventIdResponse'
+              example:
+                event_id: 875b2e45-3aad-4c55-831b-2c58a5d7bb40
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» / «Документ ... не может быть подписан»;
+            - «Функция документа и титула не совпадают»;
+            - «Документ [doc_id] не найден в базе»;
+            - «Неверный формат параметра запроса 'doc_id'».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/ukd/title/736:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла информации покупателя УКД (приказ № 736 от 12.10.2020) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации покупателя УКД согласно приказу ФНС № ЕД-7-26/736@ от 12.10.2020.
+
+        По документации Content-Type: application/json — для интеграции с 1С; multipart/form-data — в остальных случаях
+        (структура JSON-тела для интеграции с 1С в документации не приведена).
+      operationId: uploadUkdBuyerInfo736
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+          application/json:
+            schema:
+              type: object
+              description: Вариант тела запроса для интеграции с 1С (структура тела в документации ЭДО Лайт не приведена)
+      responses:
+        '200':
+          description: Файл информации покупателя УКД успешно загружен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventIdResponse'
+              example:
+                event_id: 000a0a00-0aaa-0a00-000a-0a00a0a0aa00
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» / «Документ ... не может быть подписан»;
+            - «Имя загружаемого файла должен совпадать с ИдФайл»;
+            - «Отправитель родительского документа не совпадает с получателем титула» / «Отправитель титула не совпадает с получателем родительского документа»;
+            - «В имени родительского документа есть признак прослеживаемости товара PROS, а в имени загружаемого файла титула этот признак отсутствует».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>»;
+            - «Значение ИнфПок.ИдИнфПрод.ЭП не соответствует подписи под титулом продавца».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/ukdi/title/736:
+    post:
+      tags:
+        - Входящие документы
+      summary: Загрузка файла информации покупателя УКДи (приказ № 736 от 12.10.2020) в формате XML
+      description: |
+        Метод предназначен для загрузки файла информации покупателя УКДи согласно приказу ФНС № ЕД-7-26/736@ от 12.10.2020.
+
+        По документации Content-Type: application/json — для интеграции с 1С; multipart/form-data — в остальных случаях
+        (структура JSON-тела для интеграции с 1С в документации не приведена).
+      operationId: uploadUkdiBuyerInfo736
+      parameters:
+        - $ref: '#/components/parameters/SendMchdFileHeader'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/BuyerTitleForm'
+          application/json:
+            schema:
+              type: object
+              description: Вариант тела запроса для интеграции с 1С (структура тела в документации ЭДО Лайт не приведена)
+      responses:
+        '200':
+          description: Файл информации покупателя УКДи успешно загружен
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EventIdResponse'
+              example:
+                event_id: 000a0a00-0aaa-0a00-000a-0a00a0a0aa00
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+            - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+            - «Документ уже подписан» / «Документ ... не может быть подписан»;
+            - «Имя загружаемого файла должен совпадать с ИдФайл»;
+            - «Отправитель родительского документа не совпадает с получателем титула» / «Отправитель титула не совпадает с получателем родительского документа»;
+            - «В имени родительского документа есть признак прослеживаемости товара PROS, а в имени загружаемого файла титула этот признак отсутствует».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>»;
+            - «Значение ИнфПок.ИдИнфПрод.ЭП не соответствует подписи под титулом продавца».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/unsigned-events:
+    get:
+      tags:
+        - Квитанции
+      summary: Получение списка неподписанных квитанций исходящих документов
+      description: Метод возвращает список квитанций, ожидающих подписания, которые относятся к исходящим документам.
+      operationId: getOutgoingUnsignedEvents
+      responses:
+        '200':
+          description: Список квитанций для подписания
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsignedEventsResponse'
+              example:
+                items:
+                  - id: cffce1db-195f-4770-9738-d50c2fd9ca8a
+                    type: 113
+                    document:
+                      id: 8c6000fc-a18e-4711-88b7-11b3e16e6e2c
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/unsigned-events:
+    get:
+      tags:
+        - Квитанции
+      summary: Получение списка неподписанных квитанций входящих документов
+      description: Метод возвращает список квитанций, ожидающих подписания, которые относятся к входящим документам.
+      operationId: getIncomingUnsignedEvents
+      responses:
+        '200':
+          description: Список квитанций для подписания
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnsignedEventsResponse'
+              example:
+                items:
+                  - id: cffce1db-195f-4770-9738-d50c2fd9ca8a
+                    type: 113
+                    document:
+                      id: 8c6000fc-a18e-4711-88b7-11b3e16e6e2c
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/{doc_id}/events/{event_id}/content:
+    get:
+      tags:
+        - Квитанции
+      summary: Получение XML файла информации покупателя (УПД/УПДи/УКД) или квитанции
+      description: Метод возвращает содержимое файла информации покупателя или квитанции в виде XML-файла.
+      operationId: getIncomingEventContent
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      responses:
+        '200':
+          description: Содержимое квитанции или файла информации покупателя в формате XML
+          content:
+            application/xml:
+              schema:
+                type: string
+                description: XML-файл квитанции или файла информации покупателя
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/{doc_id}/events/{event_id}/signature:
+    post:
+      tags:
+        - Квитанции
+      summary: Подписание квитанций / файла информации покупателя; приём аннулирования документа
+      description: |
+        Метод используется в двух сценариях (в документации ЭДО Лайт — разделы 3.16 и 3.19, URL и тело запроса совпадают,
+        поэтому в спецификации они объединены в одну операцию):
+
+        1. Подписание квитанций или файла информации покупателя (УПД/УПДи/УКД) — после выполнения запроса будут подписаны
+           указанные в запросе квитанция или файл.
+        2. Приём аннулирования документа — подписание квитанции DP_PRANNUL (предложения об аннулировании); doc_id — идентификатор
+           аннулируемого документа, event_id — идентификатор квитанции DP_PRANNUL. В случае успешного выполнения возвращается код 201 «Created».
+
+        Тело запроса — откреплённая подпись под документом в base64 (заголовок Content-encoding: base64).
+      operationId: signIncomingEvent
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: 'Откреплённая УКЭП в формате base64 (заголовок Content-encoding: base64)'
+      responses:
+        '200':
+          description: Квитанция или файл информации покупателя подписаны
+        '201':
+          description: Приём аннулирования выполнен (Created)
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Нет прав на подписание квитанции» — УКЭП не прошла проверку;
+            - «Документ [doc_id] не найден в базе»;
+            - «Неверный формат параметра запроса 'doc_id'».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}/events/{event_id}/signature:
+    post:
+      tags:
+        - Квитанции
+      summary: Приём аннулирования исходящего документа
+      description: |
+        Метод используется для приёма (согласия с) аннулирования исходящего документа — подписания квитанции DP_PRANNUL.
+        doc_id — идентификатор аннулируемого документа, event_id — идентификатор квитанции DP_PRANNUL.
+        В случае успешного выполнения метода возвращается код 201 «Created».
+
+        Тело запроса — откреплённая подпись в base64 (заголовок Content-encoding: base64).
+      operationId: acceptOutgoingAnnulment
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      requestBody:
+        required: true
+        content:
+          text/plain:
+            schema:
+              type: string
+              description: 'Откреплённая УКЭП в формате base64 (заголовок Content-encoding: base64)'
+      responses:
+        '201':
+          description: Приём аннулирования выполнен (Created)
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Нет прав на подписание квитанции» — УКЭП не прошла проверку;
+            - «Документ [doc_id] не найден в базе»;
+            - «Неверный формат параметра запроса 'doc_id'».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/uvtoch:
+    post:
+      tags:
+        - Квитанции
+      summary: Создание уведомления об уточнении через загрузку файла XML
+      description: Метод предназначен для создания уведомления об уточнении (DP_UVUTOCH) к входящему документу через загрузку XML-файла.
+      operationId: createUvtoch
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UvtochForm'
+      responses:
+        '200':
+          description: Уведомление об уточнении успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 875b2e45-3aad-4c55-831b-2c58a5d7bb40
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный формат параметра запроса 'doc_id'»;
+            - «Неверный формат параметра "signature"»;
+            - «Нет прав на подписание квитанции».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/annul_02:
+    post:
+      tags:
+        - Квитанции
+      summary: Запрос аннулирования исходящего документа через загрузку файла XML
+      description: |
+        Метод предназначен для создания запроса (предложения) аннулирования исходящего документа — квитанции DP_PRANNUL — через загрузку XML-файла.
+
+        Примечание: метод разрешает аннулировать документ в статусе «Уточнён», если все его дочерние документы аннулированы, т. е.:
+        - УКД может быть аннулирован, если все УКДи на него уже находятся в статусе «Аннулирован»;
+        - УПД может быть аннулирован, если УПДи, УКД и УКДи для него уже в статусе «Аннулирован».
+      operationId: requestOutgoingAnnulment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnulRequestForm'
+      responses:
+        '200':
+          description: Запрос аннулирования успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 111b1e11-1aad-1c11-111b-1c11a1d1bb11
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный формат параметра запроса "doc_id"» (допускаются символы латиницы a–z и цифры 0–9);
+            - «"doc_id" обязательный параметр» / «"signature" обязательный параметр»;
+            - «Неверный формат параметра "signature"»;
+            - «Документ ... не найден в базе»;
+            - «Ошибка создания объекта DP_PRANNUL[doc_id:] version:»;
+            - «Ошибка сохранения эвента ... в базе».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/annul_02:
+    post:
+      tags:
+        - Квитанции
+      summary: Запрос аннулирования входящего документа через загрузку файла XML
+      description: |
+        Метод предназначен для создания запроса (предложения) аннулирования входящего документа — квитанции DP_PRANNUL — через загрузку XML-файла.
+
+        Примечание: метод разрешает аннулировать документ в статусе «Уточнён», если все его дочерние документы аннулированы, т. е.:
+        - УКД может быть аннулирован, если все УКДи на него уже находятся в статусе «Аннулирован»;
+        - УПД может быть аннулирован, если УПДи, УКД и УКДи для него уже в статусе «Аннулирован».
+      operationId: requestIncomingAnnulment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnulRequestForm'
+      responses:
+        '200':
+          description: Запрос аннулирования успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 111b1e11-1aad-1c11-111b-1c11a1d1bb11
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный формат параметра запроса "doc_id"» (допускаются символы латиницы a–z и цифры 0–9);
+            - «"doc_id" обязательный параметр» / «"signature" обязательный параметр»;
+            - «Неверный формат параметра "signature"»;
+            - «Документ ... не найден в базе»;
+            - «Ошибка создания объекта DP_PRANNUL[doc_id:] version:»;
+            - «Ошибка сохранения эвента ... в базе».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/annul_uvtoch:
+    post:
+      tags:
+        - Квитанции
+      summary: Отклонение аннулирования исходящего документа через загрузку файла XML УвТоч
+      description: Метод предназначен для отклонения предложения об аннулировании исходящего документа — создания уведомления об уточнении (DP_UVUTOCH) на предложение об аннулировании (DP_PRANNUL).
+      operationId: rejectOutgoingAnnulment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnulRejectForm'
+      responses:
+        '200':
+          description: Отклонение аннулирования успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 111b1e11-1aad-1c11-111b-1c11a1d1bb11
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «"doc_id" обязательный параметр» / «"signature" обязательный параметр» / «"annul_id" обязательный параметр»;
+            - «Неверный формат параметра запроса "doc_id" / "annul_id"»;
+            - «Нет прав на подписание квитанции» — подпись не прошла проверку;
+            - «Квитанция запроса аннулирования ... не найдена» — квитанция DP_PRANNUL не найдена;
+            - «На документ ... в статусе ... уточнение невозможно»;
+            - «Ошибка создания объекта DP_UVUTOCH[doc_id:] для DP_PRANNUL[annul_id:]»;
+            - «Документ ... не найден в базе».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/annul_uvtoch:
+    post:
+      tags:
+        - Квитанции
+      summary: Отклонение аннулирования входящего документа через загрузку файла XML УвТоч
+      description: Метод предназначен для отклонения предложения об аннулировании входящего документа — создания уведомления об уточнении (DP_UVUTOCH) на предложение об аннулировании (DP_PRANNUL).
+      operationId: rejectIncomingAnnulment
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/AnnulRejectForm'
+      responses:
+        '200':
+          description: Отклонение аннулирования успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: 111b1e11-1aad-1c11-111b-1c11a1d1bb11
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Неверно указан получатель документа» / «Неверно указан получатель»;
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «"doc_id" обязательный параметр» / «"signature" обязательный параметр» / «"annul_id" обязательный параметр»;
+            - «Неверный формат параметра запроса "doc_id" / "annul_id"»;
+            - «Нет прав на подписание квитанции» — подпись не прошла проверку;
+            - «Квитанция запроса аннулирования ... не найдена» — квитанция DP_PRANNUL не найдена;
+            - «На документ ... в статусе ... уточнение невозможно»;
+            - «Ошибка создания объекта DP_UVUTOCH[doc_id:] для DP_PRANNUL[annul_id:]»;
+            - «Документ ... не найден в базе».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}/events/{event_id}:
+    get:
+      tags:
+        - Квитанции
+      summary: Получение JSON квитанции исходящего документа
+      description: |
+        Метод предназначен для получения содержимого квитанции исходящего документа в формате *.json.
+        В частности, метод полезен для получения текста уведомления об уточнении, комментария к аннулированию или отказа от аннулирования.
+        Список типов квитанций доступен в разделе «Справочник "Типы квитанций"» документации ЭДО Лайт.
+
+        Неоднозначность документации: URL описан как «api/v1/outgoing-documents/идентификатор документа/events/{тип квитанции}»,
+        т. е. в примере («events/000000») вместо идентификатора события указан тип квитанции. В спецификации параметр оформлен как
+        event_id (UUID) по аналогии с остальными методами — фактический формат следует уточнять по документации.
+      operationId: getOutgoingReceiptJson
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      responses:
+        '200':
+          description: Содержимое квитанции в формате JSON (структура зависит от типа квитанции — см. справочник «Типы квитанций»)
+          content:
+            application/json:
+              schema:
+                type: object
+                description: JSON-представление квитанции
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/{doc_id}/events/{event_id}:
+    get:
+      tags:
+        - Квитанции
+      summary: Получение JSON квитанции входящего документа
+      description: |
+        Метод предназначен для получения содержимого квитанции входящего документа в формате *.json.
+        В частности, метод полезен для получения текста уведомления об уточнении, комментария к аннулированию или отказа от аннулирования.
+        Список типов квитанций доступен в разделе «Справочник "Типы квитанций"» документации ЭДО Лайт.
+
+        Неоднозначность документации: URL описан как «api/v1/incoming-documents/идентификатор документа/events/{тип квитанции}»,
+        т. е. в примере («events/000000») вместо идентификатора события указан тип квитанции. В спецификации параметр оформлен как
+        event_id (UUID) по аналогии с остальными методами — фактический формат следует уточнять по документации.
+      operationId: getIncomingReceiptJson
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      responses:
+        '200':
+          description: Содержимое квитанции в формате JSON (структура зависит от типа квитанции — см. справочник «Типы квитанций»)
+          content:
+            application/json:
+              schema:
+                type: object
+                description: JSON-представление квитанции
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/updi/970:
+    post:
+      tags:
+        - Исходящие документы
+      summary: Создание УПДи через XML (приказ № ЕД-7-26/970@ от 19.12.2023)
+      description: |
+        Метод предназначен для создания УПДи через XML. Формирование УПДи производится по формату приказа ФНС России от 19.12.2023 № ЕД-7-26/970@,
+        в том числе для документа-основания по формату приказа ФНС России от 19.12.2018 № ММВ-7-15/820@.
+
+        Неоднозначность документации: в таблице заголовков указан Content-Type «application/x-www-form-urlencoded»,
+        однако состав тела (загрузка файла) и перечень ошибок («Отсутствует заголовок запроса: multipart/form-data»,
+        «Отсутствует form-data key: content») указывают на multipart/form-data — в спецификации принят multipart/form-data.
+      operationId: createUpdi970
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Updi970Form'
+      responses:
+        '200':
+          description: УПДи успешно создан
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+            - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+            - «Неверный тип загружаемого файла: Content-Type: (...)»;
+            - «Неверный тип документа загружаемого xml файла» (например, УКДи вместо УПД, УПД по старому приказу вместо нового);
+            - «Неверный формат параметра "product_group" / "signature"»;
+            - «Неверный формат параметра запроса "parent_id"»;
+            - «Нет прав на подписание документа».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          description: «Не найден связанный документ <идентификатор запрашиваемого документа>» — не найден УПД, для которого формируется УПДи
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '422':
+          description: |
+            Ошибка обработки документа. Типичные сообщения:
+            - «Функция документа не соответствует функции родительского документа»;
+            - «В документе не переданы данные о маркировке <наименование отсутствующего атрибута>...» — требуется указать признак наличия маркированных товаров (N3 = 1 в ИдФайл).
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/unimsg/{doc_id}:
+    post:
+      tags:
+        - Универсальные сообщения
+      summary: Создание универсального сообщения через XML к исходящему документу / титулу продавца
+      description: |
+        Метод предназначен для создания универсального сообщения (УС) в формате XML к исходящему документу / титулу продавца.
+        УС — вспомогательный электронный документ для передачи информации о событиях, связанных с основным документом
+        (подписание, уточнение, аннулирование, отказ в подписи и др.).
+
+        Коды статусов УС см. в справочнике «Коды универсальных сообщений» документации ЭДО Лайт
+        (1999 — извещение о получении; 2999 — уведомление об уточнении; 3999 — отказ в принятии).
+
+        Примечание: создание УС доступно только на интеграционном стенде. С 1 июля 2026 года будет осуществлён переход текущих методов
+        на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
+
+        Для исходящих документов доступно только создание УС-комментариев (11540021).
+      operationId: createOutgoingUniversalMessage
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnimsgForm'
+      responses:
+        '200':
+          description: Универсальное сообщение успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Обмен УС со статусом {...} ограничен» — некорректный код УС;
+            - «Для документа невозможно создать УС» — для исходящих документов доступно только создание УС-комментариев (11540021);
+            - «Некорректное тело запроса» — тело запроса отсутствует;
+            - «Значение элемента ИдОтпрУС / ИдПолучУС не совпадает с данными отправителя / получателя, указанными в ИдФайл»;
+            - «Данные отправителя / получателя УС не совпадают с данными получателя / отправителя документа {filename}»;
+            - «Не найден файл {Документ.СведУС.ИмяПолФайл} на который ссылается УС»;
+            - «Имя загружаемого файла: {filename} не соответствует значению атрибута ИдФайл».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: «Указанная в токене роль не разрешена при работе с документом»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: «Документ не найден в БД» — не найден документ, для которого формируется универсальное сообщение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/unimsg/{doc_id}:
+    post:
+      tags:
+        - Универсальные сообщения
+      summary: Создание универсального сообщения через XML к входящему документу / титулу продавца
+      description: |
+        Метод предназначен для создания универсального сообщения (УС) в формате XML к входящему документу / титулу продавца.
+        УС — вспомогательный электронный документ для передачи информации о событиях, связанных с основным документом.
+
+        Коды статусов УС см. в справочнике «Коды универсальных сообщений» документации ЭДО Лайт.
+
+        Примечание: создание УС доступно только на интеграционном стенде. С 1 июля 2026 года будет осуществлён переход текущих методов
+        на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
+
+        Создание УС-ИзвПол (11519991) и УС-комментариев (11540021) доступно для входящих документов в любом статусе.
+        Создание УС-УвТоч на титул продавца (11529991) доступно только для входящих документов в статусах:
+        2, 3, 12, 13, 4, 61, 62, 63, 7, 18, 19, 64, 65, 66 (см. справочник «Статусы документов»).
+      operationId: createIncomingUniversalMessage
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnimsgForm'
+      responses:
+        '200':
+          description: Универсальное сообщение успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Обмен УС со статусом {...} ограничен» — некорректный код УС;
+            - «Для документа невозможно создать УС» — создание УС-УвТоч на титул продавца доступно только для входящих документов в определённых статусах;
+            - «Некорректное тело запроса» — тело запроса отсутствует;
+            - «Значение элемента ИдОтпрУС / ИдПолучУС не совпадает с данными отправителя / получателя, указанными в ИдФайл»;
+            - «Данные отправителя / получателя УС не совпадают с данными получателя / отправителя документа {filename}»;
+            - «Не найден файл {Документ.СведУС.ИмяПолФайл} на который ссылается УС»;
+            - «Имя загружаемого файла: {filename} не соответствует значению атрибута ИдФайл».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: «Указанная в токене роль не разрешена при работе с документом»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: «Документ не найден в БД» — не найден документ, для которого формируется универсальное сообщение
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/xml/unimsg/{doc_id}/event/{event_id}:
+    post:
+      tags:
+        - Универсальные сообщения
+      summary: Создание универсального сообщения через XML к предложению об аннулировании / титулу покупателя (исходящий документ)
+      description: |
+        Метод предназначен для создания универсального сообщения (УС) в формате XML к предложению об аннулировании или
+        титулу покупателя исходящего документа. event_id — идентификатор квитанции, к которой создаётся УС.
+
+        Примечание: создание УС доступно только на интеграционном стенде. С 1 июля 2026 года будет осуществлён переход текущих методов
+        на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
+      operationId: createOutgoingUniversalMessageForEvent
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnimsgForm'
+      responses:
+        '200':
+          description: Универсальное сообщение успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Обмен УС со статусом {...} ограничен» — некорректный код УС;
+            - «Приём УС для титула покупателя со статусом {...} ограничен» / «Приём УС для предложения об аннулировании со статусом {...} ограничен»;
+            - «Для документа невозможно создать УС»;
+            - «Невалидные входные параметры» / «Некорректное тело запроса» / «Тело запроса отсутствует»;
+            - «Значение элемента ИдОтпрУС / ИдПолучУС не совпадает с данными, указанными в ИдФайл»;
+            - «Данные отправителя / получателя УС не совпадают с данными получателя / отправителя документа или ПоА {filename}»;
+            - «УС ссылается на квитанцию {...} и не может быть загружен к квитанции {filename}»;
+            - «Имя загружаемого файла: {filename} не соответствует значению атрибута ИдФайл».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: «Указанная в токене роль не разрешена при работе с документом»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: «Документ не найден в БД» / «Квитанция не найдена в БД»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/incoming-documents/xml/unimsg/{doc_id}/event/{event_id}:
+    post:
+      tags:
+        - Универсальные сообщения
+      summary: Создание универсального сообщения через XML к предложению об аннулировании / титулу покупателя (входящий документ)
+      description: |
+        Метод предназначен для создания универсального сообщения (УС) в формате XML к предложению об аннулировании или
+        титулу покупателя входящего документа. event_id — идентификатор квитанции, к которой создаётся УС.
+
+        Примечание: создание УС доступно только на интеграционном стенде. С 1 июля 2026 года будет осуществлён переход текущих методов
+        на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
+      operationId: createIncomingUniversalMessageForEvent
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+        - $ref: '#/components/parameters/EventIdPath'
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UnimsgForm'
+      responses:
+        '200':
+          description: Универсальное сообщение успешно создано
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/IdResponse'
+              example:
+                id: cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+        '400':
+          description: |
+            Ошибка запроса. Типичные сообщения:
+            - «Обмен УС со статусом {...} ограничен» — некорректный код УС;
+            - «Приём УС для титула покупателя со статусом {...} ограничен» / «Приём УС для предложения об аннулировании со статусом {...} ограничен»;
+            - «Для документа невозможно создать УС»;
+            - «Невалидные входные параметры» / «Некорректное тело запроса» / «Тело запроса отсутствует»;
+            - «Значение элемента ИдОтпрУС / ИдПолучУС не совпадает с данными, указанными в ИдФайл»;
+            - «Данные отправителя / получателя УС не совпадают с данными получателя / отправителя документа или ПоА {filename}»;
+            - «УС ссылается на квитанцию {...} и не может быть загружен к квитанции {filename}»;
+            - «Имя загружаемого файла: {filename} не соответствует значению атрибута ИдФайл».
+
+            Полный перечень ошибок см. в документации ЭДО Лайт.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          description: «Указанная в токене роль не разрешена при работе с документом»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '404':
+          description: «Документ не найден в БД» / «Квитанция не найдена в БД»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          $ref: '#/components/responses/InternalError'
+  /api/v1/outgoing-documents/{doc_id}/mchd-list:
+    get:
+      tags:
+        - МЧД
+      summary: Получение данных об МЧД по исходящему документу
+      description: |
+        Метод возвращает информацию о всех МЧД в документообороте исходящего документа, если документы были подписаны пользователем с МЧД.
+        Проверить МЧД в ФНС можно по ссылке: https://m4d.nalog.gov.ru/EMCHD/get-info.
+
+        Если данные об МЧД запрашиваются по документу / квитанции, которые подписаны без МЧД, то в ответе вернётся код 200 и пустой JSON.
+      operationId: getOutgoingMchdList
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: Информация об МЧД в документообороте (пустой JSON, если документ подписан без МЧД)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MchdInfo'
+              example:
+                id: cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+                file_name: ON_NSCHFDOPPR_2LT-10000000137_2LT-600002285_20231016_cd0ce000-0cd0-0c0c-0f0a-00000e0c000f
+                type: 504
+                created_at: 1695202803000
+                mchd_id: 1efd11b1-e1d1-1111-b111-e111dfc1c1f1
+                mchd_inn_dov: '7777777777'
+                name: ООО ОРГАНИЗАЦИЯ
+                mchd_date_from: 1694770803000
+                mchd_date_to: 1726393203000
+                mchd_status: ACTIVE
+                mchd_fl_fio: Петрова А.П.
+                mchd_fl_inn: '888888888888'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: «Не найден документ» — не найден документ, для которого были запрошены доверенности
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: «Сервис временно недоступен»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /api/v1/incoming-documents/{doc_id}/mchd-list:
+    get:
+      tags:
+        - МЧД
+      summary: Получение данных об МЧД по входящему документу
+      description: |
+        Метод возвращает информацию о всех МЧД в документообороте входящего документа, если документы были подписаны пользователем с МЧД.
+        Проверить МЧД в ФНС можно по ссылке: https://m4d.nalog.gov.ru/EMCHD/get-info.
+
+        Если данные об МЧД запрашиваются по документу / квитанции, которые подписаны без МЧД, то в ответе вернётся код 200 и пустой JSON.
+      operationId: getIncomingMchdList
+      parameters:
+        - $ref: '#/components/parameters/DocIdPath'
+      responses:
+        '200':
+          description: Информация об МЧД в документообороте (пустой JSON, если документ подписан без МЧД)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MchdInfo'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          description: «Не найден документ» — не найден документ, для которого были запрошены доверенности
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: «Сервис временно недоступен»
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: |
+        Токен аутентификации (JWT или UUID), передаваемый в заголовке Authorization: Bearer <token>.
+        Токен получается через методы True API: GET /auth/key (получение пары «uuid — data») и
+        POST /auth/simpleSignIn (обмен подписанных УКЭП данных на токен). Срок действия токена — 10 часов с момента получения.
+  parameters:
+    DocIdPath:
+      name: doc_id
+      in: path
+      required: true
+      description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      schema:
+        type: string
+    EventIdPath:
+      name: event_id
+      in: path
+      required: true
+      description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+      schema:
+        type: string
+    SendMchdFileHeader:
+      name: send_mchd_file
+      in: header
+      required: false
+      description: |
+        Способ передачи сведений об МЧД. Параметр необязательный.
+        - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+        - false — сведения об МЧД будут переданы в метаданных.
+        Если параметр не заполнен, значение по умолчанию — false.
+        При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+        берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      schema:
+        type: boolean
+        default: false
+    LimitQuery:
+      name: limit
+      in: query
+      required: false
+      description: Количество возвращаемых документов. По умолчанию 10
+      schema:
+        type: integer
+        default: 10
+    OffsetQuery:
+      name: offset
+      in: query
+      required: false
+      description: Позиция смещения в наборе результатов для начала нумерации страниц. По умолчанию 0
+      schema:
+        type: integer
+        default: 0
+    CreatedFromQuery:
+      name: created_from
+      in: query
+      required: false
+      description: Нижняя граница фильтрации документов по времени создания (Unix timestamp, секунды). В выборку попадут документы, время создания которых больше или равно указанному
+      schema:
+        type: integer
+    CreatedToQuery:
+      name: created_to
+      in: query
+      required: false
+      description: Верхняя граница фильтрации документов по времени создания (Unix timestamp, секунды). В выборку попадут документы, время создания которых меньше или равно указанному
+      schema:
+        type: integer
+    PartnerInnQuery:
+      name: partner_inn
+      in: query
+      required: false
+      description: ИНН контрагента. Для исходящего документа это получатель, для входящего — отправитель
+      schema:
+        type: string
+    PartnerIdQuery:
+      name: partner_id
+      in: query
+      required: false
+      description: Идентификатор получателя документа
+      schema:
+        type: string
+    StatusQuery:
+      name: status
+      in: query
+      required: false
+      description: Цифровое обозначение статуса возвращаемых документов. См. справочник «Статусы документов» документации ЭДО Лайт
+      schema:
+        type: integer
+    TypeQuery:
+      name: type
+      in: query
+      required: false
+      description: Цифровое обозначение типа документов. См. справочник «Типы документов» документации ЭДО Лайт
+      schema:
+        type: integer
+    FolderQuery:
+      name: folder
+      in: query
+      required: false
+      description: |
+        Цифровое обозначение папки, в которой находятся документы. Для поиска по всем папкам параметр не указывается.
+        Допустимые значения:
+        - 0 — документы;
+        - 1 — архив;
+        - 2 — корзина;
+        - 3 — на подписание;
+        - 4 — отклоненные;
+        - 5 — на подпись РВ;
+        - 6 — на подпись РЭ;
+        - 7 — биллинг;
+        - 8 — автоподписание.
+      schema:
+        type: integer
+        enum: [0, 1, 2, 3, 4, 5, 6, 7, 8]
+    SortByQuery:
+      name: sortBy
+      in: query
+      required: false
+      description: 'Параметр, по которому необходимо отсортировать возвращаемый список документов. Допустимое значение: created_at — время создания документа'
+      schema:
+        type: string
+        enum: [created_at]
+    AscQuery:
+      name: asc
+      in: query
+      required: false
+      description: Параметр, определяющий направление сортировки. false — по убыванию (значение по умолчанию); true — по возрастанию
+      schema:
+        type: boolean
+        default: false
+    ProductGroupQuery:
+      name: product_group
+      in: query
+      required: false
+      description: Цифровое обозначение товарной группы, содержащейся в документе. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+      schema:
+        type: integer
+  responses:
+    Unauthorized:
+      description: 'Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Forbidden:
+      description: Недостаточно прав для выполнения действия — в токене указана роль, которая не предусматривает выполнение данного запроса
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    NotFound:
+      description: Документ или квитанция не найдены в базе данных
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    InternalError:
+      description: Внутренняя ошибка сервиса / сервис недоступен
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+  schemas:
+    Error:
+      type: object
+      description: |
+        Сообщение об ошибке. В зависимости от метода сообщение об ошибке может возвращаться в поле «message»
+        (основной API ЭДО Лайт) или в поле «error_message» (методы аутентификации True API).
+      properties:
+        message:
+          type: string
+          description: Сообщение об ошибке
+        error_message:
+          type: string
+          description: Сообщение об ошибке (методы True API)
+        code:
+          type: string
+          description: Код ошибки (методы True API)
+        description:
+          type: string
+          description: Описание ошибки (методы True API)
+    AuthKeyResponse:
+      type: object
+      description: Уникальная пара «uuid — data» для единой аутентификации
+      required:
+        - uuid
+        - data
+      properties:
+        uuid:
+          type: string
+          description: Уникальный идентификатор сгенерированных случайных данных
+        data:
+          type: string
+          description: Случайная строка данных
+    SimpleSignInRequest:
+      type: object
+      required:
+        - uuid
+        - data
+      properties:
+        uuid:
+          type: string
+          description: Уникальный идентификатор подписанных случайных данных
+        data:
+          type: string
+          description: Подписанные УКЭП зарегистрированного участника оборота товаров случайные данные в base64 (присоединённая электронная подпись)
+        inn:
+          type: string
+          description: |
+            ИНН организации, под которой требуется авторизация. Обязателен, если у физического лица (пользователя организации)
+            есть действующая МЧД для получения доступа к ГИС МТ; в остальных случаях необязателен. Длина значения: 10 или 12 цифр
+        details:
+          type: string
+          description: Реквизиты действующего аттестата соответствия объекта информатизации, выданного органом по аттестации объектов информатизации
+        unitedToken:
+          type: boolean
+          description: |
+            Признак запроса единого токена в виде uuid. Обязательно заполнен при получении токена в формате UUID.
+            true — запрос токена в формате UUID (единый токен аутентификации); false — запрос токена в формате JWT (по умолчанию)
+    SimpleSignInResponse:
+      type: object
+      description: Результат получения ключа сессии. В случае успеха возвращается токен (JWT или UUID), в случае ошибки — код и сообщение об ошибке
+      properties:
+        token:
+          type: string
+          description: Аутентификационный токен. Указывается в случае успешного ответа. Срок действия — не более 10 часов с момента получения
+        uuidToken:
+          type: string
+          description: Аутентификационный токен в виде uuid. Возвращается в случае успешного ответа при запросе токена в формате UUID
+        expireDate:
+          type: string
+          description: Дата и время истечения срока действия токена (формат yyyy-MM-ddTHH:mm:ss.SSSZ). Возвращается только при запросе токена в формате UUID
+        code:
+          type: string
+          description: Код ошибки. Указывается в случае неуспешного ответа
+        error_message:
+          type: string
+          description: Сообщение об ошибке
+        description:
+          type: string
+          description: Описание ошибки
+    IdResponse:
+      type: object
+      description: Идентификатор созданного объекта (документа, события, квитанции, универсального сообщения) в формате UUID
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          description: Уникальный идентификатор созданного объекта (UUID)
+    EventIdResponse:
+      type: object
+      description: Идентификатор события, полученный в ответе на создание файла информации покупателя или файла квитанции
+      required:
+        - event_id
+      properties:
+        event_id:
+          type: string
+          description: Идентификатор события (UUID). По данному идентификатору можно производить с документом необходимые действия (редактирование, подписание и т. д.)
+    SellerUpdForm:
+      type: object
+      description: Данные для загрузки файла информации продавца УПД (multipart/form-data)
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Ссылка на XML документ. Метод не поддерживает загрузку УПД (ON_NSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+        signature:
+          type: string
+          description: Откреплённая УКЭП XML документа в формате base64. Без параметра документ остаётся в статусе «Черновик», с параметром — переходит в статус «Отправлен»
+    SellerUpdiForm:
+      type: object
+      description: Данные для загрузки файла информации продавца УПДи (multipart/form-data)
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Ссылка на XML документ. Метод не поддерживает загрузку УПДи (ON_NSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+        signature:
+          type: string
+          description: Откреплённая УКЭП XML документа в формате base64
+        parent_id:
+          type: string
+          description: Идентификатор родительского документа (UUID)
+    SellerUkdForm:
+      type: object
+      description: Данные для загрузки файла информации продавца УКД по приказу № 189 (multipart/form-data)
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Ссылка на XML документ
+        signature:
+          type: string
+          description: Откреплённая УКЭП XML документа в формате base64
+        parent_id:
+          type: string
+          description: Идентификатор родительского документа (UUID)
+    SellerUkd736Form:
+      type: object
+      description: Данные для загрузки файла информации продавца УКД/УКДи по приказу № 736 (multipart/form-data)
+      required:
+        - content
+        - parent_id
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+        parent_id:
+          type: string
+          description: Идентификатор родительского документа (UUID)
+        signature:
+          type: string
+          description: Откреплённая УКЭП XML документа в формате base64
+        product_group:
+          type: integer
+          description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+    BuyerTitleForm:
+      type: object
+      description: Данные для загрузки файла информации (титула) покупателя (multipart/form-data)
+      required:
+        - content
+        - doc_id
+        - signature
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Ссылка на XML документ (файл информации / титула покупателя)
+        doc_id:
+          type: string
+          description: Идентификатор документа файла информации продавца (UUID)
+        signature:
+          type: string
+          description: Откреплённая УКЭП XML документа в формате base64
+    UvtochForm:
+      type: object
+      description: Данные для создания уведомления об уточнении (multipart/form-data)
+      required:
+        - content
+        - doc_id
+        - signature
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Ссылка на XML документ (файл DP_UVUTOCH)
+        doc_id:
+          type: string
+          description: Идентификатор документа, для которого создаётся уведомление (UUID)
+        signature:
+          type: string
+          description: Откреплённая УКЭП XML-документа в формате base64
+    AnnulRequestForm:
+      type: object
+      description: Данные для запроса аннулирования документа (multipart/form-data)
+      required:
+        - content
+        - doc_id
+        - signature
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Файл DP_PRANNUL (XML)
+        doc_id:
+          type: string
+          description: Идентификатор документа, который предлагается аннулировать. В значении идентификатора допускаются символы латинского алфавита a–z и цифры 0–9 (UUID)
+        signature:
+          type: string
+          description: Откреплённая УКЭП
+    AnnulRejectForm:
+      type: object
+      description: Данные для отклонения аннулирования документа (multipart/form-data)
+      required:
+        - content
+        - doc_id
+        - annul_id
+        - signature
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Файл DP_UVUTOCH (XML)
+        doc_id:
+          type: string
+          description: Идентификатор документа, для которого отклоняется аннулирование (UUID)
+        annul_id:
+          type: string
+          description: Идентификатор запроса аннулирования — квитанции DP_PRANNUL (UUID)
+        signature:
+          type: string
+          description: Откреплённая УКЭП
+    Updi970Form:
+      type: object
+      description: Данные для создания УПДи через XML по приказу № ЕД-7-26/970@ (multipart/form-data)
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Файл документа (XML)
+        doc_id:
+          type: string
+          description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+        signature:
+          type: string
+          description: Откреплённая УКЭП содержимого файла документа в формате base64
+        product_group:
+          type: integer
+          description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+        movement_control:
+          $ref: '#/components/schemas/MovementControl'
+    MovementControl:
+      type: object
+      description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+      properties:
+        fixation:
+          type: boolean
+          description: |
+            Необходимость отправки запроса на создание УПДи на фиксацию в ГИС МТ. По умолчанию false.
+            Может быть заполнен для товарной группы «Пиво, напитки, изготавливаемые на основе пива, слабоалкогольные напитки»
+            значением true только для типов документов 820 и 824 и с параметром N4="1" в имени файла. В остальных случаях игнорируется при обработке
+          default: false
+        beer:
+          type: boolean
+          description: Наличие в документе алкогольной продукции, подлежащей маркировке (N4). По умолчанию false. При значении true в параметре N4 необходимо передавать "1"
+          default: false
+        tobacco:
+          type: boolean
+          description: Наличие в документе табачной и никотиносодержащей продукции (N5). По умолчанию false (N5="0"). При значении true в параметре N5 необходимо передавать "1"
+          default: false
+    UnimsgForm:
+      type: object
+      description: Данные для создания универсального сообщения (multipart/form-data)
+      required:
+        - content
+      properties:
+        content:
+          type: string
+          format: binary
+          description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    DocumentListResponse:
+      type: object
+      description: Список групп документов, найденных по заданным параметрам
+      required:
+        - items
+        - has_next_page
+      properties:
+        items:
+          type: array
+          description: Информация о группах документов, найденных по заданным параметрам
+          items:
+            $ref: '#/components/schemas/DocumentListItem'
+        has_next_page:
+          type: boolean
+          description: Признак наличия следующей страницы. true — есть данные для отображения на следующей странице; false — нет данных
+    DocumentListItem:
+      type: object
+      description: Информация о группе (цепочке) документов
+      properties:
+        id:
+          type: string
+          description: Идентификатор последнего документа цепочки (UUID)
+        created_at:
+          type: integer
+          description: Дата создания последнего документа цепочки в формате Unix timestamp в секундах
+        date:
+          type: integer
+          description: Дата последнего документа цепочки в формате Unix timestamp в секундах
+        documents:
+          type: array
+          description: Информация о документе в системе ЭДО Оператора
+          items:
+            $ref: '#/components/schemas/EdoDocument'
+        group_id:
+          type: string
+          description: Идентификатор группы цепочки документов (UUID)
+        number:
+          type: string
+          description: Номер последнего документа в цепочке. В документации указан тип integer, однако в примерах возвращается строка
+        recipient:
+          $ref: '#/components/schemas/Recipient'
+        status:
+          type: integer
+          description: Статус последнего документа цепочки. См. справочник «Статусы документов» документации ЭДО Лайт
+        total_price:
+          type: number
+          description: Общая сумма с НДС. В документации указан тип string, однако в примерах возвращается число
+        total_vat_amount:
+          type: number
+          description: Общая сумма НДС. В документации указан тип string, однако в примерах возвращается число
+        type:
+          type: integer
+          description: Код типа документа последнего в цепочке. См. справочник «Типы документов» документации ЭДО Лайт. В документации указан тип string, однако в примерах возвращается число
+        create_time_stamp:
+          type: integer
+          description: Дата создания документа в формате timestamp
+        export_time_stamp:
+          type: integer
+          description: Дата обработки документа в секундах
+        product_group:
+          type: integer
+          description: Цифровое обозначение товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+        active_type:
+          type: integer
+          description: Тип поведения документа
+    EdoDocument:
+      type: object
+      description: Информация о документе в системе ЭДО Оператора
+      properties:
+        id:
+          type: string
+          description: Идентификатор документа в системе ЭДО Оператора (UUID)
+        created_at:
+          type: integer
+          description: Дата создания документа в формате Unix timestamp в секундах
+        date:
+          type: integer
+          description: Дата документа в формате Unix timestamp в секундах
+        number:
+          type: string
+          description: Номер документа. В документации указан тип integer, однако в примерах возвращается строка
+        processed_at:
+          type: integer
+          description: Дата обработки документа в формате Unix timestamp в секундах
+        revision:
+          type: integer
+          nullable: true
+          description: Содержание атрибута ИспрСчФ
+        status:
+          type: integer
+          description: Числовой статус документа. См. справочник «Статусы документов» документации ЭДО Лайт
+        total_price:
+          type: number
+          description: Цена с НДС. В документации указан тип string, однако в примерах возвращается число
+        total_vat_amount:
+          type: number
+          description: Сумма НДС. В документации указан тип string, однако в примерах возвращается число
+        type:
+          type: integer
+          description: Код типа документа. См. справочник «Типы документов» документации ЭДО Лайт
+        is_title_signed:
+          type: boolean
+          description: Признак наличия подписанного Титула покупателя
+        created_by:
+          type: integer
+          description: Сервис, создавший документ. Допустимые значения — 0 (doc-off), 1 (edo-roaming)
+          enum: [0, 1]
+        created_hub:
+          type: boolean
+          description: Признак создания документа с помощью «1С:Хаб». В настоящий момент для всех документов приходит со значением false
+        is_closed_lm_part:
+          type: boolean
+          nullable: true
+          description: Признак закрытого логического сообщения (ЛС). Отвечает за признак поступления документа в составе ЛС закрытого типа
+        package_status:
+          type: integer
+          nullable: true
+          description: Статус закрытого пакета с документами (статус обработки пакета с документами в составе ЛС закрытого типа)
+        uni_new_msg:
+          type: boolean
+          nullable: true
+          description: Признак поступления к документу новой квитанции
+    Recipient:
+      type: object
+      description: Объект с данными получателя группы документов
+      properties:
+        id:
+          type: integer
+          description: Идентификатор получателя в системе ЭДО Оператора
+        extra_id:
+          type: string
+          description: UUID получателя документа
+        participant_type:
+          type: integer
+          description: Тип организации получателя. Допустимые значения — 0 (юридическое лицо), 1 (индивидуальный предприниматель), 2 (нерезидент)
+          enum: [0, 1, 2]
+        inn:
+          type: string
+          description: ИНН получателя документа
+        kpp:
+          type: string
+          description: КПП получателя документа
+        ogrn:
+          type: string
+          description: ОГРН получателя документа
+        name:
+          type: string
+          description: Наименование получателя документа
+        fio:
+          $ref: '#/components/schemas/RecipientFio'
+        status:
+          type: string
+          description: Статус регистрации в ФНС
+    RecipientFio:
+      type: object
+      nullable: true
+      description: ФИО получателя документа
+      properties:
+        last_name:
+          type: string
+          description: Фамилия получателя документа
+        first_name:
+          type: string
+          description: Имя получателя документа
+        middle_name:
+          type: string
+          description: Отчество получателя документа
+        address:
+          type: string
+          description: Адрес получателя документа
+        legal_address:
+          type: string
+          description: Адрес в формате строки
+    UnsignedEventsResponse:
+      type: object
+      description: Список квитанций, ожидающих подписания
+      properties:
+        items:
+          type: array
+          description: Информация о квитанциях
+          items:
+            $ref: '#/components/schemas/UnsignedEvent'
+    UnsignedEvent:
+      type: object
+      description: Информация о квитанции, ожидающей подписания
+      properties:
+        id:
+          type: string
+          description: Идентификатор квитанции в формате GUID (event_id)
+        type:
+          type: integer
+          description: Цифровое обозначение типа квитанции. См. справочник «Типы квитанций» документации ЭДО Лайт
+        document:
+          type: object
+          description: Информация о документе
+          properties:
+            id:
+              type: string
+              description: Идентификатор документа в формате GUID
+    MchdInfo:
+      type: object
+      description: Информация о МЧД в документообороте. Если документ / квитанция подписаны без МЧД, возвращается пустой JSON
+      required:
+        - id
+        - type
+        - created_at
+        - mchd_id
+        - mchd_inn_dov
+        - mchd_status
+      properties:
+        id:
+          type: string
+          description: Идентификатор документа / квитанции из запроса (UUID)
+        file_name:
+          type: string
+          description: Имя файла документа / квитанции без расширения. Не возвращается для 99 и 98 квитанций
+        type:
+          type: integer
+          description: Тип документа / квитанции
+        created_at:
+          type: integer
+          description: Дата создания документа / квитанции (timestamp)
+        mchd_id:
+          type: string
+          description: Идентификатор МЧД (UUID)
+        mchd_inn_dov:
+          type: string
+          description: ИНН доверителя
+        name:
+          type: string
+          description: Наименование доверителя. Не возвращается, если данные отсутствуют в БД ГИС МТ
+        mchd_date_from:
+          type: integer
+          description: Дата начала действия доверенности (timestamp). Не возвращается, если данные отсутствуют в БД ГИС МТ
+        mchd_date_to:
+          type: integer
+          description: Дата окончания действия доверенности (timestamp). Не возвращается, если данные отсутствуют в БД ГИС МТ
+        mchd_status:
+          type: string
+          description: |
+            Статус МЧД на момент подписания документа / квитанции. Возможные значения:
+            - ACTIVE — действительна;
+            - CREATED — создана, в обработке;
+            - PROCESSING — на проверке в ФНС;
+            - EXPIRED — истёк срок действия;
+            - REVOKED — отозвана;
+            - REJECTED — не зарегистрирована;
+            - NONE — не удалось проверить (возвращается также при отсутствии информации о статусе в БД ГИС МТ).
+          enum: [ACTIVE, CREATED, PROCESSING, EXPIRED, REVOKED, REJECTED, NONE]
+        mchd_fl_fio:
+          type: string
+          description: ФИО доверенного лица. Не возвращается, если данные отсутствуют в БД ГИС МТ
+        mchd_fl_inn:
+          type: string
+          description: ИНН доверенного лица. Не возвращается, если данные отсутствуют в БД ГИС МТ

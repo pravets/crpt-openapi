@@ -1,0 +1,90 @@
+info:
+  name: Формирование упаковки («Альтернативная табачная продукция», «Никотиносодержащая продукция», «Табачная продукция»)
+  type: http
+  seq: 2
+  tags:
+    - Подача сведений
+    - Подача документов (другие типы)
+
+http:
+  method: POST
+  url: "{{baseUrl}}/documents/aggregation/create"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/documents/aggregation/create"
+      method: POST
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "string"
+          }
+  - name: 400 Response
+    description: Ошибка 400
+    request:
+      url: "{{baseUrl}}/documents/aggregation/create"
+      method: POST
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Ошибка проверки подписи"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/documents/aggregation/create"
+      method: POST
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Подача сведений в документе формирования упаковки доступна для товарных групп «Альтернативная табачная продукция», «Никотиносодержащая продукция» и «Табачная продукция».
+
+  Важно В документе коды идентификации указываются в нормализованном виде (без скобок, обрамляющих идентификаторы применения)
+
+  Особенности формирования мультитоварной транспортной упаковки (КИТУ):
+
+  Пример запроса для документа в формате * .json:
+
+  Пример: curl -X POST "<url стенда>/documents/aggregation/create"
+  -H "X-Signature: <string>"
+  -H "Content-Type: multipart/form-data"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <Токен>"
+  --form "jsonFile=@"/C:/Users/79278/Desktop/XXX.json"
+
+  Тип приватности: приватный.
+
+  Тело передаваемого документа формируется по шаблону и передаётся в запросе в кодировке base64. Примеры тела документа в документации приведены для форматов: JSON.

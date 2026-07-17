@@ -1,0 +1,673 @@
+info:
+  name: Метод получения списка атрибутов как публичных, так и приватных для запрашивающего аккаунта
+  type: http
+  seq: 1
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/attributes"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: attr_type
+      value: ""
+      type: query
+      description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+      disabled: true
+    - name: cat_id
+      value: ""
+      type: query
+      description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: is_set
+      value: ""
+      type: query
+      description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+      disabled: true
+    - name: tnved
+      value: ""
+      type: query
+      description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": [
+              {
+                "attr_group_name": "Потребительские свойства",
+                "attr_field_type": "text",
+                "attr_value_type": [],
+                "attr_group_id": 103,
+                "attr_name": "Тип парфюмерии",
+                "attr_preset_only": false,
+                "attr_multiplicity": false,
+                "attr_multiplicity_type": null,
+                "attr_id": 1034,
+                "dependent_attributes": [],
+                "first_layer": false,
+                "second_layer": true,
+                "attr_type": "m",
+                "attr_preset": [
+                  "ДУХИ",
+                  "ЛАВАНДОВАЯ ВОДА",
+                  "ОДЕКОЛОН",
+                  "ПАРФЮМЕРНАЯ ВОДА",
+                  "СПРЕЙ ДЛЯ ТЕЛА",
+                  "ТУАЛЕТНАЯ ВОДА",
+                  "ДУШИСТАЯ ВОДА"
+                ]
+              },
+              {
+                "attr_group_name": "Наименование товара и идентификация",
+                "attr_field_type": "text",
+                "attr_value_type": [],
+                "attr_group_id": 24,
+                "attr_name": "Полное наименование товара",
+                "attr_preset_only": false,
+                "attr_multiplicity": false,
+                "attr_multiplicity_type": null,
+                "attr_id": 2478,
+                "dependent_attributes": [],
+                "first_layer": true,
+                "second_layer": false,
+                "attr_type": "m",
+                "attr_preset": []
+              },
+              {
+                "attr_group_name": "Происхождение и бренды",
+                "attr_field_type": "text",
+                "attr_value_type": [],
+                "attr_group_id": 80,
+                "attr_name": "Товарный знак",
+                "attr_preset_only": false,
+                "attr_multiplicity": false,
+                "attr_multiplicity_type": null,
+                "attr_id": 2504,
+                "dependent_attributes": [],
+                "first_layer": true,
+                "second_layer": false,
+                "attr_type": "m",
+                "attr_preset": []
+              },
+              {
+                "attr_group_name": "Тип и материал упаковки",
+                "attr_field_type": "text",
+                "attr_value_type": [],
+                "attr_group_id": 14,
+                "attr_name": "Тип упаковки",
+                "attr_preset_only": true,
+                "attr_multiplicity": false,
+                "attr_multiplicity_type": null,
+                "attr_id": 2710,
+                "dependent_attributes": [],
+                "first_layer": false,
+                "second_layer": true,
+                "attr_type": "m",
+                "attr_preset": [
+                  "БЕЗ УПАКОВКИ",
+                  "НЕТ В СПРАВОЧНИКЕ",
+                  "НЕ УКАЗАН",
+                  "АМПУЛА",
+                  "АЭРОЗОЛЬНАЯ УПАКОВКА",
+                  "БАЛЛОН",
+                  "БАНКА МЕТАЛЛИЧЕСКАЯ",
+                  "БАНКА МЕТАЛЛИЧЕСКАЯ ДЛЯ КОНСЕРВИРОВАНИЯ",
+                  "БАНКА МЕТАЛЛИЧЕСКАЯ ДЛЯ НАПИТКОВ",
+                  "БАНКА НЕМЕТАЛЛИЧЕСКАЯ",
+                  "БАНКА СТЕКЛЯННАЯ"
+                ]
+              },
+              {
+                "attr_group_name": "Тип и материал упаковки",
+                "attr_field_type": "text",
+                "attr_value_type": [],
+                "attr_group_id": 14,
+                "attr_name": "Материал упаковки",
+                "attr_preset_only": true,
+                "attr_multiplicity": false,
+                "attr_multiplicity_type": null,
+                "attr_id": 2713,
+                "dependent_attributes": [],
+                "first_layer": false,
+                "second_layer": true,
+                "attr_type": "m",
+                "attr_preset": [
+                  "БЕЗ УПАКОВКИ",
+                  "НЕ УКАЗАН",
+                  "НЕТ В СПРАВОЧНИКЕ",
+                  "АЛЮМИНИЙ",
+                  "АЦЕТАТ ЦЕЛЛЮЛОЗЫ",
+                  "БИОПЛАСТИК",
+                  "БРЕЗЕНТ",
+                  "БУМАГА"
+                ]
+              },
+              {
+                "attr_group_name": "Наименование товара и идентификация",
+                "attr_field_type": "text",
+                "attr_value_type": [
+                  "---",
+                  "л",
+                  "мл"
+                ],
+                "attr_group_id": 24,
+                "attr_name": "Заявленный объем",
+                "attr_preset_only": false,
+                "attr_multiplicity": false,
+                "attr_multiplicity_type": null,
+                "attr_id": 2716,
+                "first_layer": false,
+                "second_layer": true,
+                "attr_type": "m",
+                "attr_preset": [
+                  "НЕ КЛАССИФИЦИРОВАНО"
+                ]
+              }
+            ]
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <item>
+                      <attr_group_name>Потребительские свойства</attr_group_name>
+                      <attr_field_type>text</attr_field_type>
+                      <attr_value_type/>
+                      <attr_group_id>103</attr_group_id>
+                      <attr_name>Тип парфюмерии</attr_name>
+                      <attr_preset_only></attr_preset_only>
+                      <attr_multiplicity></attr_multiplicity>
+                      <attr_multiplicity_type></attr_multiplicity_type>
+                      <attr_id>1034</attr_id>
+                      <dependent_attributes/>
+                      <first_layer></first_layer>
+                      <second_layer>1</second_layer>
+                      <attr_type>m</attr_type>
+                      <attr_preset>
+                          <item>ДУХИ</item>
+                          <item>ЛАВАНДОВАЯ ВОДА</item>
+                          <item>ОДЕКОЛОН</item>
+                          <item>ПАРФЮМЕРНАЯ ВОДА</item>
+                          <item>СПРЕЙ ДЛЯ ТЕЛА</item>
+                          <item>ТУАЛЕТНАЯ ВОДА</item>
+                          <item>ДУШИСТАЯ ВОДА</item>
+                      </attr_preset>
+                  </item>
+                  <item>
+                      <attr_group_name>Наименование товара и идентификация</attr_group_name>
+                      <attr_field_type>text</attr_field_type>
+                      <attr_value_type/>
+                      <attr_group_id>24</attr_group_id>
+                      <attr_name>Полное наименование товара</attr_name>
+                      <attr_preset_only></attr_preset_only>
+                      <attr_multiplicity></attr_multiplicity>
+                      <attr_multiplicity_type></attr_multiplicity_type>
+                      <attr_id>2478</attr_id>
+                      <dependent_attributes/>
+                      <first_layer>1</first_layer>
+                      <second_layer></second_layer>
+                      <attr_type>m</attr_type>
+                      <attr_preset/>
+                  </item>
+                  <item>
+                      <attr_group_name>Происхождение и бренды</attr_group_name>
+                      <attr_field_type>text</attr_field_type>
+                      <attr_value_type/>
+                      <attr_group_id>80</attr_group_id>
+                      <attr_name>Товарный знак</attr_name>
+                      <attr_preset_only></attr_preset_only>
+                      <attr_multiplicity></attr_multiplicity>
+                      <attr_multiplicity_type></attr_multiplicity_type>
+                      <attr_id>2504</attr_id>
+                      <dependent_attributes/>
+                      <first_layer></first_layer>
+                      <second_layer></second_layer>
+                      <attr_type>m</attr_type>
+                      <attr_preset/>
+                  </item>
+                  <item>
+                      <attr_group_name>Тип и материал упаковки</attr_group_name>
+                      <attr_field_type>text</attr_field_type>
+                      <attr_value_type/>
+                      <attr_group_id>14</attr_group_id>
+                      <attr_name>Тип упаковки</attr_name>
+                      <attr_preset_only>1</attr_preset_only>
+                      <attr_multiplicity></attr_multiplicity>
+                      <attr_multiplicity_type></attr_multiplicity_type>
+                      <attr_id>2710</attr_id>
+                      <dependent_attributes/>
+                      <first_layer></first_layer>
+                      <second_layer>1</second_layer>
+                      <attr_type>m</attr_type>
+                      <attr_preset>
+                          <item>БЕЗ УПАКОВКИ</item>
+                          <item>НЕТ В СПРАВОЧНИКЕ</item>
+                          <item>НЕ УКАЗАН</item>
+                          <item>АМПУЛА</item>
+                          <item>АЭРОЗОЛЬНАЯ УПАКОВКА</item>
+                          <item>БАЛЛОН</item>
+                          <item>БАНКА МЕТАЛЛИЧЕСКАЯ</item>
+                          <item>БАНКА МЕТАЛЛИЧЕСКАЯ ДЛЯ КОНСЕРВИРОВАНИЯ</item>
+                          <item>БАНКА МЕТАЛЛИЧЕСКАЯ ДЛЯ НАПИТКОВ</item>
+                          <item>БАНКА НЕМЕТАЛЛИЧЕСКАЯ</item>
+                          <item>БАНКА СТЕКЛЯННАЯ</item>
+                          ...
+                      </attr_preset>
+                  </item>
+                  <item>
+                      <attr_group_name>Тип и материал упаковки</attr_group_name>
+                      <attr_field_type>text</attr_field_type>
+                      <attr_value_type/>
+                      <attr_group_id>14</attr_group_id>
+                      <attr_name>Материал упаковки</attr_name>
+                      <attr_preset_only>1</attr_preset_only>
+                      <attr_multiplicity></attr_multiplicity>
+                      <attr_multiplicity_type></attr_multiplicity_type>
+                      <attr_id>2713</attr_id>
+                      <dependent_attributes/>
+                      <first_layer></first_layer>
+                      <second_layer>1</second_layer>
+                      <attr_type>m</attr_type>
+                      <attr_preset>
+                          <item>БЕЗ УПАКОВКИ</item>
+                          <item>НЕ УКАЗАН</item>
+                          <item>НЕТ В СПРАВОЧНИКЕ</item>
+                          <item>АЛЮМИНИЙ</item>
+                          <item>АЦЕТАТ ЦЕЛЛЮЛОЗЫ</item>
+                          <item>БИОПЛАСТИК</item>
+                          <item>БРЕЗЕНТ</item>
+                          <item>БУМАГА</item>
+                          ...
+                      </attr_preset>
+                  </item>
+                  <item>
+                      <attr_group_name>Наименование товара и идентификация</attr_group_name>
+                      <attr_field_type>text</attr_field_type>
+                      <attr_value_type>
+                          <item>---</item>
+                          <item>л</item>
+                          <item>мл</item>
+                      </attr_value_type>
+                      <attr_group_id>24</attr_group_id>
+                      <attr_name>Заявленный объем</attr_name>
+                      <attr_preset_only></attr_preset_only>
+                      <attr_multiplicity></attr_multiplicity>
+                      <attr_multiplicity_type></attr_multiplicity_type>
+                      <attr_id>2716</attr_id>
+                      <dependent_attributes/>
+                      <first_layer></first_layer>
+                      <second_layer>1</second_layer>
+                      <attr_type>m</attr_type>
+                      <attr_preset>
+                          <item>НЕ КЛАССИФИЦИРОВАНО</item>
+                      </attr_preset>
+                  </item>
+                  ...
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.4. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.6. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: 404 Response
+    description: "2.7. Код 404, если не найдены атрибуты для указанной категории:"
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Данные не найдены"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/attributes"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: attr_type
+          value: ""
+          type: query
+          description: "Тип атрибута Возможные значения: «a» — вернуть все атрибуты (значение по умолчанию); «m» — вернуть только обязательные атрибуты; «r» — вернуть только рекомендуемые атрибуты; «o» — вернуть только опциональные атрибуты"
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров, к которой относятся атрибуты. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан параметр «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: is_set
+          value: ""
+          type: query
+          description: "Признак карточки товара типа «Набор» Используется для получения атрибутивного состава набора. Возможные значения: true; false (по умолчанию)"
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код ТН ВЭД (10 знаков) или группы ТН ВЭД (4 знака), для которого запрашивается набор атрибутов. Параметр обязательный, если указан параметр «attr_type» («Тип атрибута») и не указан «cat_id» («Идентификатор категории»)
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает перечень атрибутов для создания карточки товара с указанным кодом ТН ВЭД или идентификатором категории. Если не указан код ТН ВЭД или идентификатор категории, возвращается полный список атрибутов доступных для запрашивающего аккаунта.
+
+  Если ТН ВЭД не определяет товарную группу однозначно, то для получения корректного перечня атрибутов следует предварительно запросить перечень категорий, соответствующих данному ТН ВЭД (« Метод получения дерева категорий (корень дерева не возвращается) »), после чего осуществить запрос списка атрибутов по идентификатору подходящей категории (параметр «cat_id»).
+
+  Пример запроса с использованием идентификатора категории:
+
+  Пример: curl -X GET "<url стенда>/nk/attributes?cat_id=11111&attr_type=m"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Пример запроса с использованием кода ТН ВЭД:
+
+  Пример: curl -X GET "<url стенда>/nk/attributes?tnved=1111&attr_type=m"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

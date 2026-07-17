@@ -1,0 +1,363 @@
+info:
+  name: Метод получения списка МОД по участнику оборота товаров
+  type: http
+  seq: 5
+  tags:
+    - Обращение к True API
+
+http:
+  method: GET
+  url: "{{baseUrl}}/mods/list"
+  params:
+    - name: fiasId
+      value: ""
+      type: query
+      description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+      disabled: true
+    - name: inns
+      value: "[]"
+      type: query
+      description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+      disabled: true
+    - name: kpp
+      value: ""
+      type: query
+      description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+      disabled: true
+    - name: page
+      value: ""
+      type: query
+      description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+      disabled: true
+    - name: productGroups
+      value: "[]"
+      type: query
+      description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/mods/list"
+      method: GET
+      params:
+        - name: fiasId
+          value: ""
+          type: query
+          description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: inns
+          value: "[]"
+          type: query
+          description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+          disabled: true
+        - name: kpp
+          value: ""
+          type: query
+          description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+          disabled: true
+        - name: page
+          value: ""
+          type: query
+          description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+          disabled: true
+        - name: productGroups
+          value: "[]"
+          type: query
+          description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "result": [
+              {
+                "address": "string",
+                "kpp": "123456789",
+                "isBlockedEgais": false,
+                "inn": "1122334455"
+              },
+              {
+                "address": "string",
+                "kpp": "987654321",
+                "isBlockedEgais": false,
+                "inn": "6677889900"
+              }
+            ],
+            "total": 2,
+            "nextPage": false
+          }
+  - name: 400 Response
+    description: "2.1. Код 400, если в параметре строки запроса «inns» («Список ИНН») указано более 10 значений:"
+    request:
+      url: "{{baseUrl}}/mods/list"
+      method: GET
+      params:
+        - name: fiasId
+          value: ""
+          type: query
+          description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: inns
+          value: "[]"
+          type: query
+          description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+          disabled: true
+        - name: kpp
+          value: ""
+          type: query
+          description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+          disabled: true
+        - name: page
+          value: ""
+          type: query
+          description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+          disabled: true
+        - name: productGroups
+          value: "[]"
+          type: query
+          description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Превышено допустимое количество ИНН в параметре inns: 10"
+          }
+  - name: 401 Response
+    description: "2.4. Код 401 при непройденной авторизации, если в запросе не указан токен или он невалидный:"
+    request:
+      url: "{{baseUrl}}/mods/list"
+      method: GET
+      params:
+        - name: fiasId
+          value: ""
+          type: query
+          description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: inns
+          value: "[]"
+          type: query
+          description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+          disabled: true
+        - name: kpp
+          value: ""
+          type: query
+          description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+          disabled: true
+        - name: page
+          value: ""
+          type: query
+          description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+          disabled: true
+        - name: productGroups
+          value: "[]"
+          type: query
+          description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Токен не действителен. Необходимо получить новый токен аутентификации"
+          }
+  - name: 404 Response
+    description: "2.5. Код 404, если ошибка при указании URL метода:"
+    request:
+      url: "{{baseUrl}}/mods/list"
+      method: GET
+      params:
+        - name: fiasId
+          value: ""
+          type: query
+          description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: inns
+          value: "[]"
+          type: query
+          description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+          disabled: true
+        - name: kpp
+          value: ""
+          type: query
+          description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+          disabled: true
+        - name: page
+          value: ""
+          type: query
+          description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+          disabled: true
+        - name: productGroups
+          value: "[]"
+          type: query
+          description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+          disabled: true
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Метод с указанным URL не найден"
+          }
+  - name: 500 Response
+    description: "2.6. Код 500, если внутренняя ошибка сервиса:"
+    request:
+      url: "{{baseUrl}}/mods/list"
+      method: GET
+      params:
+        - name: fiasId
+          value: ""
+          type: query
+          description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: inns
+          value: "[]"
+          type: query
+          description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+          disabled: true
+        - name: kpp
+          value: ""
+          type: query
+          description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+          disabled: true
+        - name: page
+          value: ""
+          type: query
+          description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+          disabled: true
+        - name: productGroups
+          value: "[]"
+          type: query
+          description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+          disabled: true
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Ошибка при выполнении запроса"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/mods/list"
+      method: GET
+      params:
+        - name: fiasId
+          value: ""
+          type: query
+          description: Идентификатор ФИАС Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: inns
+          value: "[]"
+          type: query
+          description: Список ИНН участников оборота товаров Максимально допустимое значение — 10. Если не будет указан, то в ответе вернутся все МОД участника оборота товаров, осуществляющего запрос
+          disabled: true
+        - name: kpp
+          value: ""
+          type: query
+          description: КПП Для юридических лиц. Если не будет указан, то в ответе вернутся все МОД
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Максимальное количество записей на странице результата поиска Максимально допустимое значение — 1000, минимально допустимое значение — 1. Значение по умолчанию: 100"
+          disabled: true
+        - name: page
+          value: ""
+          type: query
+          description: "Номер страницы Используется для пагинации. Начинается с «0». Значение по умолчанию: 0"
+          disabled: true
+        - name: productGroups
+          value: "[]"
+          type: query
+          description: Список товарных групп См. « Справочник «Список поддерживаемых товарных групп» ». Если не будет указан, то в ответе вернутся МОД по всем товарным группам
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает список мест осуществления деятельности участника оборота товаров, кроме удалённых, с возможностью указания параметров фильтрации в запросе.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/mods/list?inns=1122334455&inns=6677889900&limit=10&page=0"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

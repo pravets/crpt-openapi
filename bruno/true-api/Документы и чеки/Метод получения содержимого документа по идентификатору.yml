@@ -1,0 +1,184 @@
+info:
+  name: Метод получения содержимого документа по идентификатору
+  type: http
+  seq: 3
+  tags:
+    - Документы и чеки
+
+http:
+  method: GET
+  url: "{{baseUrl}}/doc/:docId/info"
+  params:
+    - name: docId
+      value: ""
+      type: path
+      description: ID документа, формируемый в ГИС МТ, или ИдФайл для УД
+    - name: body
+      value: ""
+      type: query
+      description: "Признак необходимости в теле ответа содержимого документа Возможные значения: «true» — содержимое отправленного документа возвращается в ответе метода; «false» — содержимое отправленного документа не возвращается в ответе метода. Значение по умолчанию = «false» По умолчанию установлен лимит — в ответе передаётся информация о 50 дочерних КМ"
+      disabled: true
+    - name: content
+      value: ""
+      type: query
+      description: "Признак необходимости контента документа в теле ответа Возможные значения: «true» — контент документа возвращается в ответе метода; «false» — контент документа не возвращается в ответе метода. Значение по умолчанию = «false»"
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: "Количество кодов в теле документа Указывается только для документов УПД (UNIVERSAL_TRANSFER_DOCUMENT), УПДи (UNIVERSAL_TRANSFER_DOCUMENT_FIX), УКД (UNIVERSAL_CORRECTION_DOCUMENT), УКДи (UNIVERSAL_CORRECTION_DOCUMENT_FIX), УПД (отгрузка продукции) (FIXATION). Для других типов документов игнорируется при обработке. Значение по умолчанию и максимальное значение: 36000"
+      disabled: true
+    - name: pageNumber
+      value: ""
+      type: query
+      description: "Лимит вывода информации по кодам Указывается для вывода информации по кодам только для документов УПД, УПДи, УКД, УКДи, УПД (отгрузка продукции). Для других типов документов игнорируется при обработке. Значение по умолчанию: 1. Если не указан, то в ответе возвращаются первые 36 000 значений кодов. Пример: если «pageNumber» = 1 и «limit» = 10 000, то в ответе вернутся первые 10 000 кодов по документу, для запроса следующих 10 000 кодов в параметре «pageNumber» указать соответствующее по счёту значение"
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» ». Параметр обязательный для товарной группы «Товары из натурального меха»
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/doc/:docId/info"
+      method: GET
+      params:
+        - name: docId
+          value: ""
+          type: path
+          description: ID документа, формируемый в ГИС МТ, или ИдФайл для УД
+        - name: body
+          value: ""
+          type: query
+          description: "Признак необходимости в теле ответа содержимого документа Возможные значения: «true» — содержимое отправленного документа возвращается в ответе метода; «false» — содержимое отправленного документа не возвращается в ответе метода. Значение по умолчанию = «false» По умолчанию установлен лимит — в ответе передаётся информация о 50 дочерних КМ"
+          disabled: true
+        - name: content
+          value: ""
+          type: query
+          description: "Признак необходимости контента документа в теле ответа Возможные значения: «true» — контент документа возвращается в ответе метода; «false» — контент документа не возвращается в ответе метода. Значение по умолчанию = «false»"
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Количество кодов в теле документа Указывается только для документов УПД (UNIVERSAL_TRANSFER_DOCUMENT), УПДи (UNIVERSAL_TRANSFER_DOCUMENT_FIX), УКД (UNIVERSAL_CORRECTION_DOCUMENT), УКДи (UNIVERSAL_CORRECTION_DOCUMENT_FIX), УПД (отгрузка продукции) (FIXATION). Для других типов документов игнорируется при обработке. Значение по умолчанию и максимальное значение: 36000"
+          disabled: true
+        - name: pageNumber
+          value: ""
+          type: query
+          description: "Лимит вывода информации по кодам Указывается для вывода информации по кодам только для документов УПД, УПДи, УКД, УКДи, УПД (отгрузка продукции). Для других типов документов игнорируется при обработке. Значение по умолчанию: 1. Если не указан, то в ответе возвращаются первые 36 000 значений кодов. Пример: если «pageNumber» = 1 и «limit» = 10 000, то в ответе вернутся первые 10 000 кодов по документу, для запроса следующих 10 000 кодов в параметре «pageNumber» указать соответствующее по счёту значение"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» ». Параметр обязательный для товарной группы «Товары из натурального меха»
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "number": "50f6b645-09a8-4ee1-8bb4-e426274e82ee",
+              "docDate": "2024-03-29T13:28:35.615Z",
+              "receivedAt": "2024-03-29T13:28:35.615Z",
+              "type": "LP_INTRODUCE_GOODS",
+              "status": "PARSE_ERROR",
+              "senderInn": "0000000000",
+              "senderName": "string",
+              "receiverInn": null,
+              "receiverName": null,
+              "invoiceNumber": null,
+              "invoiceDate": null,
+              "relatedDocId": null,
+              "body": {},
+              "input": false,
+              "errors": [
+                "29: Недопустимый формат передаваемого файла JSON."
+              ],
+              "commonErrors": [
+                {
+                  "errorCode": "INTRO_ERROR",
+                  "errorMessage": "29: Недопустимый формат передаваемого файла JSON.",
+                  "errorObject": "50f6b645-09a8-4ee1-8bb4-e426274e82ee"
+                }
+              ],
+              "productGroup": [
+                "lp"
+              ],
+              "productGroupId": [
+                1
+              ]
+            }
+          ]
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/doc/:docId/info"
+      method: GET
+      params:
+        - name: docId
+          value: ""
+          type: path
+          description: ID документа, формируемый в ГИС МТ, или ИдФайл для УД
+        - name: body
+          value: ""
+          type: query
+          description: "Признак необходимости в теле ответа содержимого документа Возможные значения: «true» — содержимое отправленного документа возвращается в ответе метода; «false» — содержимое отправленного документа не возвращается в ответе метода. Значение по умолчанию = «false» По умолчанию установлен лимит — в ответе передаётся информация о 50 дочерних КМ"
+          disabled: true
+        - name: content
+          value: ""
+          type: query
+          description: "Признак необходимости контента документа в теле ответа Возможные значения: «true» — контент документа возвращается в ответе метода; «false» — контент документа не возвращается в ответе метода. Значение по умолчанию = «false»"
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Количество кодов в теле документа Указывается только для документов УПД (UNIVERSAL_TRANSFER_DOCUMENT), УПДи (UNIVERSAL_TRANSFER_DOCUMENT_FIX), УКД (UNIVERSAL_CORRECTION_DOCUMENT), УКДи (UNIVERSAL_CORRECTION_DOCUMENT_FIX), УПД (отгрузка продукции) (FIXATION). Для других типов документов игнорируется при обработке. Значение по умолчанию и максимальное значение: 36000"
+          disabled: true
+        - name: pageNumber
+          value: ""
+          type: query
+          description: "Лимит вывода информации по кодам Указывается для вывода информации по кодам только для документов УПД, УПДи, УКД, УКДи, УПД (отгрузка продукции). Для других типов документов игнорируется при обработке. Значение по умолчанию: 1. Если не указан, то в ответе возвращаются первые 36 000 значений кодов. Пример: если «pageNumber» = 1 и «limit» = 10 000, то в ответе вернутся первые 10 000 кодов по документу, для запроса следующих 10 000 кодов в параметре «pageNumber» указать соответствующее по счёту значение"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» ». Параметр обязательный для товарной группы «Товары из натурального меха»
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Для товарной группы «Духи и туалетная вода» метод возвращает в ответе только КИ из тела документа (см. « Справочник «Типы документов» ») без отражения информации о КИ дочерних вложений, входящих в состав агрегирующих КИ: параметры «count_children» и «children» в ответе остаются скрытыми.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда v4>/doc/f111111e-11fa-11d1-111d-1cf1c1f1111c/info?pg=lp&body=true"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <Токен>"
+
+  Тип приватности: приватный.

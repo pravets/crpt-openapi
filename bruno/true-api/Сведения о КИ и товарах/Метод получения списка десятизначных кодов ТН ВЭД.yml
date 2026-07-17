@@ -1,0 +1,112 @@
+info:
+  name: Метод получения списка десятизначных кодов ТН ВЭД
+  type: http
+  seq: 11
+  tags:
+    - Сведения о КИ и товарах
+
+http:
+  method: POST
+  url: "{{baseUrl}}/tn-ved/search"
+  body:
+    type: json
+    data: |-
+      {
+        "pg": [
+          "string"
+        ],
+        "tnveds": [
+          "string"
+        ],
+        "page": 0,
+        "limit": 100,
+        "sort": "tnved",
+        "direction": "ASC"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/tn-ved/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": [
+              "string"
+            ],
+            "tnveds": [
+              "string"
+            ],
+            "page": 0,
+            "limit": 100,
+            "sort": "tnved",
+            "direction": "ASC"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "tnveds": [
+              {
+                "tnved": "string",
+                "description": "string",
+                "pg": "milk"
+              },
+              {
+                "tnved": "string",
+                "description": "string",
+                "pg": "milk"
+              }
+            ],
+            "total": 2,
+            "last": true
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/tn-ved/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": [
+              "string"
+            ],
+            "tnveds": [
+              "string"
+            ],
+            "page": 0,
+            "limit": 100,
+            "sort": "tnved",
+            "direction": "ASC"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: "Тип приватности: c токеном авторизации."

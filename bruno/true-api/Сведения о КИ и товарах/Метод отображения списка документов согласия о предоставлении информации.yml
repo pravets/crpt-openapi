@@ -1,0 +1,368 @@
+info:
+  name: Метод отображения списка документов согласия о предоставлении информации
+  type: http
+  seq: 17
+  tags:
+    - Сведения о КИ и товарах
+    - Согласие на предоставление информации
+
+http:
+  method: GET
+  url: "{{baseUrl}}/agreement-registry/agreement/list"
+  params:
+    - name: createDate
+      value: ""
+      type: query
+      description: Фильтр по дате создания документа
+      disabled: true
+    - name: direction
+      value: ""
+      type: query
+      description: "Направление фильтрации Возможные значения: ASC – по возрастанию; DESC – по убыванию"
+      disabled: true
+    - name: documentRegNumber
+      value: ""
+      type: query
+      description: Регистрационный номер документа
+      disabled: true
+    - name: expirationDate
+      value: ""
+      type: query
+      description: Фильтр по дате истечения срока действия документа
+      disabled: true
+    - name: from
+      value: ""
+      type: query
+      description: Начало периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: "Предельное количество записей Значение по умолчанию: 0"
+      disabled: true
+    - name: offset
+      value: ""
+      type: query
+      description: "Смещение страницы Значение по умолчанию: 0"
+      disabled: true
+    - name: participantId
+      value: ""
+      type: query
+      description: ID участника оборота товаров
+      disabled: true
+    - name: participantInn
+      value: ""
+      type: query
+      description: ИНН участника оборота товаров
+      disabled: true
+    - name: publicationDate
+      value: ""
+      type: query
+      description: Фильтр по дате подписания документа
+      disabled: true
+    - name: sort
+      value: ""
+      type: query
+      description: 'Параметр фильтрации Доступные параметры для фильтрации: "publisherId", "agreementCancellations", "agreement", "revisionNumber", "rejectionDate", "creatorId", "trustedOrganisations", "id", "publicationDate", "createDate", "status", "printForm"'
+      disabled: true
+    - name: status
+      value: ""
+      type: query
+      description: "Статус документа Возможные значения: ESTABLISHED - сформирован (присваивается при записи документа в БД после успешного прохождения всех проверок); SIGNED - подписан (присваивается по факту подписания пользователем); REJECTED - отклонён (присваивается, если пользователь отказывается от подписания документа); OUTDATED - устарел (присваивается в случае, если документ был подписан ранее, но вместо него был подписан новый документ); CANCELLED - аннулирован (присваивается в случае аннулирования документа)"
+      disabled: true
+    - name: to
+      value: ""
+      type: query
+      description: Конец периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/list"
+      method: GET
+      params:
+        - name: createDate
+          value: ""
+          type: query
+          description: Фильтр по дате создания документа
+          disabled: true
+        - name: direction
+          value: ""
+          type: query
+          description: "Направление фильтрации Возможные значения: ASC – по возрастанию; DESC – по убыванию"
+          disabled: true
+        - name: documentRegNumber
+          value: ""
+          type: query
+          description: Регистрационный номер документа
+          disabled: true
+        - name: expirationDate
+          value: ""
+          type: query
+          description: Фильтр по дате истечения срока действия документа
+          disabled: true
+        - name: from
+          value: ""
+          type: query
+          description: Начало периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Предельное количество записей Значение по умолчанию: 0"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: "Смещение страницы Значение по умолчанию: 0"
+          disabled: true
+        - name: participantId
+          value: ""
+          type: query
+          description: ID участника оборота товаров
+          disabled: true
+        - name: participantInn
+          value: ""
+          type: query
+          description: ИНН участника оборота товаров
+          disabled: true
+        - name: publicationDate
+          value: ""
+          type: query
+          description: Фильтр по дате подписания документа
+          disabled: true
+        - name: sort
+          value: ""
+          type: query
+          description: 'Параметр фильтрации Доступные параметры для фильтрации: "publisherId", "agreementCancellations", "agreement", "revisionNumber", "rejectionDate", "creatorId", "trustedOrganisations", "id", "publicationDate", "createDate", "status", "printForm"'
+          disabled: true
+        - name: status
+          value: ""
+          type: query
+          description: "Статус документа Возможные значения: ESTABLISHED - сформирован (присваивается при записи документа в БД после успешного прохождения всех проверок); SIGNED - подписан (присваивается по факту подписания пользователем); REJECTED - отклонён (присваивается, если пользователь отказывается от подписания документа); OUTDATED - устарел (присваивается в случае, если документ был подписан ранее, но вместо него был подписан новый документ); CANCELLED - аннулирован (присваивается в случае аннулирования документа)"
+          disabled: true
+        - name: to
+          value: ""
+          type: query
+          description: Конец периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "agreementRevisionId": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                "createDate": 0,
+                "publicationDate": 0,
+                "expirationDate": "string",
+                "status": "string",
+                "creatorId": 0,
+                "publisherId": 0,
+                "cancellation": {
+                  "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+                  "createDate": "2021-01-31T16:40:48.549Z",
+                  "publicationDate": "2020-01-31T16:40:48.549Z",
+                  "status": "string",
+                  "statusCode": "string",
+                  "creatorId": 0,
+                  "publisherId": 0,
+                  "documentRegNumber": "string"
+                },
+                "documentRegNumber": "string"
+              }
+            ],
+            "total": 0,
+            "errorCode": "string",
+            "last": true
+          }
+  - name: 400 Response
+    description: Ошибка 400
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/list"
+      method: GET
+      params:
+        - name: createDate
+          value: ""
+          type: query
+          description: Фильтр по дате создания документа
+          disabled: true
+        - name: direction
+          value: ""
+          type: query
+          description: "Направление фильтрации Возможные значения: ASC – по возрастанию; DESC – по убыванию"
+          disabled: true
+        - name: documentRegNumber
+          value: ""
+          type: query
+          description: Регистрационный номер документа
+          disabled: true
+        - name: expirationDate
+          value: ""
+          type: query
+          description: Фильтр по дате истечения срока действия документа
+          disabled: true
+        - name: from
+          value: ""
+          type: query
+          description: Начало периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Предельное количество записей Значение по умолчанию: 0"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: "Смещение страницы Значение по умолчанию: 0"
+          disabled: true
+        - name: participantId
+          value: ""
+          type: query
+          description: ID участника оборота товаров
+          disabled: true
+        - name: participantInn
+          value: ""
+          type: query
+          description: ИНН участника оборота товаров
+          disabled: true
+        - name: publicationDate
+          value: ""
+          type: query
+          description: Фильтр по дате подписания документа
+          disabled: true
+        - name: sort
+          value: ""
+          type: query
+          description: 'Параметр фильтрации Доступные параметры для фильтрации: "publisherId", "agreementCancellations", "agreement", "revisionNumber", "rejectionDate", "creatorId", "trustedOrganisations", "id", "publicationDate", "createDate", "status", "printForm"'
+          disabled: true
+        - name: status
+          value: ""
+          type: query
+          description: "Статус документа Возможные значения: ESTABLISHED - сформирован (присваивается при записи документа в БД после успешного прохождения всех проверок); SIGNED - подписан (присваивается по факту подписания пользователем); REJECTED - отклонён (присваивается, если пользователь отказывается от подписания документа); OUTDATED - устарел (присваивается в случае, если документ был подписан ранее, но вместо него был подписан новый документ); CANCELLED - аннулирован (присваивается в случае аннулирования документа)"
+          disabled: true
+        - name: to
+          value: ""
+          type: query
+          description: Конец периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/list"
+      method: GET
+      params:
+        - name: createDate
+          value: ""
+          type: query
+          description: Фильтр по дате создания документа
+          disabled: true
+        - name: direction
+          value: ""
+          type: query
+          description: "Направление фильтрации Возможные значения: ASC – по возрастанию; DESC – по убыванию"
+          disabled: true
+        - name: documentRegNumber
+          value: ""
+          type: query
+          description: Регистрационный номер документа
+          disabled: true
+        - name: expirationDate
+          value: ""
+          type: query
+          description: Фильтр по дате истечения срока действия документа
+          disabled: true
+        - name: from
+          value: ""
+          type: query
+          description: Начало периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Предельное количество записей Значение по умолчанию: 0"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: "Смещение страницы Значение по умолчанию: 0"
+          disabled: true
+        - name: participantId
+          value: ""
+          type: query
+          description: ID участника оборота товаров
+          disabled: true
+        - name: participantInn
+          value: ""
+          type: query
+          description: ИНН участника оборота товаров
+          disabled: true
+        - name: publicationDate
+          value: ""
+          type: query
+          description: Фильтр по дате подписания документа
+          disabled: true
+        - name: sort
+          value: ""
+          type: query
+          description: 'Параметр фильтрации Доступные параметры для фильтрации: "publisherId", "agreementCancellations", "agreement", "revisionNumber", "rejectionDate", "creatorId", "trustedOrganisations", "id", "publicationDate", "createDate", "status", "printForm"'
+          disabled: true
+        - name: status
+          value: ""
+          type: query
+          description: "Статус документа Возможные значения: ESTABLISHED - сформирован (присваивается при записи документа в БД после успешного прохождения всех проверок); SIGNED - подписан (присваивается по факту подписания пользователем); REJECTED - отклонён (присваивается, если пользователь отказывается от подписания документа); OUTDATED - устарел (присваивается в случае, если документ был подписан ранее, но вместо него был подписан новый документ); CANCELLED - аннулирован (присваивается в случае аннулирования документа)"
+          disabled: true
+        - name: to
+          value: ""
+          type: query
+          description: Конец периода Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод позволяет участнику оборота товаров получить список всех документов согласия о предоставлении информации.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/agreement-registry/agreement/list?expirationDate.from=2021-06-22T07:04:42.000Z&expirationDate.to=2021-09-22T07:04:42.000Z&offset=0&limit=10&sort=publicationDate&direction=DESC"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"

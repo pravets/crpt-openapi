@@ -1,0 +1,300 @@
+info:
+  name: Единый метод создания документов
+  type: http
+  seq: 1
+  tags:
+    - Подача сведений
+    - Подача документов
+
+http:
+  method: POST
+  url: "{{baseUrl}}/lk/documents/create"
+  params:
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+  body:
+    type: json
+    data: |-
+      {
+        "document_format": "string",
+        "product_document": "<Тело формируемого документа, закодированное в base64>",
+        "type": "string",
+        "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+        "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+        "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 100 Response
+    description: "2.10. Код 409, если для типа документа «AGGREGATION_DOCUMENT» передано более 100 уникальных партий набора или более 10000 уникальных номеров партий вложений:"
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 100
+      statusText: Continue
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Превышено допустимое количество элементов в запросе – передано {Количество переданных значений}, допустимо {Текущий лимит}"
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: "2.2. Код 400 при неверной структуре JSON в теле запроса:"
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "JSON parse error: <описание ошибки>"
+          }
+  - name: 401 Response
+    description: "2.1. Код 401, если не указан токен:"
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Для доступа к этому ресурсу требуется полная аутентификация. Проверьте токен"
+          }
+  - name: 403 Response
+    description: "2.9. Код 403 при недоступности функциональности товарной группе, когда нет тела ответа от компонента товарной группы:"
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует дост�уп к ресурсу"
+          }
+  - name: 409 Response
+    description: "2.10. Код 409, если для типа документа «AGGREGATION_DOCUMENT» передано более 100 уникальных партий набора или более 10000 уникальных номеров партий вложений:"
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 409
+      statusText: Conflict
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Превышено допустимое количество элементов в запросе – передано {Количество переданных значений}, допустимо {Текущий лимит}"
+          }
+  - name: 422 Response
+    description: "2.11. Код 422 при недоступности функциональности товарной группе, когда есть тело ответа от ЛП-компонента:"
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "<type> недоступен для товарной группы <Наименование ТГ>"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/lk/documents/create"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. справочник «Список поддерживаемых товарных групп» . В параметре указывается кодовый идентификатор товарной группы
+      body:
+        type: json
+        data: |-
+          {
+            "document_format": "string",
+            "product_document": "<Тело формируемого документа, закодированное в base64>",
+            "type": "string",
+            "signature": "<Откреплённая подпись для product_document, закодированная в base64>",
+            "second_product_document": "<Тело формируемого документа титула покупателя, закодированное в base64>",
+            "second_signature": "<Откреплённая подпись для second_product_document, закодированная в base64>"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Ограничение доступа к методу: при отправке запроса с токеном пользователя с ролью «Сотрудник» в ответе вернётся ошибка (подробнее см. в «Памятке по ролевой модели доступа Системы маркировки» ).
+
+  Тип приватности: приватный.
+
+  В документации приведено несколько вариантов тела запроса (2); в спецификации использован репрезентативный пример, остальные варианты см. в разделе 4.1.1 документации.

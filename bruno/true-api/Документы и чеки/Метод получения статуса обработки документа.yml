@@ -1,0 +1,151 @@
+info:
+  name: Метод получения статуса обработки документа
+  type: http
+  seq: 7
+  tags:
+    - Документы и чеки
+
+http:
+  method: POST
+  url: "{{baseUrl}}/doc/validator/status"
+  params:
+    - name: id
+      value: ""
+      type: query
+      description: ID документа
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/doc/validator/status"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "status": "VERIFIED",
+            "description": "Успешно проверен"
+          }
+  - name: 401 Response
+    description: '2.1. Код 401: "Невалидный токен".'
+    request:
+      url: "{{baseUrl}}/doc/validator/status"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Текст ошибки",
+            "error_description": "Описание ошибки"
+          }
+  - name: 404 Response
+    description: '2.2. Код 404: "Документ не найден".'
+    request:
+      url: "{{baseUrl}}/doc/validator/status"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Текст ошибки",
+            "error_description": "Описание ошибки"
+          }
+  - name: 500 Response
+    description: '2.3. Код 500: "Внутренняя ошибка сервера".'
+    request:
+      url: "{{baseUrl}}/doc/validator/status"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Текст ошибки",
+            "error_description": "Описание ошибки"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/doc/validator/status"
+      method: POST
+      params:
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения текущего статуса проверки документов УПД и УПДи, направленных в ГИС МТ до проведения первичной отгрузки товаров. Данный метод не используется для получения статуса проверки УКД и УКДи. В успешном ответе возвращается параметр «status» (Статус проверки) со значением одного из приведённых ниже кодов статусов:
+
+  Данный метод поддерживает два типа аутентификационного токена: участника оборота товаров и Оператора ЭДО.
+
+  Пример запроса:
+
+  Пример: curl -X POST "/api/v3/true-api/doc/validator/status"
+  -H "accept: application/json"
+  -H "Content-Type: application/json"
+  --data-raw "{\"id\":\"string\"}"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

@@ -1,0 +1,82 @@
+info:
+  name: Метод удаления мест осуществления деятельности
+  type: http
+  seq: 3
+  tags:
+    - Обращение к True API
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/mod"
+  body:
+    type: json
+    data: |-
+      {
+        "productGroup": "water",
+        "fiasId": "1f1100e0-1f11-11d1-0a0c-0101e11c1101",
+        "kpp": "123456789"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/mod"
+      method: DELETE
+      body:
+        type: json
+        data: |-
+          {
+            "productGroup": "water",
+            "fiasId": "1f1100e0-1f11-11d1-0a0c-0101e11c1101",
+            "kpp": "123456789"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "code": 0,
+            "error_message": ""
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/mod"
+      method: DELETE
+      body:
+        type: json
+        data: |-
+          {
+            "productGroup": "water",
+            "fiasId": "1f1100e0-1f11-11d1-0a0c-0101e11c1101",
+            "kpp": "123456789"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для удаления места осуществления деятельности у товарных групп, для которых доступен « Метод добавления мест осуществления деятельности ».
+
+  Тип приватности: приватный.

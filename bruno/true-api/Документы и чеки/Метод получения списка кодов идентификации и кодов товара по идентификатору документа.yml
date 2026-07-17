@@ -1,0 +1,106 @@
+info:
+  name: Метод получения списка кодов идентификации и кодов товара по идентификатору документа
+  type: http
+  seq: 8
+  tags:
+    - Документы и чеки
+
+http:
+  method: GET
+  url: "{{baseUrl}}/doc/cises"
+  params:
+    - name: documentId
+      value: ""
+      type: query
+      description: ID документа
+    - name: productGroup
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/doc/cises"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: query
+          description: ID документа
+        - name: productGroup
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "senderInn": "string",
+            "senderName": "string",
+            "receiverInn": "string",
+            "receiverName": "string",
+            "type": "string",
+            "status": "string",
+            "receivedAt": "2021-05-14T09:29:01.120Z",
+            "documentId": "string",
+            "turnoverType": "SELLING",
+            "relatedDocId": null,
+            "cisList": [
+              "0000000000000000000000000",
+              "1111111111111111111111111",
+              "2222222222222222222222222"
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/doc/cises"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: query
+          description: ID документа
+        - name: productGroup
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод используется для получения списка КИ и кодов товара по ID документа, обработанного успешно или обработанного с ошибкой. В запросе может быть указан только один ID документа. Метод не предназначен для запроса информации по УПД и УКД. Метод возвращает до 30000 КИ (ограничение для документов прямой подачи 30000 КИ в одном документе), верхний уровень агрегатов не возвращается.
+
+  Метод доступен для следующих типов документов: « Списание », « Отгрузка », « Приёмка », « Ввод в оборот. Производство РФ », « Ввод в оборот. Контрактное производство », « Ввод в оборот. Трансграничная торговля », « Ввод в оборот. Производство вне ЕАЭС », « Ввод в оборот. Полученных от физических лиц », « Ввод в оборот. Импорт с ФТС », « Ввод в оборот. Остатки », « Перемаркировка », « Расформирование упаковки », « Трансформация упаковки », « Формирование АТК », « Расформирование АТК », « Вывод из оборота », « Возврат в оборот », « Отгрузка из ЕАЭС с признанием КИ », « Отгрузка из ЕАЭС », « Приёмка отгрузки из ЕАЭС ».
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда v3>/doc/cises?documentId=1ff1f1f1-1111-1111-1f11-11111111ff11&productGroup=shoes"
+  -H "accept: */*"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: приватный.

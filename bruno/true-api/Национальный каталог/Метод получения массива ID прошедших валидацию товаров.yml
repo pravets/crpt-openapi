@@ -1,0 +1,298 @@
+info:
+  name: Метод получения массива ID прошедших валидацию товаров
+  type: http
+  seq: 12
+  tags:
+    - Национальный каталог
+
+http:
+  method: POST
+  url: "{{baseUrl}}/nk/feed-product-sign"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+  body:
+    type: json
+    data: |-
+      [
+        {
+          "goodId": 5000,
+          "xml": "..."
+        },
+        {
+          "goodId": 3,
+          "xml": "..."
+        },
+        {
+          "goodId": 5,
+          "xml": "<..."
+        }
+      ]
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 5000,
+              "xml": "..."
+            },
+            {
+              "goodId": 3,
+              "xml": "..."
+            },
+            {
+              "goodId": 5,
+              "xml": "<..."
+            }
+          ]
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "signed": [
+                5000,
+                3
+              ],
+              "errors": [
+                {
+                  "goodId": 5,
+                  "message": "Информация о товаре ... устарела или скомпрометирована. Попробуйте еще раз. "
+                }
+              ]
+            }
+          }
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 5000,
+              "xml": "..."
+            },
+            {
+              "goodId": 3,
+              "xml": "..."
+            },
+            {
+              "goodId": 5,
+              "xml": "<..."
+            }
+          ]
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 5000,
+              "xml": "..."
+            },
+            {
+              "goodId": 3,
+              "xml": "..."
+            },
+            {
+              "goodId": 5,
+              "xml": "<..."
+            }
+          ]
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 5000,
+              "xml": "..."
+            },
+            {
+              "goodId": 3,
+              "xml": "..."
+            },
+            {
+              "goodId": 5,
+              "xml": "<..."
+            }
+          ]
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 5000,
+              "xml": "..."
+            },
+            {
+              "goodId": 3,
+              "xml": "..."
+            },
+            {
+              "goodId": 5,
+              "xml": "<..."
+            }
+          ]
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод принимает массив объектов, в объектах содержатся good_id товара и подписанный XML для этого товара.
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/nk/feed-product-sign"
+  -H "accept: application/json"
+  -H "Content-Type: application/json; charset=utf-8"
+  -H "Authorization: Bearer <ТОКЕН>"
+  --data-raw
+
+  Ограничения: Количество товаров в запросе — не более 10.
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

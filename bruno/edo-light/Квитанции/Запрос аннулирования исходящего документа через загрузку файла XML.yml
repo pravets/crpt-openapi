@@ -1,0 +1,191 @@
+info:
+  name: Запрос аннулирования исходящего документа через загрузку файла XML
+  type: http
+  seq: 7
+  tags:
+    - Квитанции
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/outgoing-documents/xml/annul_02"
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Файл DP_PRANNUL (XML)
+      - name: doc_id
+        type: text
+        value: ""
+        description: Идентификатор документа, который предлагается аннулировать. В значении идентификатора допускаются символы латинского алфавита a–z и цифры 0–9 (UUID)
+      - name: signature
+        type: text
+        value: ""
+        description: Откреплённая УКЭП
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Запрос аннулирования успешно создан
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/annul_02"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл DP_PRANNUL (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, который предлагается аннулировать. В значении идентификатора допускаются символы латинского алфавита a–z и цифры 0–9 (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "111b1e11-1aad-1c11-111b-1c11a1d1bb11"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Неверно указан получатель документа» / «Неверно указан получатель»;
+      - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+      - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+      - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+      - «Неверный формат параметра запроса "doc_id"» (допускаются символы латиницы a–z и цифры 0–9);
+      - «"doc_id" обязательный параметр» / «"signature" обязательный параметр»;
+      - «Неверный формат параметра "signature"»;
+      - «Документ ... не найден в базе»;
+      - «Ошибка создания объекта DP_PRANNUL[doc_id:] version:»;
+      - «Ошибка сохранения эвента ... в базе».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/annul_02"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл DP_PRANNUL (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, который предлагается аннулировать. В значении идентификатора допускаются символы латинского алфавита a–z и цифры 0–9 (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/annul_02"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл DP_PRANNUL (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, который предлагается аннулировать. В значении идентификатора допускаются символы латинского алфавита a–z и цифры 0–9 (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/annul_02"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл DP_PRANNUL (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа, который предлагается аннулировать. В значении идентификатора допускаются символы латинского алфавита a–z и цифры 0–9 (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод предназначен для создания запроса (предложения) аннулирования исходящего документа — квитанции DP_PRANNUL — через загрузку XML-файла.
+
+  Примечание: метод разрешает аннулировать документ в статусе «Уточнён», если все его дочерние документы аннулированы, т. е.:
+  - УКД может быть аннулирован, если все УКДи на него уже находятся в статусе «Аннулирован»;
+  - УПД может быть аннулирован, если УПДи, УКД и УКДи для него уже в статусе «Аннулирован».

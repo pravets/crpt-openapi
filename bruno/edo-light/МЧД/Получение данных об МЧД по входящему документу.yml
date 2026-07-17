@@ -1,0 +1,138 @@
+info:
+  name: Получение данных об МЧД по входящему документу
+  type: http
+  seq: 2
+  tags:
+    - МЧД
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/mchd-list"
+  params:
+    - name: doc_id
+      value: ""
+      type: path
+      description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Информация об МЧД в документообороте (пустой JSON, если документ подписан без МЧД)
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/mchd-list"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "",
+            "file_name": "",
+            "type": 0,
+            "created_at": 0,
+            "mchd_id": "",
+            "mchd_inn_dov": "",
+            "name": "",
+            "mchd_date_from": 0,
+            "mchd_date_to": 0,
+            "mchd_status": "ACTIVE",
+            "mchd_fl_fio": "",
+            "mchd_fl_inn": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/mchd-list"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: «Не найден документ» — не найден документ, для которого были запрошены доверенности
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/mchd-list"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: «Сервис временно недоступен»
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/mchd-list"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод возвращает информацию о всех МЧД в документообороте входящего документа, если документы были подписаны пользователем с МЧД.
+  Проверить МЧД в ФНС можно по ссылке: https://m4d.nalog.gov.ru/EMCHD/get-info.
+
+  Если данные об МЧД запрашиваются по документу / квитанции, которые подписаны без МЧД, то в ответе вернётся код 200 и пустой JSON.

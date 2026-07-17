@@ -1,0 +1,124 @@
+info:
+  name: Метод получения статусов заданий на выгрузку
+  type: http
+  seq: 2
+  tags:
+    - Выгрузки данных
+    - Статус задания на выгрузку
+
+http:
+  method: GET
+  url: "{{baseUrl}}/dispenser/tasks"
+  params:
+    - name: page
+      value: ""
+      type: query
+      description: Номер страницы (отсчёт с 0)
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа. Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Указанное значение должно совпадать с «productGroupCode» («Товарная группа»), сформированных ранее заданий на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+      disabled: true
+    - name: size
+      value: ""
+      type: query
+      description: Количество записей на странице
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/tasks"
+      method: GET
+      params:
+        - name: page
+          value: ""
+          type: query
+          description: Номер страницы (отсчёт с 0)
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа. Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Указанное значение должно совпадать с «productGroupCode» («Товарная группа»), сформированных ранее заданий на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+        - name: size
+          value: ""
+          type: query
+          description: Количество записей на странице
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "list": [
+              {
+                "id": "string",
+                "name": "string",
+                "createDate": "string",
+                "currentStatus": "string",
+                "dataStartDate": "string",
+                "dataEndDate": "string",
+                "orgInn": "string",
+                "period": "string",
+                "periodicity": "string",
+                "productGroups": [
+                  {
+                    "id": "string",
+                    "name": "string"
+                  }
+                ],
+                "timeoutSecs": 0
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/tasks"
+      method: GET
+      params:
+        - name: page
+          value: ""
+          type: query
+          description: Номер страницы (отсчёт с 0)
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа. Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Указанное значение должно совпадать с «productGroupCode» («Товарная группа»), сформированных ранее заданий на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+        - name: size
+          value: ""
+          type: query
+          description: Количество записей на странице
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Максимальное количество запросов в минуту — 5.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/dispenser/tasks?page=0&size=4&pg=2"
+  -H "accept: application/json"
+
+  Тип приватности: приватный.

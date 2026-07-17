@@ -1,0 +1,119 @@
+info:
+  name: Метод получения квитанций результата обработки универсального документа по идентификатору документа
+  type: http
+  seq: 1
+  tags:
+    - Квитанции
+
+http:
+  method: GET
+  url: "{{baseUrl}}/documents/edo/tpr/ud"
+  params:
+    - name: fileId
+      value: ""
+      type: query
+      description: Полное имя из "ИдФайл" XML направленного документа Для документа «УПД (отгрузка продукции)» (FIXATION) необходимо указывать в качестве fileId "FIX_ИдФайл…​"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/documents/edo/tpr/ud"
+      method: GET
+      params:
+        - name: fileId
+          value: ""
+          type: query
+          description: Полное имя из "ИдФайл" XML направленного документа Для документа «УПД (отгрузка продукции)» (FIXATION) необходимо указывать в качестве fileId "FIX_ИдФайл…​"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "resultDocId": "UINT04TXMNGR00000000000000000004-0093",
+            "resultDocDate": 1585320802931,
+            "sourceDocId": "URCPT00000000000000000005-0031",
+            "sourceDocDate": 1585320802315,
+            "state": "SUCCESS",
+            "code": 0,
+            "description": "Document was successfully processed",
+            "operations": [
+              {
+                "operationId": "f817bf34-5d7a-4bc0-842e-a06c873e6d8d",
+                "operationDate": 1585320802352,
+                "operationType": "DOCUMENT_VALIDATION",
+                "details": {
+                  "successful": "true",
+                  "tpInternalId": "UCMS00000000000000000018-1476",
+                  "documentType": "UNIVERSAL_TRANSFER_DOCUMENT",
+                  "documentName": "ON_NSCHFDOPPRMARK_2EV-600000555_2EV-600000749_20200414_051fc5fc-91e7-48c0-a091-f4f3cba39410",
+                  "documentNumber": "тест-1",
+                  "documentDateTime": "14.04.2020"
+                }
+              },
+              {
+                "operationId": "773e9985-3bfe-476e-b62d-6e00f8e69166",
+                "operationDate": 1585320802398,
+                "operationType": "DOCUMENT_ROUTED",
+                "details": {
+                  "productGroups": [
+                    "tobacco"
+                  ]
+                }
+              },
+              {
+                "operationId": "a1045297-0cdc-420d-b5e3-b0984ba0e567",
+                "operationDate": 1585320802696,
+                "operationType": "DOCUMENT_PROCESSED_AT_PRODUCT_GROUP_TOBACCO",
+                "details": {
+                  "successful": true
+                }
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/documents/edo/tpr/ud"
+      method: GET
+      params:
+        - name: fileId
+          value: ""
+          type: query
+          description: Полное имя из "ИдФайл" XML направленного документа Для документа «УПД (отгрузка продукции)» (FIXATION) необходимо указывать в качестве fileId "FIX_ИдФайл…​"
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Квитанция по результатам обработки документов ЭДО содержит перечень из первых 10 ошибок по документу. Для получения полного перечня ошибок необходимо использовать " Получение ошибок по результатам обработки документов ".
+
+  Метод возвращает квитанцию результата обработки документов (УПД, УПД(и), УКД, УКД(и), УПД (отгрузка продукции) и предложения об аннулировании УД) в ГИС МТ, которые были отправлены с 15 июля 2020 года. Запрос направляется по одному документу.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/documents/edo/tpr/ud?fileId=ON_NSCHF_...6FA0"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <Токен>
+
+  Тип приватности: приватный.

@@ -1,0 +1,384 @@
+info:
+  name: Метод получения общедоступной информации о КИ по списку
+  type: http
+  seq: 2
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/info"
+  params:
+    - name: childsWithoutBrackets
+      value: ""
+      type: query
+      description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+      disabled: true
+  body:
+    type: json
+    data: |-
+      [
+        "010460000000000021LLLLLLLLLLLLL"
+      ]
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "cisInfo": {
+                "productWeightGr": "integer",
+                "isVarQuantity": true,
+                "requestedCis": "string",
+                "cis": "string",
+                "gtin": "string",
+                "tnVedEaesGroup": "string",
+                "productName": "string",
+                "productGroupId": 8,
+                "productGroup": "milk",
+                "brand": "brand",
+                "emissionDate": "2021-12-28T11:42:32.098Z",
+                "emissionType": "LOCAL",
+                "packageType": "UNIT",
+                "ownerInn": "string",
+                "ownerName": "string",
+                "status": "INTRODUCED",
+                "statusEx": "EMPTY",
+                "producerInn": "string",
+                "producerName": "string",
+                "markWithdraw": false
+              }
+            }
+          ]
+  - name: 400 Response
+    description: "2.2. Код 400 при пустом списке КИ в теле запроса:"
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "В запросе не указан ни один КМ"
+          }
+  - name: 401 Response
+    description: "2.5. Код 401 при не пройденной авторизации (если указан токен, но он не валиден):"
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "cisInfo": {
+                "requestedCis": "string",
+                "cis": "string",
+                "gtin": "string",
+                "productGroup": null,
+                "packageType": null,
+                "generalPackageType": null
+              },
+              "errorMessage": "Авторизация не пройдена",
+              "errorCode": "401"
+            }
+          ]
+  - name: 403 Response
+    description: "2.6. Код 403 при не подписанном договоре, если на КИ и агрегаты вернулась ошибка 403:"
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует действующий договор по ТГ"
+          }
+  - name: 404 Response
+    description: "2.7. Код 404 при неизвестных КИ:"
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "cisInfo": {
+                "requestedCis": "string",
+                "cis": "string",
+                "gtin": "string",
+                "packageType": null
+              },
+              "errorMessage": "КИ не найден",
+              "errorCode": "404"
+            }
+          ]
+  - name: 422 Response
+    description: "2.10. Код 422, если для КИ не может быть возвращена информация, так как отсутствует согласие от текущего владельца КИ:"
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к сведениям"
+          }
+  - name: 504 Response
+    description: "2.11. Код 504, если в запросе несколько КИ или агрегатов — по всем КИ и агрегатам ошибка, что сервис не вернул ответ:"
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      status: 504
+      statusText: Gateway Timeout
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "cisInfo": {
+                "requestedCis": "string"
+              },
+              "errorMessage": "Отсутствует ответ системы",
+              "errorCode": "504"
+            },
+            {
+              "cisInfo": {
+                "requestedCis": "string"
+              },
+              "errorMessage": "string",
+              "errorCode": "504"
+            },
+            {
+              "cisInfo": {
+                "requestedCis": "string"
+              },
+              "errorMessage": "Отсутствует ответ системы",
+              "errorCode": "504"
+            }
+          ]
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/info"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа Cм. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021LLLLLLLLLLLLL"
+          ]
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает подробную информацию о запрашиваемом списке КИ / КиЗ: в одном запросе указывается как один КИ / КиЗ, так и несколько (не более 1000). Также метод возвращает информацию о КИ товаров, отгруженных из стран ЕАЭС (если отгрузка была оформлена с экземплярным указанием КИ).
+
+  Метод не предназначен для проверки сведений при сканировании КИ на ККТ при реализации маркированных товаров.
+
+  Коды идентификации в запросе указываются в нормализованном виде (без скобок, обрамляющих идентификаторы применения).
+
+  Для товарных групп «Альтернативная табачная продукция», «Никотиносодержащая продукция» и «Табачная продукция» поиск КИ реализован с МРЦ и без МРЦ для единиц товаров и групповых упаковок. Если произойдёт совпадение КИ потребительской упаковки, указанного с учётом МРЦ или иной информации, с КИ транспортной упаковки, то в ответе будут выведены значения и по потребительской, и по транспортной упаковкам.
+
+  Общедоступная информация:
+
+  Тип приватности: c токеном авторизации.

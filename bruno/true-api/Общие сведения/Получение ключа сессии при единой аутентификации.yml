@@ -1,0 +1,139 @@
+info:
+  name: Получение ключа сессии при единой аутентификации
+  type: http
+  seq: 2
+  tags:
+    - Общие сведения
+    - Аутентификация
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/simpleSignIn"
+  body:
+    type: json
+    data: |-
+      {
+        "uuid": "string",
+        "data": "string",
+        "inn": "string",
+        "details": "string",
+        "unitedToken": true
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "string",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e.........mk6qe0lB12w9zEs"
+          }
+  - name: 400 Response
+    description: "2.1. Код 400, если не указан параметр «uuid»:"
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "string",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "В запросе отсутствует идентификат�ор авторизации (UUID)"
+          }
+  - name: 403 Response
+    description: "2.8. Код 403, если «data» подписан УКЭП сотрудника, который не является добавленным пользователем организации, под которой происходит попытка авторизации:"
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "string",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "string",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: Примечание Поддержка токена в формате JWT сохранена до конца 2026 года

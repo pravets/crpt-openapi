@@ -1,0 +1,145 @@
+info:
+  name: Метод отправки документа ЭДО на повторную обработку
+  type: http
+  seq: 5
+  tags:
+    - Документы и чеки
+
+http:
+  method: POST
+  url: "{{baseUrl}}/document/reprocess"
+  params:
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "documentId": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/document/reprocess"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "documentId": "string"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "code": 0,
+            "description": "Ok",
+            "resultDocId": "UTXMNGR00000000000000000013-9339",
+            "sourceDocId": "UUD00000000000000000007-5340",
+            "nextTimeToReprocess": "2021-02-24T18:33:49.110Z"
+          }
+  - name: 400 Response
+    description: Ошибка 400
+    request:
+      url: "{{baseUrl}}/document/reprocess"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "documentId": "string"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/document/reprocess"
+      method: POST
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "documentId": "string"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Данный метод используется для отправки документов УПД, УКД, УПД(и), УКД(и) и УПД (отгрузка продукции), ранее загруженных в ГИС МТ, на повторную обработку после исправления ошибки, найденной при предыдущей обработке документа.
+
+  Возможна повторная загрузка следующих типов документов: UNIVERSAL_TRANSFER_DOCUMENT, UNIVERSAL_CORRECTION_DOCUMENT, UNIVERSAL_TRANSFER_DOCUMENT_FIX, UNIVERSAL_CORRECTION_DOCUMENT_FIX, FIXATION (см. Справочник «Типы документов» ). При загрузке иных типов документов будет выдана ошибка.
+
+  После того как документ будет отправлен и принят на повторную обработку статус документа изменится на «IN_PROGRESS» - «Проверяется» (см. « Справочник «Статусы документов» »).
+
+  Повторная обработка недоступна для документов в статусах: CHECKED_OK, CANCELLED, PROCESSING_ERROR, IN_PROGRESS (см. « Справочник «Статусы документов» »).
+
+  Документ не будет обработан повторно, если по результату его первой обработки в ГИС МТ были зафиксированы следующие типы ошибок:
+
+  Код ошибки возвращается в параметре «code» («Уникальный код ошибки»).
+
+  Повторная обработка документа возможна не ранее, чем через 4 часа.
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/document/reprocess?pg=shoes"
+  Content-Type: application/json
+  Authorization: Bearer <ТОКЕН>
+
+  Тип приватности: приватный.

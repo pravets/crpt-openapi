@@ -1,0 +1,59 @@
+info:
+  name: Запрос авторизации при единой аутентификации
+  type: http
+  seq: 1
+  tags:
+    - Общие сведения
+    - Аутентификация
+
+http:
+  method: GET
+  url: "{{baseUrl}}/auth/key"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/auth/key"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+            "data": "GNUFBAZBMPIUUMLXNMIOGSHTGFXZMT"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/auth/key"
+      method: GET
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Примечание Получение токена в формате UUID без предварительного запроса на получение уникальной пары доступно до сентября 2026 года
+
+  Метод используется для получения уникальной пары: UUID (идентификатора текущей аутентификации) и сгенерированных случайных данных, которые в дальнейшем подписываются участником оборота товаров и передаются в метод получения ключа сессии при единой аутентификации для дальнейшего получения токена в формате UUID / JWT по УКЭП:

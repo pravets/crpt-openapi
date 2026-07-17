@@ -1,0 +1,4 @@
+name: Демонстрационный стенд (песочница), API v4
+variables:
+  - name: baseUrl
+    value: https://markirovka.sandbox.crptech.ru/api/v4/true-api

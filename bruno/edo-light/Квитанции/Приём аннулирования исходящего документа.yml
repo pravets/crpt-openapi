@@ -1,0 +1,195 @@
+info:
+  name: Приём аннулирования исходящего документа
+  type: http
+  seq: 5
+  tags:
+    - Квитанции
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/events/:event_id/signature"
+  params:
+    - name: doc_id
+      value: ""
+      type: path
+      description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+    - name: event_id
+      value: ""
+      type: path
+      description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+  body:
+    type: text
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Приём аннулирования выполнен (Created)
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/events/:event_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 201
+      statusText: Created
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Нет прав на подписание квитанции» — УКЭП не прошла проверку;
+      - «Документ [doc_id] не найден в базе»;
+      - «Неверный формат параметра запроса 'doc_id'».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/events/:event_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/events/:event_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: Документ или квитанция не найдены в базе данных
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/events/:event_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/events/:event_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод используется для приёма (согласия с) аннулирования исходящего документа — подписания квитанции DP_PRANNUL.
+  doc_id — идентификатор аннулируемого документа, event_id — идентификатор квитанции DP_PRANNUL.
+  В случае успешного выполнения метода возвращается код 201 «Created».
+
+  Тело запроса — откреплённая подпись в base64 (заголовок Content-encoding: base64).

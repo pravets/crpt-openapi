@@ -1,0 +1,280 @@
+info:
+  name: Метод отправки на модерацию карточки товаров в статусе «Черновик»
+  type: http
+  seq: 18
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/feed-moderation"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: good_id
+      value: ""
+      type: query
+      description: Идентификатор товара в Национальном каталоге Обязательный, если не указаны параметры «gtin» («Код товара») и «inn» («ИНН аккаунта»)
+      disabled: true
+    - name: gtin
+      value: ""
+      type: query
+      description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+      disabled: true
+    - name: inn
+      value: ""
+      type: query
+      description: ИНН аккаунта Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-moderation"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указаны параметры «gtin» («Код товара») и «inn» («ИНН аккаунта»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН аккаунта Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "good_id": 123456,
+              "error": "Черновик GTIN 02XXXXXXXX601050000383 не в том статусе."
+            }
+          }
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/feed-moderation"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указаны параметры «gtin» («Код товара») и «inn» («ИНН аккаунта»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН аккаунта Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/feed-moderation"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указаны параметры «gtin» («Код товара») и «inn» («ИНН аккаунта»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН аккаунта Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/feed-moderation"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указаны параметры «gtin» («Код товара») и «inn» («ИНН аккаунта»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН аккаунта Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed-moderation"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указаны параметры «gtin» («Код товара») и «inn» («ИНН аккаунта»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН аккаунта Обязательный, если не указан «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод отправляет на модерацию, для указанных в запросе good_id или код товара + ИНН, созданные ранее карточки товаров в статусе «Черновик».
+
+  Если указаны более одного из обязательных параметров, то возвращается результат выборки, соответствующий данному алгоритму:
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/feed-moderation?good_id=7126"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Пример: curl -X GET "<url стенда>/nk/feed-moderation?gtin=04640002660886&inn=123455678"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

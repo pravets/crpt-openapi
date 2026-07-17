@@ -1,0 +1,391 @@
+info:
+  name: Метод получения списка всех принадлежащих одному владельцу товаров
+  type: http
+  seq: 13
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/etagslist"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: brand_id
+      value: ""
+      type: query
+      description: Идентификатор товарного знака
+      disabled: true
+    - name: cat_id
+      value: ""
+      type: query
+      description: Идентификатор категории Идентификатор любой из категорий товаров
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: offset
+      value: ""
+      type: query
+      description: Смещение относительно начала списка выдачи
+      disabled: true
+    - name: owner_inn
+      value: ""
+      type: query
+      description: ИНН компании владельца товаров
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/etagslist"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: brand_id
+          value: ""
+          type: query
+          description: Идентификатор товарного знака
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала списка выдачи
+          disabled: true
+        - name: owner_inn
+          value: ""
+          type: query
+          description: ИНН компании владельца товаров
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "goods_count": 100,
+              "offset": 0,
+              "last_product_number": 100,
+              "total": 1100,
+              "goods": [
+                {
+                  "good_id": 3,
+                  "etag": "32b3502ff24f7c30"
+                },
+                {
+                  "good_id": 4,
+                  "etag": "8529021f8808aaa9"
+                },
+                {
+                  "good_id": 5,
+                  "etag": "4c23e42d0384a622"
+                }
+              ]
+            }
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/etagslist"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: brand_id
+          value: ""
+          type: query
+          description: Идентификатор товарного знака
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала списка выдачи
+          disabled: true
+        - name: owner_inn
+          value: ""
+          type: query
+          description: ИНН компании владельца товаров
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <goods_count>100</goods_count>
+                  <offset>0</offset>
+                  <last_product_number>100</last_product_number>
+                  <total>1100</total>
+                  <goods>
+                      <item>
+                          <good_id>3</good_id>
+                          <etag>32b3502ff24f7c30</etag>
+                      </item>
+                      <item>
+                          <good_id>4</good_id>
+                          <etag>8529021f8808aaa9</etag>
+                      </item>
+                      <item>
+                          <good_id>5</good_id>
+                          <etag>4c23e42d0384a622</etag>
+                      </item>
+                  </goods>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/etagslist"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: brand_id
+          value: ""
+          type: query
+          description: Идентификатор товарного знака
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала списка выдачи
+          disabled: true
+        - name: owner_inn
+          value: ""
+          type: query
+          description: ИНН компании владельца товаров
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/etagslist"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: brand_id
+          value: ""
+          type: query
+          description: Идентификатор товарного знака
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала списка выдачи
+          disabled: true
+        - name: owner_inn
+          value: ""
+          type: query
+          description: ИНН компании владельца товаров
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/etagslist"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: brand_id
+          value: ""
+          type: query
+          description: Идентификатор товарного знака
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала списка выдачи
+          disabled: true
+        - name: owner_inn
+          value: ""
+          type: query
+          description: ИНН компании владельца товаров
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/etagslist"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: brand_id
+          value: ""
+          type: query
+          description: Идентификатор товарного знака
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала списка выдачи
+          disabled: true
+        - name: owner_inn
+          value: ""
+          type: query
+          description: ИНН компании владельца товаров
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает список всех товаров, принадлежащих определенному владельцу, вместе с хешем содержания страницы. Предназначен для получения списка хешей, сравнения с локальным хранилищем и обновления информации по товарам (см. раздел « Метод получения полной информации о товаре »), для которых хеш изменился (есть новые данные). Таким образом возможно выявить товары, в карточки которых были внесены изменения.
+
+  Метод возвращает список товаров и их хеши по заданным фильтрам. Если не указан ни один из необязательных параметров, в ответе будут возвращаться записи из всего списка товаров.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/etagslist?format=json&brand_id="string"&owner_inn="string"&cat_id=30717&offset=1"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: приватный.

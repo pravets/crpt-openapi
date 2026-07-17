@@ -1,0 +1,107 @@
+info:
+  name: Метод получения статуса задания на выгрузку
+  type: http
+  seq: 4
+  tags:
+    - Выгрузки данных
+
+http:
+  method: GET
+  url: "{{baseUrl}}/dispenser/tasks/:taskId"
+  params:
+    - name: taskId
+      value: ""
+      type: path
+      description: Идентификатор задания на выгрузку. Идентификатор возвращается в ответе метода « Метод создания нового задания на выгрузку »
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа. Кодовое значение товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Значение должно соответствовать значению параметра «productGroupCode» («Товарная группа») задания на выгрузку, идентификатор которой указан в параметре «taskId» («Идентификатор задания на выгрузку»). Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/tasks/:taskId"
+      method: GET
+      params:
+        - name: taskId
+          value: ""
+          type: path
+          description: Идентификатор задания на выгрузку. Идентификатор возвращается в ответе метода « Метод создания нового задания на выгрузку »
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа. Кодовое значение товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Значение должно соответствовать значению параметра «productGroupCode» («Товарная группа») задания на выгрузку, идентификатор которой указан в параметре «taskId» («Идентификатор задания на выгрузку»). Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "string",
+            "name": "string",
+            "createDate": "string",
+            "currentStatus": "string",
+            "orgInn": "string",
+            "productGroupCode": 0,
+            "downloadingStorageDays": 0,
+            "productGroups": [
+              {
+                "id": "string",
+                "name": "string"
+              }
+            ],
+            "timeoutSecs": 0
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/tasks/:taskId"
+      method: GET
+      params:
+        - name: taskId
+          value: ""
+          type: path
+          description: Идентификатор задания на выгрузку. Идентификатор возвращается в ответе метода « Метод создания нового задания на выгрузку »
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа. Кодовое значение товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Значение должно соответствовать значению параметра «productGroupCode» («Товарная группа») задания на выгрузку, идентификатор которой указан в параметре «taskId» («Идентификатор задания на выгрузку»). Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения статуса задания на выгрузку по идентификатору задания, полученному в ответе метода « Метод создания нового задания на выгрузку ».
+
+  Максимальное количество запросов в минуту — 5.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/dispenser/tasks/11aaa1a1-11a1-1111-a1a1-aa11a11a11a1?pg=2"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

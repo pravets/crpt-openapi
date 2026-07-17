@@ -1,0 +1,253 @@
+info:
+  name: Метод подачи УПД на предварительную проверку
+  type: http
+  seq: 6
+  tags:
+    - Документы и чеки
+
+http:
+  method: POST
+  url: "{{baseUrl}}/doc/validator/create"
+  params:
+    - name: content
+      value: ""
+      type: query
+      description: Документ, закодированный в base64 Для документа должна использоваться кодировка Windows-1251
+    - name: documentFormat
+      value: ""
+      type: query
+      description: Формат документа Поддерживается только формат XML
+    - name: documentType
+      value: ""
+      type: query
+      description: Тип документа Поддерживается только тип UPD (универсальный передаточный документ)
+    - name: id
+      value: ""
+      type: query
+      description: ID документа
+    - name: preliminaryWarnings
+      value: "[]"
+      type: query
+      description: "Массив со списком дополнительных предварительных проверок, которые необходимо выполнить Допустимые значения: 3 — разрешительные документы. Проверяется статус разрешительных документов, указанных для всех КИ, в том числе для вложенных в агрегат. Описание групп статусов разрешительных документов см. в справочнике"
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/doc/validator/create"
+      method: POST
+      params:
+        - name: content
+          value: ""
+          type: query
+          description: Документ, закодированный в base64 Для документа должна использоваться кодировка Windows-1251
+        - name: documentFormat
+          value: ""
+          type: query
+          description: Формат документа Поддерживается только формат XML
+        - name: documentType
+          value: ""
+          type: query
+          description: Тип документа Поддерживается только тип UPD (универсальный передаточный документ)
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+        - name: preliminaryWarnings
+          value: "[]"
+          type: query
+          description: "Массив со списком дополнительных предварительных проверок, которые необходимо выполнить Допустимые значения: 3 — разрешительные документы. Проверяется статус разрешительных документов, указанных для всех КИ, в том числе для вложенных в агрегат. Описание групп статусов разрешительных документов см. в справочнике"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "string"
+          }
+  - name: 401 Response
+    description: '2.1. Код 401: "Невалидный токен".'
+    request:
+      url: "{{baseUrl}}/doc/validator/create"
+      method: POST
+      params:
+        - name: content
+          value: ""
+          type: query
+          description: Документ, закодированный в base64 Для документа должна использоваться кодировка Windows-1251
+        - name: documentFormat
+          value: ""
+          type: query
+          description: Формат документа Поддерживается только формат XML
+        - name: documentType
+          value: ""
+          type: query
+          description: Тип документа Поддерживается только тип UPD (универсальный передаточный документ)
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+        - name: preliminaryWarnings
+          value: "[]"
+          type: query
+          description: "Массив со списком дополнительных предварительных проверок, которые необходимо выполнить Допустимые значения: 3 — разрешительные документы. Проверяется статус разрешительных документов, указанных для всех КИ, в том числе для вложенных в агрегат. Описание групп статусов разрешительных документов см. в справочнике"
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Текст ошибки"
+          }
+  - name: 409 Response
+    description: '2.2. Код 409: "Проверяемый документ находится в несуществующем статусе".'
+    request:
+      url: "{{baseUrl}}/doc/validator/create"
+      method: POST
+      params:
+        - name: content
+          value: ""
+          type: query
+          description: Документ, закодированный в base64 Для документа должна использоваться кодировка Windows-1251
+        - name: documentFormat
+          value: ""
+          type: query
+          description: Формат документа Поддерживается только формат XML
+        - name: documentType
+          value: ""
+          type: query
+          description: Тип документа Поддерживается только тип UPD (универсальный передаточный документ)
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+        - name: preliminaryWarnings
+          value: "[]"
+          type: query
+          description: "Массив со списком дополнительных предварительных проверок, которые необходимо выполнить Допустимые значения: 3 — разрешительные документы. Проверяется статус разрешительных документов, указанных для всех КИ, в том числе для вложенных в агрегат. Описание групп статусов разрешительных документов см. в справочнике"
+          disabled: true
+    response:
+      status: 409
+      statusText: Conflict
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Текст ошибки"
+          }
+  - name: 500 Response
+    description: '2.3. Код 500: "Внутренняя ошибка сервиса".'
+    request:
+      url: "{{baseUrl}}/doc/validator/create"
+      method: POST
+      params:
+        - name: content
+          value: ""
+          type: query
+          description: Документ, закодированный в base64 Для документа должна использоваться кодировка Windows-1251
+        - name: documentFormat
+          value: ""
+          type: query
+          description: Формат документа Поддерживается только формат XML
+        - name: documentType
+          value: ""
+          type: query
+          description: Тип документа Поддерживается только тип UPD (универсальный передаточный документ)
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+        - name: preliminaryWarnings
+          value: "[]"
+          type: query
+          description: "Массив со списком дополнительных предварительных проверок, которые необходимо выполнить Допустимые значения: 3 — разрешительные документы. Проверяется статус разрешительных документов, указанных для всех КИ, в том числе для вложенных в агрегат. Описание групп статусов разрешительных документов см. в справочнике"
+          disabled: true
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Текст ошибки"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/doc/validator/create"
+      method: POST
+      params:
+        - name: content
+          value: ""
+          type: query
+          description: Документ, закодированный в base64 Для документа должна использоваться кодировка Windows-1251
+        - name: documentFormat
+          value: ""
+          type: query
+          description: Формат документа Поддерживается только формат XML
+        - name: documentType
+          value: ""
+          type: query
+          description: Тип документа Поддерживается только тип UPD (универсальный передаточный документ)
+        - name: id
+          value: ""
+          type: query
+          description: ID документа
+        - name: preliminaryWarnings
+          value: "[]"
+          type: query
+          description: "Массив со списком дополнительных предварительных проверок, которые необходимо выполнить Допустимые значения: 3 — разрешительные документы. Проверяется статус разрешительных документов, указанных для всех КИ, в том числе для вложенных в агрегат. Описание групп статусов разрешительных документов см. в справочнике"
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  После подачи УПД на стороне ГИС МТ выполняются следующие действия:
+
+  Описание ошибок, которые возвращаются в случае, если проверка не пройдена, см. в документе «Описание ошибок обработки документов в личном кабинете и по API» и в «Методических рекомендациях по описанию сведений о передаче маркированных товаров при оформлении электронных документов для уведомления ГИС МТ об обороте маркированной продукции» в разделе «Описание кодов ошибки при проверке документов и КИ».
+
+  На проверку могут быть отправлены только документы УПД и УПДи до осуществления приёмки продукции со стороны покупателя.
+
+  Данный метод поддерживает два типа аутентификационного токена: участника оборота товаров и Оператора ЭДО.
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/doc/validator/create"
+  -H "accept: application/json"
+  -H "Content-Type: application/json"
+  --data-raw "{\"id\":\"string\",\"content\":\"string\",\"documentType\":\"string\",\"documentFormat\":\"string\"}"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

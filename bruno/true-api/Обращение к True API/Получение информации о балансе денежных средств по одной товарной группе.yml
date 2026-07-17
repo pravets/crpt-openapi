@@ -1,0 +1,120 @@
+info:
+  name: Получение информации о балансе денежных средств по одной товарной группе
+  type: http
+  seq: 14
+  tags:
+    - Обращение к True API
+    - Баланс УОТ
+
+http:
+  method: GET
+  url: "{{baseUrl}}/elk/product-groups/balance"
+  params:
+    - name: productGroupId
+      value: ""
+      type: query
+      description: Идентификатор товарной группы УОТ см. « Справочник «Список поддерживаемых товарных групп» »
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/product-groups/balance"
+      method: GET
+      params:
+        - name: productGroupId
+          value: ""
+          type: query
+          description: Идентификатор товарной группы УОТ см. « Справочник «Список поддерживаемых товарных групп» »
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "balance": 120000000,
+            "organisationId": 600000749,
+            "productGroupId": 8
+          }
+  - name: 401 Response
+    description: "2.2. Код 401 В случае, если в запросе не указан токен:"
+    request:
+      url: "{{baseUrl}}/elk/product-groups/balance"
+      method: GET
+      params:
+        - name: productGroupId
+          value: ""
+          type: query
+          description: Идентификатор товарной группы УОТ см. « Справочник «Список поддерживаемых товарных групп» »
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <UnauthorizedException>
+          <error>unauthorized</error>
+          <error_description>Full authentication is required to access this resource</error_description>
+          </UnauthorizedException>
+  - name: 404 Response
+    description: "2 В случае ошибок: 2.1. Код 404 В случае, если в ответе вернулся пустой массив, означающий указание в запросе некорректного/несуществующего в Системе ГИС МТ ID УОТ либо отсутствие у УОТ лицевого счёта в Системе ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/elk/product-groups/balance"
+      method: GET
+      params:
+        - name: productGroupId
+          value: ""
+          type: query
+          description: Идентификатор товарной группы УОТ см. « Справочник «Список поддерживаемых товарных групп» »
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "В токене указано некорректное значение параметра pid либо в Системе ГИС МТ нет пользователя с идентификаторами {0} нет лицевого счё�та в Системе ГИС МТ, где {0} это pid берется из tokena"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/product-groups/balance"
+      method: GET
+      params:
+        - name: productGroupId
+          value: ""
+          type: query
+          description: Идентификатор товарной группы УОТ см. « Справочник «Список поддерживаемых товарных групп» »
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения значения баланса лицевого счета, запрашиваемого УОТ по одной товарной группы. Выполнить запрос можно только для получения информации о собственном балансе денежных средств.
+
+  Тип приватности: приватный.

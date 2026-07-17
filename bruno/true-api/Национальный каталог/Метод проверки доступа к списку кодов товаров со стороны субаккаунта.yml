@@ -1,0 +1,205 @@
+info:
+  name: Метод проверки доступа к списку кодов товаров со стороны субаккаунта
+  type: http
+  seq: 20
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/linked-gtins"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: gtin
+      value: ""
+      type: query
+      description: Код товара Указывается для проверки доступности конкретного кода товара. Можно указать несколько значений. Максимально допустимое значение — 10 000, минимально допустимое значение — 0
+      disabled: true
+    - name: inn
+      value: ""
+      type: query
+      description: ИНН субаккаунта ИНН субаккаунта, для которого необходимо вывести список доступных кодов товаров
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: Количество записей в ответе Максимально допустимое значение — 10 000 (по умолчанию). Минимально допустимое значение — 1
+      disabled: true
+    - name: offset
+      value: ""
+      type: query
+      description: Смещение относительно начала выдачи Минимально допустимое значение — 0. При указании значения, превышающего значение парамера «limit» («Количество записей в ответе»), вернётся пустой ответ
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/linked-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Указывается для проверки доступности конкретного кода товара. Можно указать несколько значений. Максимально допустимое значение — 10 000, минимально допустимое значение — 0
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН субаккаунта ИНН субаккаунта, для которого необходимо вывести список доступных кодов товаров
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество записей в ответе Максимально допустимое значение — 10 000 (по умолчанию). Минимально допустимое значение — 1
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала выдачи Минимально допустимое значение — 0. При указании значения, превышающего значение парамера «limit» («Количество записей в ответе»), вернётся пустой ответ
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "linked_gtins": [
+                {
+                  "producer_inn": "string",
+                  "producer_name": "string",
+                  "gtin": "0000000000001"
+                },
+                {
+                  "producer_inn": "string",
+                  "producer_name": "string",
+                  "gtin": "0000000000002"
+                },
+                {
+                  "producer_inn": "string",
+                  "producer_name": "string",
+                  "gtin": "0000000000003"
+                }
+              ]
+            }
+          }
+  - name: 400 Response
+    description: Ошибка 400
+    request:
+      url: "{{baseUrl}}/nk/linked-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Указывается для проверки доступности конкретного кода товара. Можно указать несколько значений. Максимально допустимое значение — 10 000, минимально допустимое значение — 0
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН субаккаунта ИНН субаккаунта, для которого необходимо вывести список доступных кодов товаров
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество записей в ответе Максимально допустимое значение — 10 000 (по умолчанию). Минимально допустимое значение — 1
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала выдачи Минимально допустимое значение — 0. При указании значения, превышающего значение парамера «limit» («Количество записей в ответе»), вернётся пустой ответ
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/linked-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Указывается для проверки доступности конкретного кода товара. Можно указать несколько значений. Максимально допустимое значение — 10 000, минимально допустимое значение — 0
+          disabled: true
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН субаккаунта ИНН субаккаунта, для которого необходимо вывести список доступных кодов товаров
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество записей в ответе Максимально допустимое значение — 10 000 (по умолчанию). Минимально допустимое значение — 1
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение относительно начала выдачи Минимально допустимое значение — 0. При указании значения, превышающего значение парамера «limit» («Количество записей в ответе»), вернётся пустой ответ
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для проверки доступа к кодам товаров со стороны субаккаунта.
+
+  Примечание По механизму настройки субаккаунтов получить доступ можно только к российским кодам товаров (046) и кодам товаров индустриальной маркировки (004)
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/linked-gtins?gtin=0000000000000"
+  -H "accept: application/json"
+  -H "Authorization: Bearer<ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

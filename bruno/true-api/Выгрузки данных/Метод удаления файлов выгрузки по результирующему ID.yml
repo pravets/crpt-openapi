@@ -1,0 +1,82 @@
+info:
+  name: Метод удаления файлов выгрузки по результирующему ID
+  type: http
+  seq: 9
+  tags:
+    - Выгрузки данных
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/dispenser/results/:resultId"
+  params:
+    - name: resultId
+      value: ""
+      type: path
+      description: Параметр пути URL (см. документацию)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/results/:resultId"
+      method: DELETE
+      params:
+        - name: resultId
+          value: ""
+          type: path
+          description: Параметр пути URL (см. документацию)
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "ff5f55a5-777e-77f7-77b7-7b7fffff7b07",
+            "fileDeleteDate": "2024-06-05T10:48:10.131",
+            "taskId": "1111ccf1-e010-1111-ab11-1ef1ed111111"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/results/:resultId"
+      method: DELETE
+      params:
+        - name: resultId
+          value: ""
+          type: path
+          description: Параметр пути URL (см. документацию)
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для создания запроса на удаление выгрузки. При отправке идентификатора выгрузки в ответе возвращается дата и время, когда она будет удалена системой. Отмена удаления выгрузки недоступна.
+
+  Пример запроса:
+
+  Пример: curl -X DELETE "<url стенда>/dispenser/results/ff5f55a5-777e-77f7-77b7-7b7fffff7b07"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Параметр запроса:
+
+  Тип приватности: приватный.

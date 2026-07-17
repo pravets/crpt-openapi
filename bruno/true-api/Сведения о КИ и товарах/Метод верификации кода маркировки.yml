@@ -1,0 +1,74 @@
+info:
+  name: Метод верификации кода маркировки
+  type: http
+  seq: 7
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/check"
+  body:
+    type: json
+    data: |-
+      {
+        "codes": []
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "codes": []
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "result": true,
+            "quantity": 100
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/check"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "codes": []
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: Метод предназначен для проверки наличия в ГИС МТ указанного КИ с криптографической частью. Метод ограничен по частоте запросов (допустимая частота запросов метода - 2 секунды) и количеству КИ в запросе (максимальное количество КИ в запросе - 1000) и не предназначен для вызова с ККТ при сканировании КИ при розничной реализации.

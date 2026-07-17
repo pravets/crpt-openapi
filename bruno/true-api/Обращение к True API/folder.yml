@@ -1,0 +1,7 @@
+info:
+  name: Обращение к True API
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

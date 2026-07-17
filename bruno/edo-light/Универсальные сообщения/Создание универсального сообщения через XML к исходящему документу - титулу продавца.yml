@@ -1,0 +1,243 @@
+info:
+  name: Создание универсального сообщения через XML к исходящему документу / титулу продавца
+  type: http
+  seq: 1
+  tags:
+    - Универсальные сообщения
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+  params:
+    - name: doc_id
+      value: ""
+      type: path
+      description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Универсальное сообщение успешно создано
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "cd0ce000-0cd0-0c0c-0f0a-00000e0c000f"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Обмен УС со статусом {...} ограничен» — некорректный код УС;
+      - «Для документа невозможно создать УС» — для исходящих документов доступно только создание УС-комментариев (11540021);
+      - «Некорректное тело запроса» — тело запроса отсутствует;
+      - «Значение элемента ИдОтпрУС / ИдПолучУС не совпадает с данными отправителя / получателя, указанными в ИдФайл»;
+      - «Данные отправителя / получателя УС не совпадают с данными получателя / отправителя документа {filename}»;
+      - «Не найден файл {Документ.СведУС.ИмяПолФайл} на который ссылается УС»;
+      - «Имя загружаемого файла: {filename} не соответствует значению атрибута ИдФайл».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 403 Response
+    description: «Указанная в токене роль не разрешена при работе с документом»
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: «Документ не найден в БД» — не найден документ, для которого формируется универсальное сообщение
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/unimsg/:doc_id"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл универсального сообщения в формате XML (DP_UNISOOBSCH)
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод предназначен для создания универсального сообщения (УС) в формате XML к исходящему документу / титулу продавца.
+  УС — вспомогательный электронный документ для передачи информации о событиях, связанных с основным документом
+  (подписание, уточнение, аннулирование, отказ в подписи и др.).
+
+  Коды статусов УС см. в справочнике «Коды универсальных сообщений» документации ЭДО Лайт
+  (1999 — извещение о получении; 2999 — уведомление об уточнении; 3999 — отказ в принятии).
+
+  Примечание: создание УС доступно только на интеграционном стенде. С 1 июля 2026 года будет осуществлён переход текущих методов
+  на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
+
+  Для исходящих документов доступно только создание УС-комментариев (11540021).

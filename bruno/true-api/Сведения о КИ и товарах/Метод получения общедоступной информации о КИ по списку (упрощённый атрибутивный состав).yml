@@ -1,0 +1,315 @@
+info:
+  name: Метод получения общедоступной информации о КИ по списку (упрощённый атрибутивный состав)
+  type: http
+  seq: 3
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/short/list"
+  params:
+    - name: childsWithoutBrackets
+      value: ""
+      type: query
+      description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+      disabled: true
+  body:
+    type: json
+    data: |-
+      [
+        "010460000000000021AAAAAAAAA"
+      ]
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/short/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021AAAAAAAAA"
+          ]
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "result": {
+                "requestedCis": "string",
+                "cis": "string",
+                "gtin": "string",
+                "producerInn": "string",
+                "status": "RETIRED",
+                "emissionDate": "2020-07-16T18:51:27.000Z",
+                "applicationDate": "2020-07-16T18:51:39.000Z",
+                "parent": "string",
+                "packageType": "UNIT",
+                "ownerInn": "string",
+                "tnVedEaesGroup": "string",
+                "tnVedEaes": "string",
+                "receiptDate": "2020-07-16T18:51:28.000Z",
+                "emissionType": "LOCAL",
+                "specialAttributes": {
+                  "introducedDate": "2020-07-16T18:51:27.000Z",
+                  "nextCis": [
+                    "array[string]"
+                  ],
+                  "prevCis": [
+                    "array[string]"
+                  ],
+                  "ftsDecisionCode": "string",
+                  "eliminationReasonOther": "string",
+                  "approvementDocument": {
+                    "certDoc": [
+                      {
+                        "type": "CONFORMITY_CERTIFICATE",
+                        "number": "RU С-ХХ.АА00.B.00001/23",
+                        "date": "2023-01-01T00:00:00Z",
+                        "wellNumber": "string"
+                      },
+                      {
+                        "type": "CONFORMITY_DECLARATION",
+                        "number": "RU Д-ХХ.АА00.B.00001/23",
+                        "date": "2023-01-01T00:00:00Z",
+                        "wellNumber": "46246798"
+                      }
+                    ],
+                    "declarationDate": "11.08.2020",
+                    "declarationRegNumber": "10000000/060820/0000000",
+                    "declarationId": "string"
+                  },
+                  "productWeightGr": "string",
+                  "isVarQuantity": true
+                },
+                "statusEx": "FTS_RESPOND_NOT_OK",
+                "productGroup": "water",
+                "productGroupId": 13,
+                "extendedPackageType": "string",
+                "withdrawReason": "KM_SPOILED",
+                "licences": [
+                  {
+                    "licenceNumber": "string",
+                    "licenceDate": "2021-09-06"
+                  }
+                ]
+              }
+            }
+          ]
+  - name: 400 Response
+    description: "2.1. Код 400 при неверной структуре * .json в теле запроса:"
+    request:
+      url: "{{baseUrl}}/cises/short/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021AAAAAAAAA"
+          ]
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "JSON parse error: Cannot deserialize instance of `java.util.ArrayList` out of START_OBJECT token; nested exception is com.fasterxml.jackson.databind.exc.MismatchedInputException: Cannot deserialize instance of `java.util.ArrayList` out of START_OBJECT token\n at [Source: (PushbackInputStream); line: 1, column: 1]",
+            "error_description": "JSON некорректный"
+          }
+  - name: 401 Response
+    description: "2.5. Код 401 авторизация не пройдена, если указан токен, но он не валиден:"
+    request:
+      url: "{{baseUrl}}/cises/short/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021AAAAAAAAA"
+          ]
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Для доступа к этому ресурсу требуется полная аутентификация. Проверьте токен"
+          }
+  - name: 403 Response
+    description: "2.6. Код 403 при не подписанном договоре, если на КИ и агрегаты вернулась ошибка 403:"
+    request:
+      url: "{{baseUrl}}/cises/short/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021AAAAAAAAA"
+          ]
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "отсутствует действующий договор по <pg>"
+          }
+  - name: 404 Response
+    description: "2.8. Код 404 при запросе не найденных кодов в подписанной товарной группе:"
+    request:
+      url: "{{baseUrl}}/cises/short/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021AAAAAAAAA"
+          ]
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "result": {
+              "requestedCis": "010460000000000021AAAAAAAAA",
+              "gtin": "04600000000000"
+            },
+            "errorMessage": "КИ не найден",
+            "errorCode": "404"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/short/list"
+      method: POST
+      params:
+        - name: childsWithoutBrackets
+          value: ""
+          type: query
+          description: Признак получения кодов вложений без скобок Параметр считается устаревшим и не рекомендуется к использованию, при любом указанном или неуказанном значении игнорируется
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            "010460000000000021AAAAAAAAA"
+          ]
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает информацию о запрашиваемом списке кодов. Предназначен для проверки кодов перед отгрузкой / приёмкой товаров всех товарных групп, используя информацию только из «cis» («Массив КИ»).
+
+  Коды идентификации в запросе указываются в нормализованном виде (без скобок, обрамляющих идентификаторы применения).
+
+  Для товарных групп «Альтернативная табачная продукция», «Никотиносодержащая продукция» и «Табачная продукция» поиск КИ реализован с МРЦ и без МРЦ для единиц товаров и групповых упаковок. Если произойдёт совпадение КИ потребительской упаковки, указанного с учётом МРЦ или иной информации, с КИ транспортной упаковки, то в ответе будут выведены значения и по потребительской, и по транспортной упаковкам.
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

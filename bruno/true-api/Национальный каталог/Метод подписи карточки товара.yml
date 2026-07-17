@@ -1,0 +1,212 @@
+info:
+  name: Метод подписи карточки товара
+  type: http
+  seq: 10
+  tags:
+    - Национальный каталог
+
+http:
+  method: POST
+  url: "{{baseUrl}}/nk/feed-product-sign-pkcs"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+  body:
+    type: json
+    data: |-
+      [
+        {
+          "goodId": 3,
+          "base64Xml": "...",
+          "signature": "..."
+        },
+        {
+          "goodId": 3119690,
+          "base64Xml": "...",
+          "signature": "..."
+        },
+        {
+          "goodId": 521,
+          "base64Xml": "...",
+          "signature": "..."
+        }
+      ]
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign-pkcs"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 3,
+              "base64Xml": "...",
+              "signature": "..."
+            },
+            {
+              "goodId": 3119690,
+              "base64Xml": "...",
+              "signature": "..."
+            },
+            {
+              "goodId": 521,
+              "base64Xml": "...",
+              "signature": "..."
+            }
+          ]
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "signed": [
+                3,
+                521
+              ],
+              "errors": [
+                {
+                  "goodId": 3119690,
+                  "message": "Товар goodId: 3119690 не готов к подписанию"
+                }
+              ]
+            }
+          }
+  - name: 400 Response
+    description: "Возможные ошибки:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign-pkcs"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 3,
+              "base64Xml": "...",
+              "signature": "..."
+            },
+            {
+              "goodId": 3119690,
+              "base64Xml": "...",
+              "signature": "..."
+            },
+            {
+              "goodId": 521,
+              "base64Xml": "...",
+              "signature": "..."
+            }
+          ]
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed-product-sign-pkcs"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "goodId": 3,
+              "base64Xml": "...",
+              "signature": "..."
+            },
+            {
+              "goodId": 3119690,
+              "base64Xml": "...",
+              "signature": "..."
+            },
+            {
+              "goodId": 521,
+              "base64Xml": "...",
+              "signature": "..."
+            }
+          ]
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для подписи карточки товара или нескольких карточек с помощью сертификата в формате PKCS#7. Отличается от «Метода получения массива ID прошедших валидацию товаров» (/nk/feed-product-sign) тем, что из содержимого карточки товара в формате * .xml исключается подпись, которая при использовании текущего метода передаётся отдельным параметром в запросе. Данные кодируются в BASE64.
+
+  Ограничения: Количество товаров в запросе — не более 10.
+
+  Тип приватности: приватный.

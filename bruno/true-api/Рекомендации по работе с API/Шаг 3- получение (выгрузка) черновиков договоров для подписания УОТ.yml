@@ -1,0 +1,76 @@
+info:
+  name: "Шаг 3: получение (выгрузка) черновиков договоров для подписания УОТ"
+  type: http
+  seq: 2
+  tags:
+    - Рекомендации по работе с API
+    - Регистрация УОТ
+
+http:
+  method: GET
+  url: "{{baseUrl}}/elk/crm-api/document"
+  params:
+    - name: guid
+      value: ""
+      type: query
+      description: ID черновика договора Значение параметра "document" ("ID документа") в ответе метода " Получение сведений по черновикам заключённых договоров между УОТ и Оператором ГИС МТ " (elk/crm-api/documents)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/crm-api/document"
+      method: GET
+      params:
+        - name: guid
+          value: ""
+          type: query
+          description: ID черновика договора Значение параметра "document" ("ID документа") в ответе метода " Получение сведений по черновикам заключённых договоров между УОТ и Оператором ГИС МТ " (elk/crm-api/documents)
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/crm-api/document"
+      method: GET
+      params:
+        - name: guid
+          value: ""
+          type: query
+          description: ID черновика договора Значение параметра "document" ("ID документа") в ответе метода " Получение сведений по черновикам заключённых договоров между УОТ и Оператором ГИС МТ " (elk/crm-api/documents)
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Подробное описание метода см. в разделе " Получение сведений по заключённым договорам между УОТ и ГИС МТ ".
+
+  Наименование для файла договора необходимо брать из поля "Content-Disposition" после "filename="UTF-8"" заголовка ответа метода. Имя файла необходимо декодировать.
+
+  Пример:
+
+  Пример: Content-Disposition: attachment; filename=" _00691_20.pdf"; filename*=UTF-8''%D0%9C%D0%9F_00691_20.pdf
+  %D0%9C%D0%9F_00691_20.pdf -> МП_00691_20.pdf
+
+  После выгрузки и сохранения договора необходимо перейти к шагу 5.
+
+  Этот же метод (path+HTTP-метод) описан также в разделе 3.7.2 «Получение сведений по заключённым договорам между УОТ и ГИС МТ» документации.

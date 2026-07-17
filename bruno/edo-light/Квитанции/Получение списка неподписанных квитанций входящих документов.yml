@@ -1,0 +1,86 @@
+info:
+  name: Получение списка неподписанных квитанций входящих документов
+  type: http
+  seq: 2
+  tags:
+    - Квитанции
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/incoming-documents/unsigned-events"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Список квитанций для подписания
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/unsigned-events"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "items": [
+              {
+                "id": "cffce1db-195f-4770-9738-d50c2fd9ca8a",
+                "type": 113,
+                "document": {
+                  "id": "8c6000fc-a18e-4711-88b7-11b3e16e6e2c"
+                }
+              }
+            ]
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/unsigned-events"
+      method: GET
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/unsigned-events"
+      method: GET
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: Метод возвращает список квитанций, ожидающих подписания, которые относятся к входящим документам.

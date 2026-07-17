@@ -1,0 +1,7 @@
+info:
+  name: Национальный каталог
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

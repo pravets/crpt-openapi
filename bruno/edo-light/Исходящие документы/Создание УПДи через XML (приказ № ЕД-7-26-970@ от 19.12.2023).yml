@@ -1,0 +1,363 @@
+info:
+  name: Создание УПДи через XML (приказ № ЕД-7-26/970@ от 19.12.2023)
+  type: http
+  seq: 11
+  tags:
+    - Исходящие документы
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Файл документа (XML)
+      - name: doc_id
+        type: text
+        value: ""
+        description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+      - name: signature
+        type: text
+        value: ""
+        description: Откреплённая УКЭП содержимого файла документа в формате base64
+      - name: product_group
+        type: text
+        value: ""
+        description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+      - name: movement_control
+        type: text
+        value: ""
+        description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: УПДи успешно создан
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "cd0ce000-0cd0-0c0c-0f0a-00000e0c000f"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+      - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+      - «Неверный тип загружаемого файла: Content-Type: (...)»;
+      - «Неверный тип документа загружаемого xml файла» (например, УКДи вместо УПД, УПД по старому приказу вместо нового);
+      - «Неверный формат параметра "product_group" / "signature"»;
+      - «Неверный формат параметра запроса "parent_id"»;
+      - «Нет прав на подписание документа».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 403 Response
+    description: Недостаточно прав для выполнения действия — в токене указана роль, которая не предусматривает выполнение данного запроса
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: «Не найден связанный документ <идентификатор запрашиваемого документа>» — не найден УПД, для которого формируется УПДи
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 422 Response
+    description: |
+      Ошибка обработки документа. Типичные сообщения:
+      - «Функция документа не соответствует функции родительского документа»;
+      - «В документе не переданы данные о маркировке <наименование отсутствующего атрибута>...» — требуется указать признак наличия маркированных товаров (N3 = 1 в ИдФайл).
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/updi/970"
+      method: POST
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа (XML)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор связанного документа (UUID). Может быть указан документ любого типа (DOCUMENTS), который есть в БД
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП содержимого файла документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы. См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+          - name: movement_control
+            type: text
+            value: ""
+            description: Объект, содержащий в себе флаги-параметры N4 и N5 (контроль движения маркированной продукции)
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод предназначен для создания УПДи через XML. Формирование УПДи производится по формату приказа ФНС России от 19.12.2023 № ЕД-7-26/970@,
+  в том числе для документа-основания по формату приказа ФНС России от 19.12.2018 № ММВ-7-15/820@.
+
+  Неоднозначность документации: в таблице заголовков указан Content-Type «application/x-www-form-urlencoded»,
+  однако состав тела (загрузка файла) и перечень ошибок («Отсутствует заголовок запроса: multipart/form-data»,
+  «Отсутствует form-data key: content») указывают на multipart/form-data — в спецификации принят multipart/form-data.

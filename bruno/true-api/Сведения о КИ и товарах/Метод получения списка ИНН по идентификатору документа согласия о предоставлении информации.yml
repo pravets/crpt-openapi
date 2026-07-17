@@ -1,0 +1,143 @@
+info:
+  name: Метод получения списка ИНН по идентификатору документа согласия о предоставлении информации
+  type: http
+  seq: 22
+  tags:
+    - Сведения о КИ и товарах
+    - Согласие на предоставление информации
+
+http:
+  method: GET
+  url: "{{baseUrl}}/agreement-registry/agreement/:id/trusted-inns"
+  params:
+    - name: id
+      value: ""
+      type: path
+      description: ID документа согласия
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/:id/trusted-inns"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа согласия
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "trustedInns": [
+              "string"
+            ],
+            "everyonePermitted": true,
+            "expirationDate": 0
+          }
+  - name: 400 Response
+    description: 2.В случае ошибок 400, 404 и 500.
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/:id/trusted-inns"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа согласия
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: 404 Response
+    description: 2.В случае ошибок 400, 404 и 500.
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/:id/trusted-inns"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа согласия
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: 500 Response
+    description: 2.В случае ошибок 400, 404 и 500.
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/:id/trusted-inns"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа согласия
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement/:id/trusted-inns"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа согласия
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: Метод возвращает список доверенных ИНН по указанному идентификатору согласия. Список ИНН возможно получить по подписанному/аннулированному согласию.

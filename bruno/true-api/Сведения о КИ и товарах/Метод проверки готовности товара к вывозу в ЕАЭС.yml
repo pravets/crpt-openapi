@@ -1,0 +1,159 @@
+info:
+  name: Метод проверки готовности товара к вывозу в ЕАЭС
+  type: http
+  seq: 6
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/eaes/check-export"
+  params:
+    - name: countryCode
+      value: ""
+      type: query
+      description: 'Код страны по справочнику ОКСМ Доступные значения: "112" – Республика Беларусь; "417" – Кыргызская Республика; "398" – Республика Казахстан; "051" – Республика Армения'
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» ". Если отсутствует, то поиск осуществляется по всем товарным группам
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "codes": [
+          "0111111111111111111111111",
+          "0222222222222222222222222"
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/eaes/check-export"
+      method: POST
+      params:
+        - name: countryCode
+          value: ""
+          type: query
+          description: 'Код страны по справочнику ОКСМ Доступные значения: "112" – Республика Беларусь; "417" – Кыргызская Республика; "398" – Республика Казахстан; "051" – Республика Армения'
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» ". Если отсутствует, то поиск осуществляется по всем товарным группам
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "codes": [
+              "0111111111111111111111111",
+              "0222222222222222222222222"
+            ]
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "code": "0333333333333333333333333",
+                "errorMessage": "По запрашиваемому КИ информация о товаре не найдена в НК",
+                "errorCode": 404
+              }
+            ]
+          }
+  - name: 400 Response
+    description: Ошибка 400
+    request:
+      url: "{{baseUrl}}/cises/eaes/check-export"
+      method: POST
+      params:
+        - name: countryCode
+          value: ""
+          type: query
+          description: 'Код страны по справочнику ОКСМ Доступные значения: "112" – Республика Беларусь; "417" – Кыргызская Республика; "398" – Республика Казахстан; "051" – Республика Армения'
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» ". Если отсутствует, то поиск осуществляется по всем товарным группам
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "codes": [
+              "0111111111111111111111111",
+              "0222222222222222222222222"
+            ]
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимый код страны"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/eaes/check-export"
+      method: POST
+      params:
+        - name: countryCode
+          value: ""
+          type: query
+          description: 'Код страны по справочнику ОКСМ Доступные значения: "112" – Республика Беларусь; "417" – Кыргызская Республика; "398" – Республика Казахстан; "051" – Республика Армения'
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» ". Если отсутствует, то поиск осуществляется по всем товарным группам
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "codes": [
+              "0111111111111111111111111",
+              "0222222222222222222222222"
+            ]
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для проверки доступности корректной отгрузки товаров в выбранное государство-член ЕАЭС, в том числе если участник оборота товаров, формирующий запрос, не является владельцем кода товаров, а товар, по которому запрашивается информация, отсутствует на балансе.
+
+  Проверка доступна только для кодов товаров, произведённых в РФ и Республике Беларусь.
+
+  Тип приватности: публичный (с использованием токена).

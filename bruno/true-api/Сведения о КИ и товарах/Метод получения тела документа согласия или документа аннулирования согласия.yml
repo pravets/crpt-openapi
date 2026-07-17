@@ -1,0 +1,144 @@
+info:
+  name: Метод получения тела документа согласия или документа аннулирования согласия
+  type: http
+  seq: 18
+  tags:
+    - Сведения о КИ и товарах
+    - Согласие на предоставление информации
+
+http:
+  method: GET
+  url: "{{baseUrl}}/agreement-registry/:id/print-form"
+  params:
+    - name: id
+      value: ""
+      type: path
+      description: ID документа
+    - name: documentType
+      value: ""
+      type: query
+      description: "Тип документа Возможные значения: AGREEMENT - документ согласия о предоставлении информации AGREEMENT_CANCELLATION - документ отмены согласия"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/agreement-registry/:id/print-form"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа
+        - name: documentType
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: AGREEMENT - документ согласия о предоставлении информации AGREEMENT_CANCELLATION - документ отмены согласия"
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "documentRegNumber": "AR631208202400074",
+            "ownerOrganisationName": "ОО�О \"X\"",
+            "ownerOrganisationInn": "1234567890",
+            "ownerOrganisationOgrn": "1234567890123",
+            "trustedOrganisations": [],
+            "everyonePermitted": true
+          }
+  - name: 400 Response
+    description: 2.В случае ошибки 400, 500.
+    request:
+      url: "{{baseUrl}}/agreement-registry/:id/print-form"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа
+        - name: documentType
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: AGREEMENT - документ согласия о предоставлении информации AGREEMENT_CANCELLATION - документ отмены согласия"
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: 500 Response
+    description: 2.В случае ошибки 400, 500.
+    request:
+      url: "{{baseUrl}}/agreement-registry/:id/print-form"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа
+        - name: documentType
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: AGREEMENT - документ согласия о предоставлении информации AGREEMENT_CANCELLATION - документ отмены согласия"
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error": "string",
+            "error_description": "string"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/agreement-registry/:id/print-form"
+      method: GET
+      params:
+        - name: id
+          value: ""
+          type: path
+          description: ID документа
+        - name: documentType
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: AGREEMENT - документ согласия о предоставлении информации AGREEMENT_CANCELLATION - документ отмены согласия"
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Данный метод используется для получения в ответе тела документа согласия или аннулирования согласия, которое необходимо подписать откреплённой УКЭП и вставить в поле "signature" в методе " Метод подписания документа согласия или документа аннулирования согласия о предоставлении информации ".
+
+  Тип приватности: приватный.

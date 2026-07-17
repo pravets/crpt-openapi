@@ -1,0 +1,615 @@
+info:
+  name: Метод получения краткой информации о товаре
+  type: http
+  seq: 8
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/short-product"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: cat_id
+      value: ""
+      type: query
+      description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: good_id
+      value: ""
+      type: query
+      description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+      disabled: true
+    - name: good_ids
+      value: ""
+      type: query
+      description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+      disabled: true
+    - name: gtin
+      value: ""
+      type: query
+      description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+      disabled: true
+    - name: gtins
+      value: ""
+      type: query
+      description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": [
+              {
+                "identified_by": [
+                  {
+                    "value": "0000000000001",
+                    "type": "ntin",
+                    "multiplier": 1,
+                    "level": "trade-unit"
+                  },
+                  {
+                    "value": "0000000000001",
+                    "type": "gtin",
+                    "multiplier": 1,
+                    "level": "trade-unit"
+                  },
+                  {
+                    "value": "0000000000002",
+                    "type": "gtin",
+                    "multiplier": 28,
+                    "level": "box"
+                  }
+                ],
+                "is_kit": false,
+                "is_set": false,
+                "set_gtins": [],
+                "update_date": "2019-09-26 17:27:21",
+                "producer_inn": null,
+                "producer_name": null,
+                "categories": [
+                  {
+                    "cat_id": 30302,
+                    "cat_name": "Кетчуп"
+                  },
+                  {
+                    "cat_id": 206309,
+                    "cat_name": "соусы"
+                  }
+                ],
+                "good_images": [
+                  {
+                    "photo_type": "facing",
+                    "photo_date": "2019-02-22T19:26:56+03:00",
+                    "photo_url": "https://<url>",
+                    "barcode": "0000000000001"
+                  }
+                ],
+                "good_attrs": [
+                  {
+                    "attr_id": 2478,
+                    "attr_name": "Полное наименование товара",
+                    "attr_value": "string",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Наименование товара и идентификация",
+                    "value_id": 175,
+                    "published_date": "2018-09-13T15:44:32+03:00",
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2504,
+                    "attr_name": "Товарный знак",
+                    "attr_value": "string",
+                    "attr_value_id": 199,
+                    "value_id": 160752,
+                    "attr_value_type": "",
+                    "attr_group_id": 80,
+                    "attr_group_name": "Происхождение и бренды",
+                    "published_date": "2018-09-13T15:46:54+03:00"
+                  },
+                  {
+                    "attr_id": 3793,
+                    "attr_name": "Базовая единица измерения",
+                    "attr_value": "ШТ",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Наименование товара и идентификация",
+                    "value_id": 13973319,
+                    "published_date": "2019-02-22T19:27:42+03:00",
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  }
+                ],
+                "remainder_type": null,
+                "is_tech_gtin": false
+              }
+            ]
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <item>
+                      <identified_by>
+                          <item>
+                              <value>0000000000001</value>
+                              <type>gtin</type>
+                              <multiplier>1</multiplier>
+                              <level>trade-unit</level>
+                          </item>
+                          <item>
+                              <value>0000000000002</value>
+                              <type>gtin</type>
+                              <multiplier>28</multiplier>
+                              <level>box</level>
+                          </item>
+                      </identified_by>
+                      <is_kit/>
+                      <is_set/>
+                      <set_gtins/>
+                      <update_date>2019-09-26 17:27:21</update_date>
+                      <producer_inn></producer_inn>
+                      <producer_name></producer_name>
+                      <categories>
+                          <item>
+                              <cat_id>30302</cat_id>
+                              <cat_name>Кетчуп</cat_name>
+                          </item>
+                          <item>
+                              <cat_id>206309</cat_id>
+                              <cat_name>соусы</cat_name>
+                          </item>
+                      </categories>
+                      <good_images>
+                          <item>
+                              <photo_type>facing</photo_type>
+                              <photo_date>2019-02-22T19:26:56+03:00</photo_date>
+                              <photo_url>https://национальный-каталог.рф/s3/med/e9996b0b-8ada-3ded-8062-86716f4f4b4c.jpg</photo_url>
+                              <barcode>0000000000001</barcode>
+                          </item>
+                      </good_images>
+                      <good_attrs>
+                          <item>
+                              <attr_id>2478</attr_id>
+                              <attr_name>Полное наименование товара</attr_name>
+                              <attr_value>string</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>24</attr_group_id>
+                              <attr_group_name>Наименование товара и идентификация</attr_group_name>
+                              <value_id>175</value_id>
+                              <published_date>2018-09-13T15:44:32+03:00</published_date>
+                              <gtin></gtin>
+                              <multiplier></multiplier>
+                              <level></level>
+                          </item>
+                          <item>
+                              <attr_id>2504</attr_id>
+                              <attr_name>Товарный знак</attr_name>
+                              <attr_value>string</attr_value>
+                              <attr_value_id>199</attr_value_id>
+                              <value_id>160752</value_id>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>80</attr_group_id>
+                              <attr_group_name>Происхождение и бренды</attr_group_name>
+                              <published_date>2018-09-13T15:46:54+03:00</published_date>
+                          </item>
+                          <item>
+                              <attr_id>3793</attr_id>
+                              <attr_name>Базовая единица измерения</attr_name>
+                              <attr_value>ШТ</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>24</attr_group_id>
+                              <attr_group_name>Наименование товара и идентификация</attr_group_name>
+                              <value_id>13973319</value_id>
+                              <published_date>2019-02-22T19:27:42+03:00</published_date>
+                              <gtin></gtin>
+                              <multiplier></multiplier>
+                              <level></level>
+                          </item>
+                      </good_attrs>
+                      <remainder_type/>
+                      <is_tech_gtin/>
+                  </item>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: 404 Response
+    description: "2.6. Код 404, если не найден продукт:"
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Данные не найдены"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/short-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Идентификатор любой из категорий товаров. Используется при запросе на поиск отсутствующего товара
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «gtins» («Список кодов товаров»); «gtin» («Код товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает краткую или полную информацию о продукте (товаре).
+
+  Требует обязательного указания одного из следующих параметров: идентификатор товара, код товара (штрих-код) с указанием идентификатора торговой сети, который относится к запрашиваемому аккаунту.
+
+  Если указаны более одного из обязательных параметров, то возвращается результат выборки, соответствующий данному алгоритму:
+
+  Примечание Если карточка создана с признаком «is_sim» («Признак создания карточки индустриальной маркировки»), то будет возвращён ответ, что такой карточки товара не существует; При указании одного из параметров gtin или good_id и одного из параметров gtins или good_ids , возвращается ошибка 400
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/short-product?gtin=0000000000000"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

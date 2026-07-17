@@ -1,0 +1,289 @@
+info:
+  name: Загрузка файла информации покупателя УПДи (приказ № 820 от 19.12.2018) в формате XML
+  type: http
+  seq: 6
+  tags:
+    - Входящие документы
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title"
+  headers:
+    - name: send_mchd_file
+      value: "false"
+      description: |
+        Способ передачи сведений об МЧД. Параметр необязательный.
+        - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+        - false — сведения об МЧД будут переданы в метаданных.
+        Если параметр не заполнен, значение по умолчанию — false.
+        При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+        берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Ссылка на XML документ (файл информации / титула покупателя)
+      - name: doc_id
+        type: text
+        value: ""
+        description: Идентификатор документа файла информации продавца (UUID)
+      - name: signature
+        type: text
+        value: ""
+        description: Откреплённая УКЭП XML документа в формате base64
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Файл информации покупателя УПДи успешно загружен
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "event_id": "875b2e45-3aad-4c55-831b-2c58a5d7bb40"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Неверно указан получатель документа» / «Неверно указан получатель»;
+      - «Получатель использует услуги ЭДО другого оператора» / «Отсутствует настройка роуминга с оператором ЭДО получателя»;
+      - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+      - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+      - «Неверный тип документа загружаемого xml файла» / «Неверный тип загружаемого документа»;
+      - «Подпись не прошла проверку в crypto» / «Нет прав на подписание квитанции»;
+      - «Документ уже подписан» / «Документ ... не может быть подписан»;
+      - «Функция документа и титула не совпадают»;
+      - «Документ [doc_id] не найден в базе»;
+      - «Неверный формат параметра запроса 'doc_id'».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 422 Response
+    description: |
+      Ошибка обработки документа. Типичные сообщения:
+      - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>»;
+      - «Значение ИнфПок.ИдИнфПрод.ЭП не соответствует подписи под титулом продавца».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/xml/updi/title"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Ссылка на XML документ (файл информации / титула покупателя)
+          - name: doc_id
+            type: text
+            value: ""
+            description: Идентификатор документа файла информации продавца (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод предназначен для загрузки файла информации покупателя УПДи согласно приказу ФНС № ММВ-7-15/820@ от 19.12.2018.
+  В ответе возвращается идентификатор события (event_id), по которому можно производить с документом необходимые действия
+  (редактирование, подписание и т. д.).

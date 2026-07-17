@@ -1,0 +1,7 @@
+info:
+  name: Исходящие документы
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

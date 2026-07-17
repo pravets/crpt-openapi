@@ -1,0 +1,765 @@
+info:
+  name: Метод получения карточки товара, в том числе неопубликованной карточки
+  type: http
+  seq: 9
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/feed-product"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: good_id
+      value: ""
+      type: query
+      description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+      disabled: true
+    - name: good_ids
+      value: ""
+      type: query
+      description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+      disabled: true
+    - name: gtin
+      value: ""
+      type: query
+      description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+      disabled: true
+    - name: gtins
+      value: ""
+      type: query
+      description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+      disabled: true
+    - name: subaccount
+      value: ""
+      type: query
+      description: Признак запроса карточки товара из-под субаккаунта
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+        - name: subaccount
+          value: ""
+          type: query
+          description: Признак запроса карточки товара из-под субаккаунта
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": [
+              {
+                "good_id": 720679,
+                "identified_by": [
+                  {
+                    "value": "0000000000001",
+                    "type": "gtin",
+                    "multiplier": 1,
+                    "level": "trade-unit"
+                  }
+                ],
+                "good_name": "Чешки детские",
+                "is_kit": false,
+                "is_set": false,
+                "set_gtins": [],
+                "good_url": "string",
+                "good_img": null,
+                "good_status": "draft",
+                "good_detailed_status": [
+                  "draft"
+                ],
+                "good_signed": false,
+                "good_mark_flag": false,
+                "good_turn_flag": false,
+                "flag_updated_date": "2020-08-18 14:18:03",
+                "updated_date": "2020-08-18 10:57:18",
+                "producer_inn": null,
+                "producer_name": null,
+                "categories": [
+                  {
+                    "cat_id": 30717,
+                    "cat_name": "Обувь домашняя"
+                  }
+                ],
+                "brand_id": null,
+                "brand_name": null,
+                "good_rating": null,
+                "good_images": [],
+                "good_attrs": [
+                  {
+                    "attr_id": 2478,
+                    "attr_name": "Полное наименование товара",
+                    "attr_value": "Чешки детские",
+                    "attr_value_type": null,
+                    "attr_group_id": 24,
+                    "attr_group_name": "Наименование товара и идентификация",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2630,
+                    "attr_name": "Страна производства",
+                    "attr_value": "RU",
+                    "attr_value_type": null,
+                    "attr_group_id": 80,
+                    "attr_group_name": "Происхождение и бренды",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2504,
+                    "attr_name": "Товарный знак",
+                    "attr_value": "string",
+                    "attr_value_type": null,
+                    "attr_group_id": 80,
+                    "attr_group_name": "Происхождение и бренды",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13898,
+                    "attr_name": "Материал верха, %",
+                    "attr_value": "ИСКУССТВЕННАЯ КОЖА",
+                    "attr_value_type": "100",
+                    "attr_group_id": 26,
+                    "attr_group_name": "Состав",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13901,
+                    "attr_name": "Материал подкладки, %",
+                    "attr_value": "ТКАНЬ",
+                    "attr_value_type": "100",
+                    "attr_group_id": 26,
+                    "attr_group_name": "Состав",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13902,
+                    "attr_name": "Материал низа / подошвы, %",
+                    "attr_value": "КОЖА (БАРАНЬЯ)",
+                    "attr_value_type": "100",
+                    "attr_group_id": 26,
+                    "attr_group_name": "Состав",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13905,
+                    "attr_name": "Вид обуви",
+                    "attr_value": "Чешки",
+                    "attr_value_type": null,
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13886,
+                    "attr_name": "Размер в штихмассовой системе",
+                    "attr_value": "26",
+                    "attr_value_type": null,
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 36,
+                    "attr_name": "Цвет",
+                    "attr_value": "БЕЛЫЙ",
+                    "attr_value_type": null,
+                    "attr_group_id": 103,
+                    "attr_group_name": "Потребительские свойства",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 3959,
+                    "attr_name": "Группа ТНВЭД",
+                    "attr_value": "6402",
+                    "attr_value_type": null,
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13933,
+                    "attr_name": "Код ТНВЭД",
+                    "attr_value": "6402000000",
+                    "attr_value_type": "",
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 3961,
+                    "attr_name": "Группа ОКПД2",
+                    "attr_value": "15.20.14",
+                    "attr_value_type": null,
+                    "attr_group_id": 22,
+                    "attr_group_name": "Нормативно-сопроводительная документация",
+                    "value_id": 0,
+                    "gtin": null,
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2439,
+                    "attr_name": "Ширина",
+                    "attr_value": "10",
+                    "attr_value_type": "см",
+                    "attr_group_id": 19,
+                    "attr_group_name": "Весогабаритные характеристики",
+                    "value_id": 0,
+                    "gtin": "0000000000001",
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2438,
+                    "attr_name": "Глубина",
+                    "attr_value": "35",
+                    "attr_value_type": "см",
+                    "attr_group_id": 19,
+                    "attr_group_name": "Весогабаритные характеристики",
+                    "value_id": 0,
+                    "gtin": "0000000000001",
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2437,
+                    "attr_name": "Высота",
+                    "attr_value": "5",
+                    "attr_value_type": "см",
+                    "attr_group_id": 19,
+                    "attr_group_name": "Весогабаритные характеристики",
+                    "value_id": 0,
+                    "gtin": "0000000000001",
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 2440,
+                    "attr_name": "Вес брутто",
+                    "attr_value": "0.15",
+                    "attr_value_type": "кг",
+                    "attr_group_id": 19,
+                    "attr_group_name": "Весогабаритные характеристики",
+                    "value_id": 0,
+                    "gtin": "0000000000001",
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 13756,
+                    "attr_name": "Расчетный объем",
+                    "attr_value": "1750",
+                    "attr_value_type": "",
+                    "attr_group_id": 19,
+                    "attr_group_name": "Весогабаритные характеристики",
+                    "value_id": 0,
+                    "gtin": "4600494523007",
+                    "multiplier": null,
+                    "level": ""
+                  },
+                  {
+                    "attr_id": 4424,
+                    "attr_name": "Наименование упаковки товара",
+                    "attr_value": "Чешки детские",
+                    "attr_value_type": "",
+                    "attr_group_id": 24,
+                    "attr_group_name": "Наименование товара и идентификация",
+                    "value_id": 0,
+                    "gtin": "0000000000001",
+                    "multiplier": null,
+                    "level": ""
+                  }
+                ],
+                "remainder_type": null,
+                "is_tech_gtin": false
+              }
+            ]
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+        - name: subaccount
+          value: ""
+          type: query
+          description: Признак запроса карточки товара из-под субаккаунта
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <item>
+                      <good_id>2033355</good_id>
+                      <identified_by>
+                          <item>
+                              <value>4000000000001</value>
+                              <type>gtin</type>
+                              <multiplier>1</multiplier>
+                              <level>trade-unit</level>
+                          </item>
+                      </identified_by>
+                      <good_name>Куртка тканная черная XS/160</good_name>
+                      <is_kit/>
+                      <is_set/>
+                      <set_gtins/>
+                      <good_url>https://национальный-каталог.рф/i/med/63d3beae-b0be-db33-f86b-65a0e37da584.jpg</good_url>
+                      <good_img></good_img>
+                      <good_status>draft</good_status>
+                      <good_detailed_status>
+                          <item>draft</item>
+                      </good_detailed_status>
+                      <good_signed></good_signed>
+                      <good_mark_flag>1</good_mark_flag>
+                      <good_turn_flag>1</good_turn_flag>
+                      <flags_updated_date>2020-06-18 14:18:03</flags_updated_date>
+                      <update_date>2020-06-18 10:57:18</update_date>
+                      <producer_inn></producer_inn>
+                      <producer_name></producer_name>
+                      <categories>
+                          <item>
+                              <cat_id>31326</cat_id>
+                              <cat_name>Одежда</cat_name>
+                          </item>
+                          <item>
+                              <cat_id>234392</cat_id>
+                              <cat_name>6202 Пальто, полупальто, накидки, плащи, куртки (включая лыжные), ветровки, штормовки и аналогичные изделия женские или для девочек, кроме изделий товарной позиции 6204</cat_name>
+                          </item>
+                      </categories>
+                      <brand_id></brand_id>
+                      <brand_name></brand_name>
+                      <good_rating></good_rating>
+                      <good_images/>
+                      <good_attrs>
+                          <item>
+                              <attr_id>3959</attr_id>
+                              <attr_name>Группа ТНВЭД</attr_name>
+                              <attr_value>6202</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>22</attr_group_id>
+                              <attr_group_name>Нормативно-сопроводительная документация</attr_group_name>
+                              <value_id>0</value_id>
+                          </item>
+                          <item>
+                              <attr_id>2478</attr_id>
+                              <attr_name>Полное наименование товара</attr_name>
+                              <attr_value>Куртка тканная черная XS/160</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>24</attr_group_id>
+                              <attr_group_name>Наименование товара и идентификация</attr_group_name>
+                              <value_id>0</value_id>
+                          </item>
+                          <item>
+                              <attr_id>2710</attr_id>
+                              <attr_name>Тип упаковки</attr_name>
+                              <attr_value>ОБЕРТКА</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>14</attr_group_id>
+                              <attr_group_name>Тип и материал упаковки</attr_group_name>
+                              <value_id>0</value_id>
+                              <gtin>4000000000001</gtin>
+                              <multiplier></multiplier>
+                              <level></level>
+                          </item>
+                          <item>
+                              <attr_id>2713</attr_id>
+                              <attr_name>Материал упаковки</attr_name>
+                              <attr_value>ЛИНЕЙНЫЙ ПОЛИЭТИЛЕН НИЗКОЙ ПЛОТНОСТИ (LLDPE)</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>14</attr_group_id>
+                              <attr_group_name>Тип и материал упаковки</attr_group_name>
+                              <value_id>0</value_id>
+                              <gtin>4000000000001</gtin>
+                              <multiplier></multiplier>
+                              <level></level>
+                          </item>
+                          <item>
+                              <attr_id>13933</attr_id>
+                              <attr_name>Код ТНВЭД</attr_name>
+                              <attr_value>6202930000</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>22</attr_group_id>
+                              <attr_group_name>Нормативно-сопроводительная документация</attr_group_name>
+                              <value_id>0</value_id>
+                          </item>
+                          <item>
+                              <attr_id>35</attr_id>
+                              <attr_name>Размер одежды</attr_name>
+                              <attr_value>160-75</attr_value>
+                              <attr_value_type>РОСТ-ОГ</attr_value_type>
+                              <attr_group_id>103</attr_group_id>
+                              <attr_group_name>Потребительские свойства</attr_group_name>
+                              <value_id>0</value_id>
+                          </item>
+                          <item>
+                              <attr_id>36</attr_id>
+                              <attr_name>Цвет</attr_name>
+                              <attr_value>ЧЕРНЫЙ</attr_value>
+                              <attr_value_type></attr_value_type>
+                              <attr_group_id>103</attr_group_id>
+                              <attr_group_name>Потребительские свойства</attr_group_name>
+                              <value_id>0</value_id>
+                          </item>
+                      </good_attrs>
+                      <remainder_type/>
+                      <is_tech_gtin/>
+                  </item>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/feed-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+        - name: subaccount
+          value: ""
+          type: query
+          description: Признак запроса карточки товара из-под субаккаунта
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+        - name: subaccount
+          value: ""
+          type: query
+          description: Признак запроса карточки товара из-под субаккаунта
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+        - name: subaccount
+          value: ""
+          type: query
+          description: Признак запроса карточки товара из-под субаккаунта
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed-product"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: good_id
+          value: ""
+          type: query
+          description: Идентификатор товара в Национальном каталоге Обязательный, если не указан параметр «gtin» («Код товара»)
+          disabled: true
+        - name: good_ids
+          value: ""
+          type: query
+          description: "Список идентификаторов товаров в Национальном каталоге Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в каталоге»); «gtin» («Код товара»); «gtins» («Список кодов товара»)"
+          disabled: true
+        - name: gtin
+          value: ""
+          type: query
+          description: Код товара Обязательный, если не указан параметр «good_id» («Идентификатор товара в Национальном каталоге»)
+          disabled: true
+        - name: gtins
+          value: ""
+          type: query
+          description: "Список кодов товаров Разделитель — «;». Обязательный, если не указаны параметры: «good_id» («Идентификатор товара в Национальном каталоге»); «good_ids» («Список идентификаторов товаров в Национальном каталоге»); «gtin» («Код товара»)"
+          disabled: true
+        - name: subaccount
+          value: ""
+          type: query
+          description: Признак запроса карточки товара из-под субаккаунта
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает всю имеющуюся информацию о продукте, то есть все заполненные атрибуты карточки товара независимо от статуса самой карточки. Требует обязательного указания следующих параметров: идентификатор товара (goodId), код товара (штрих-код) и указание apikey владельца товара.
+
+  Если указаны оба обязательных параметра, то возвращается результат выборки по good_id . При этом код товара игнорируется.
+
+  Если указан один из параметров gtin или good_id и один из параметров gtins или good_ids, то возвращается ошибка 400.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/feed-product?gtin=0000000000000&format=xml"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

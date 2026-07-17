@@ -1,0 +1,103 @@
+info:
+  name: Метод получения информации о числе доступных выгрузок по отчёту
+  type: http
+  seq: 8
+  tags:
+    - Выгрузки данных
+
+http:
+  method: GET
+  url: "{{baseUrl}}/dispenser/tasktypes/reports/:report_id/available_count"
+  params:
+    - name: report_id
+      value: ""
+      type: path
+      description: Идентификатор отчёта Идентификатор возвращается в ответе метода « Метод создания нового задания на выгрузку »
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »). При указании в данном параметре значения товарной группы в ответе возвращаются сведения по указанной товарной группе. Если значение параметра «pg» («Товарная группа») не указано, то в ответе возвращаются сведения по количеству доступных выгрузок по всем товарным группам, которые относятся к данному типу задания на выгрузку
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/tasktypes/reports/:report_id/available_count"
+      method: GET
+      params:
+        - name: report_id
+          value: ""
+          type: path
+          description: Идентификатор отчёта Идентификатор возвращается в ответе метода « Метод создания нового задания на выгрузку »
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »). При указании в данном параметре значения товарной группы в ответе возвращаются сведения по указанной товарной группе. Если значение параметра «pg» («Товарная группа») не указано, то в ответе возвращаются сведения по количеству доступных выгрузок по всем товарным группам, которые относятся к данному типу задания на выгрузку
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "productGroups": [
+              {
+                "productGroupCode": 1,
+                "remainingCount": 2
+              },
+              {
+                "productGroupCode": 2,
+                "remainingCount": 10
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/tasktypes/reports/:report_id/available_count"
+      method: GET
+      params:
+        - name: report_id
+          value: ""
+          type: path
+          description: Идентификатор отчёта Идентификатор возвращается в ответе метода « Метод создания нового задания на выгрузку »
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »). При указании в данном параметре значения товарной группы в ответе возвращаются сведения по указанной товарной группе. Если значение параметра «pg» («Товарная группа») не указано, то в ответе возвращаются сведения по количеству доступных выгрузок по всем товарным группам, которые относятся к данному типу задания на выгрузку
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения информации о числе доступных выгрузок за день по отчёту и товарной группе.
+
+  Максимальное количество запросов в минуту — 10.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/dispenser/tasktypes/reports/ppr-1955-1-gismt-c/available_count?pg=3"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: приватный.

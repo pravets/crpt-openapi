@@ -1,0 +1,15 @@
+opencollection: 1.0.0
+
+info:
+  name: ЭДО Лайт API (Честный знак / ГИС МТ)
+
+request:
+  auth:
+    type: bearer
+    token: "{{token}}"
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

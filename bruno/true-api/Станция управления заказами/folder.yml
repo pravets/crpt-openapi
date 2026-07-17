@@ -1,0 +1,7 @@
+info:
+  name: Станция управления заказами
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

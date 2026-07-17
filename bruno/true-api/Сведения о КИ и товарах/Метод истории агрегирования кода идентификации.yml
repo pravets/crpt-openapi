@@ -1,0 +1,91 @@
+info:
+  name: Метод истории агрегирования кода идентификации
+  type: http
+  seq: 10
+  tags:
+    - Сведения о КИ и товарах
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/history/list"
+  body:
+    type: json
+    data: |-
+      {
+        "cis": "010000001111111121NN88nNN"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/history/list"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "cis": "010000001111111121NN88nNN"
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "cisAggregation": [
+              {
+                "cis": "string",
+                "operationType": "AGGREGATION",
+                "packageType": "LEVEL1",
+                "parent": "string"
+              },
+              {
+                "cis": "string",
+                "operationType": "AUTODISAGGREGATION",
+                "operationDate": "2021-08-10T10:11:01.000Z",
+                "packageType": "LEVEL1",
+                "parent": "string"
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/history/list"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "cis": "010000001111111121NN88nNN"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения истории дезагрегации агрегатов по КИ всех товарных групп. Ограничение по количеству указываемых в запросе КИ: 1.
+
+  Проверка принадлежности по владельцу КИ, агрегатов не осуществляется. В ответе возвращается только прямой КИ агрегата, без вложенности второго, третьего уровня. Вложенность по агрегированным КИ не выводится.
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

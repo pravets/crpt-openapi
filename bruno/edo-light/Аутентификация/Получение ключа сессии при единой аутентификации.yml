@@ -1,0 +1,168 @@
+info:
+  name: Получение ключа сессии при единой аутентификации
+  type: http
+  seq: 2
+  tags:
+    - Аутентификация
+
+http:
+  method: POST
+  url: "{{baseUrl}}/auth/simpleSignIn"
+  body:
+    type: json
+    data: |-
+      {
+        "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+        "data": "string",
+        "inn": "string",
+        "details": "string",
+        "unitedToken": true
+      }
+  auth: inherit
+
+runtime:
+  variables:
+    - name: baseUrl
+      value: https://markirovka.sandbox.crptech.ru/api/v3/true-api
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: Токен в формате JWT
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.e.........mk6qe0lB12w9zEs"
+          }
+  - name: Токен в формате UUID
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "token": "string",
+            "uuidToken": "123e4567-e89b-12d3-a456-426655440000",
+            "expireDate": {}
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения (в поле error_message):
+      - «В запросе отсутствует идентификатор авторизации (UUID)» — не указан параметр uuid;
+      - «В запросе отсутствует параметр data» — не указан параметр data;
+      - «В параметре inn должен быть передан ИНН организации, под которой планируется авторизация от МЧД» — ИНН не равен 10 или 12 цифрам;
+      - «Тело запроса не может быть пустым»;
+      - «UUID не найден в хранилище ключей» — переданный uuid не найден в хранилище;
+      - «Ошибка при проверке подписи» — data не подписан УКЭП или содержит не те данные;
+      - «Подпись не валидна» — в data передано некорректное значение.
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 403 Response
+    description: «Отсутствует доступ к ресурсу» — данные подписаны УКЭП сотрудника, не являющегося добавленным пользователем организации, под которой выполняется авторизация
+    request:
+      url: "{{baseUrl}}/auth/simpleSignIn"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "uuid": "a63ff582-b723-4da7-958b-453da27a6c62",
+            "data": "string",
+            "inn": "string",
+            "details": "string",
+            "unitedToken": true
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод используется для получения токена аутентификации (ключа сессии) в формате JWT или UUID по подписанным УКЭП случайным данным,
+  полученным в методе /auth/key. Срок действия полученного токена — не более 10 часов с момента получения.
+
+  Для токена в формате UUID срок не может превышать дату и время окончания срока действия УКЭП и/или МЧД.
+  Если МЧД, на основании которой пользователю предоставлен доступ к системе, будет отозвана, токен будет автоматически аннулирован.
+  При каждом запросе выдаётся новый токен (срок действия существующего токена не продлевается).
+
+  Примечание: поддержка токена в формате JWT сохранена до конца 2026 года.

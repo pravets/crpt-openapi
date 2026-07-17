@@ -1,0 +1,355 @@
+info:
+  name: Получение статуса заключения договора (GET)
+  type: http
+  seq: 9
+  tags:
+    - Обращение к True API
+    - Счета и договоры
+
+http:
+  method: GET
+  url: "{{baseUrl}}/elk/incoming-documents"
+  params:
+    - name: limit
+      value: ""
+      type: query
+      description: Количество возвращаемых документов Значение по умолчанию = 10
+      disabled: true
+    - name: offset
+      value: ""
+      type: query
+      description: Смещение Значение по умолчанию = 0
+      disabled: true
+    - name: asc
+      value: ""
+      type: query
+      description: "Параметр, определяющий направление сортировки Допустимые значения: false — по убыванию (значение по умолчанию); true — по возрастанию"
+      disabled: true
+    - name: created_from
+      value: ""
+      type: query
+      description: Нижняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых больше или равно указанному
+      disabled: true
+    - name: created_to
+      value: ""
+      type: query
+      description: Верхняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых меньше или равно указанному
+      disabled: true
+    - name: folder
+      value: ""
+      type: query
+      description: "Цифровое обозначение папки, в которой находятся документы Для поиска по всем папкам параметр не указывается. Допустимые значения: 0 — документы; 1 — архив; 2 — корзина; 3 — на подписание; 4 — отклоненные; 5 — на подпись РВ; 6 — на подпись РЭ; 7 — биллинг; 8 — автоподписание"
+      disabled: true
+    - name: partner_id
+      value: ""
+      type: query
+      description: Идентификатор получателя документа
+      disabled: true
+    - name: partner_inn
+      value: ""
+      type: query
+      description: ИНН контрагента Для исходящего документа это получатель, для входящего — отправитель
+      disabled: true
+    - name: product_group
+      value: ""
+      type: query
+      description: Цифровое обозначение товарной группы См. Справочник «Список поддерживаемых товарных групп»
+      disabled: true
+    - name: sortBy
+      value: ""
+      type: query
+      description: "Параметр, по которому необходимо отсортировать возвращаемый список документов Допустимые значения: created_at — время создания документа"
+      disabled: true
+    - name: status
+      value: ""
+      type: query
+      description: Цифровое обозначение статуса возвращаемых документов См. « Справочник «Статусная модель» »
+      disabled: true
+    - name: type
+      value: ""
+      type: query
+      description: Цифровое обозначение типа создаваемых документов См. « Справочник «Типы универсальных документов» »
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents"
+      method: GET
+      params:
+        - name: limit
+          value: ""
+          type: query
+          description: Количество возвращаемых документов Значение по умолчанию = 10
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение Значение по умолчанию = 0
+          disabled: true
+        - name: asc
+          value: ""
+          type: query
+          description: "Параметр, определяющий направление сортировки Допустимые значения: false — по убыванию (значение по умолчанию); true — по возрастанию"
+          disabled: true
+        - name: created_from
+          value: ""
+          type: query
+          description: Нижняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых больше или равно указанному
+          disabled: true
+        - name: created_to
+          value: ""
+          type: query
+          description: Верхняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых меньше или равно указанному
+          disabled: true
+        - name: folder
+          value: ""
+          type: query
+          description: "Цифровое обозначение папки, в которой находятся документы Для поиска по всем папкам параметр не указывается. Допустимые значения: 0 — документы; 1 — архив; 2 — корзина; 3 — на подписание; 4 — отклоненные; 5 — на подпись РВ; 6 — на подпись РЭ; 7 — биллинг; 8 — автоподписание"
+          disabled: true
+        - name: partner_id
+          value: ""
+          type: query
+          description: Идентификатор получателя документа
+          disabled: true
+        - name: partner_inn
+          value: ""
+          type: query
+          description: ИНН контрагента Для исходящего документа это получатель, для входящего — отправитель
+          disabled: true
+        - name: product_group
+          value: ""
+          type: query
+          description: Цифровое обозначение товарной группы См. Справочник «Список поддерживаемых товарных групп»
+          disabled: true
+        - name: sortBy
+          value: ""
+          type: query
+          description: "Параметр, по которому необходимо отсортировать возвращаемый список документов Допустимые значения: created_at — время создания документа"
+          disabled: true
+        - name: status
+          value: ""
+          type: query
+          description: Цифровое обозначение статуса возвращаемых документов См. « Справочник «Статусная модель» »
+          disabled: true
+        - name: type
+          value: ""
+          type: query
+          description: Цифровое обозначение типа создаваемых документов См. « Справочник «Типы универсальных документов» »
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "count": 4,
+            "items": [
+              {
+                "id": "5b7f19e8-db96-463a-9735-2ef1a73abf9b",
+                "status": 2
+              },
+              {
+                "id": "02e88283-5793-42fd-bdba-1b5176fe912c",
+                "status": 4
+              },
+              {
+                "id": "0268d1c9-b601-4866-9ed1-3595e34387bc",
+                "status": 0
+              },
+              {
+                "id": "057fbd84-a933-4eee-b5a4-0f4b9579f901",
+                "status": 1
+              }
+            ]
+          }
+  - name: 401 Response
+    description: "2.1. Код 401 В случае, если не указан токен:"
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents"
+      method: GET
+      params:
+        - name: limit
+          value: ""
+          type: query
+          description: Количество возвращаемых документов Значение по умолчанию = 10
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение Значение по умолчанию = 0
+          disabled: true
+        - name: asc
+          value: ""
+          type: query
+          description: "Параметр, определяющий направление сортировки Допустимые значения: false — по убыванию (значение по умолчанию); true — по возрастанию"
+          disabled: true
+        - name: created_from
+          value: ""
+          type: query
+          description: Нижняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых больше или равно указанному
+          disabled: true
+        - name: created_to
+          value: ""
+          type: query
+          description: Верхняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых меньше или равно указанному
+          disabled: true
+        - name: folder
+          value: ""
+          type: query
+          description: "Цифровое обозначение папки, в которой находятся документы Для поиска по всем папкам параметр не указывается. Допустимые значения: 0 — документы; 1 — архив; 2 — корзина; 3 — на подписание; 4 — отклоненные; 5 — на подпись РВ; 6 — на подпись РЭ; 7 — биллинг; 8 — автоподписание"
+          disabled: true
+        - name: partner_id
+          value: ""
+          type: query
+          description: Идентификатор получателя документа
+          disabled: true
+        - name: partner_inn
+          value: ""
+          type: query
+          description: ИНН контрагента Для исходящего документа это получатель, для входящего — отправитель
+          disabled: true
+        - name: product_group
+          value: ""
+          type: query
+          description: Цифровое обозначение товарной группы См. Справочник «Список поддерживаемых товарных групп»
+          disabled: true
+        - name: sortBy
+          value: ""
+          type: query
+          description: "Параметр, по которому необходимо отсортировать возвращаемый список документов Допустимые значения: created_at — время создания документа"
+          disabled: true
+        - name: status
+          value: ""
+          type: query
+          description: Цифровое обозначение статуса возвращаемых документов См. « Справочник «Статусная модель» »
+          disabled: true
+        - name: type
+          value: ""
+          type: query
+          description: Цифровое обозначение типа создаваемых документов См. « Справочник «Типы универсальных документов» »
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <UnauthorizedException>
+          <error>unauthorized</error>
+          <error_description>Full authentication is required to access this
+          resource</error_description>
+          </UnauthorizedException>
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents"
+      method: GET
+      params:
+        - name: limit
+          value: ""
+          type: query
+          description: Количество возвращаемых документов Значение по умолчанию = 10
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: Смещение Значение по умолчанию = 0
+          disabled: true
+        - name: asc
+          value: ""
+          type: query
+          description: "Параметр, определяющий направление сортировки Допустимые значения: false — по убыванию (значение по умолчанию); true — по возрастанию"
+          disabled: true
+        - name: created_from
+          value: ""
+          type: query
+          description: Нижняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых больше или равно указанному
+          disabled: true
+        - name: created_to
+          value: ""
+          type: query
+          description: Верхняя граница фильтрации документов по времени создания В выборку попадут документы, время создания которых меньше или равно указанному
+          disabled: true
+        - name: folder
+          value: ""
+          type: query
+          description: "Цифровое обозначение папки, в которой находятся документы Для поиска по всем папкам параметр не указывается. Допустимые значения: 0 — документы; 1 — архив; 2 — корзина; 3 — на подписание; 4 — отклоненные; 5 — на подпись РВ; 6 — на подпись РЭ; 7 — биллинг; 8 — автоподписание"
+          disabled: true
+        - name: partner_id
+          value: ""
+          type: query
+          description: Идентификатор получателя документа
+          disabled: true
+        - name: partner_inn
+          value: ""
+          type: query
+          description: ИНН контрагента Для исходящего документа это получатель, для входящего — отправитель
+          disabled: true
+        - name: product_group
+          value: ""
+          type: query
+          description: Цифровое обозначение товарной группы См. Справочник «Список поддерживаемых товарных групп»
+          disabled: true
+        - name: sortBy
+          value: ""
+          type: query
+          description: "Параметр, по которому необходимо отсортировать возвращаемый список документов Допустимые значения: created_at — время создания документа"
+          disabled: true
+        - name: status
+          value: ""
+          type: query
+          description: Цифровое обозначение статуса возвращаемых документов См. « Справочник «Статусная модель» »
+          disabled: true
+        - name: type
+          value: ""
+          type: query
+          description: Цифровое обозначение типа создаваемых документов См. « Справочник «Типы универсальных документов» »
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения информации о статусе заключения всех договоров между ГИС МТ и УОТ.
+
+  В результате передачи в токене запроса идентификатора УОТ (ParticipantId) возвращается массив статусов обработки договоров УОТ.
+
+  Существуют следующие статусы:
+
+  Если подписана только часть договоров, то УОТ не может быть полностью активен в ГИС МТ (общий статус УОТ не валиден в Системе).
+
+  Если требуется подписание договора со стороны УОТ, то статус входящего документа = "Черновик".
+
+  Если требуется подписание договора со стороны Оператора, то статус входящего документа = "Доставлен (ожидается подпись)", статус исходящего документа = "Требуется подпись".
+
+  Если обе стороны подписали документ, то статус входящего и исходящего документа = "Подписан".
+
+  Тип приватности: приватный.
+
+  В документации раздел описывает несколько URL; данная операция соответствует варианту: «Для входящих документов».
+
+  Этот же метод (path+HTTP-метод) описан также в разделе 9.3 «Метод получения списка документов» документации.

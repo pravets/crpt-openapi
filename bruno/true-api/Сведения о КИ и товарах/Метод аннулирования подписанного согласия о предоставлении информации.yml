@@ -1,0 +1,68 @@
+info:
+  name: Метод аннулирования подписанного согласия о предоставлении информации
+  type: http
+  seq: 16
+  tags:
+    - Сведения о КИ и товарах
+    - Согласие на предоставление информации
+
+http:
+  method: POST
+  url: "{{baseUrl}}/agreement-registry/cancellation"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/agreement-registry/cancellation"
+      method: POST
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6",
+            "status": "string",
+            "statusCode": "ESTABLISHED",
+            "sign": {
+              "fingerPrint": "string",
+              "serialNumber": "string",
+              "inn": "string",
+              "owner": "string",
+              "organisationName": "string",
+              "validityDateFrom": 0,
+              "validityDateUpTo": 0,
+              "signingTime": 0
+            },
+            "documentRegNumber": "string"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/agreement-registry/cancellation"
+      method: POST
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: Метод аннулирует последнее успешно сформированное и подписанное согласие о предоставлении информации.

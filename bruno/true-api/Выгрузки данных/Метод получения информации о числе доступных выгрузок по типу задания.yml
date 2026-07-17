@@ -1,0 +1,103 @@
+info:
+  name: Метод получения информации о числе доступных выгрузок по типу задания
+  type: http
+  seq: 7
+  tags:
+    - Выгрузки данных
+
+http:
+  method: GET
+  url: "{{baseUrl}}/dispenser/tasktypes/available_count"
+  params:
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »). При указании в данном параметре значения товарной группы в ответе возвращаются сведения по указанной товарной группе. Если значение параметра «pg» («Товарная группа») не указано, то в ответе возвращаются сведения по количеству доступных выгрузок по всем товарным группам, которые относятся к данному типу задания на выгрузку
+      disabled: true
+    - name: taskTypeShortName
+      value: ""
+      type: query
+      description: Краткое название типа выгрузки См. « Методы формирования выгрузок данных из ГИС МТ » в столбце «Кодовое название»
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/tasktypes/available_count"
+      method: GET
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »). При указании в данном параметре значения товарной группы в ответе возвращаются сведения по указанной товарной группе. Если значение параметра «pg» («Товарная группа») не указано, то в ответе возвращаются сведения по количеству доступных выгрузок по всем товарным группам, которые относятся к данному типу задания на выгрузку
+          disabled: true
+        - name: taskTypeShortName
+          value: ""
+          type: query
+          description: Краткое название типа выгрузки См. « Методы формирования выгрузок данных из ГИС МТ » в столбце «Кодовое название»
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "productGroups": [
+              {
+                "productGroupCode": 1,
+                "remainingCount": 2
+              },
+              {
+                "productGroupCode": 2,
+                "remainingCount": 10
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/tasktypes/available_count"
+      method: GET
+      params:
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »). При указании в данном параметре значения товарной группы в ответе возвращаются сведения по указанной товарной группе. Если значение параметра «pg» («Товарная группа») не указано, то в ответе возвращаются сведения по количеству доступных выгрузок по всем товарным группам, которые относятся к данному типу задания на выгрузку
+          disabled: true
+        - name: taskTypeShortName
+          value: ""
+          type: query
+          description: Краткое название типа выгрузки См. « Методы формирования выгрузок данных из ГИС МТ » в столбце «Кодовое название»
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения информации о числе доступных выгрузок за день по типу задания и товарной группе.
+
+  Максимальное количество запросов в минуту — 10.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/dispenser/tasktypes/available_count?taskTypeShortName=FILTERED_CIS_REPORT&pg=3"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: приватный.

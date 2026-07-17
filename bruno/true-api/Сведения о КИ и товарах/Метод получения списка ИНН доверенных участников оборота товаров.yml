@@ -1,0 +1,153 @@
+info:
+  name: Метод получения списка ИНН доверенных участников оборота товаров
+  type: http
+  seq: 20
+  tags:
+    - Сведения о КИ и товарах
+    - Согласие на предоставление информации
+
+http:
+  method: GET
+  url: "{{baseUrl}}/agreement-registry/trusted/:ownerInn/list"
+  params:
+    - name: ownerInn
+      value: ""
+      type: path
+      description: ИНН доверителя
+    - name: inn
+      value: ""
+      type: query
+      description: ИНН участника оборота товаров
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: "Предельное количество записей Значение по умолчанию: 10"
+      disabled: true
+    - name: name
+      value: ""
+      type: query
+      description: Наименование организации участника оборота товаров
+      disabled: true
+    - name: needTotal
+      value: ""
+      type: query
+      description: 'Признак необходимости подсчёта суммарного числа записей Значение по умолчанию: "true"'
+      disabled: true
+    - name: offset
+      value: ""
+      type: query
+      description: "Смещение страницы Значение по умолчанию: 0"
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/agreement-registry/trusted/:ownerInn/list"
+      method: GET
+      params:
+        - name: ownerInn
+          value: ""
+          type: path
+          description: ИНН доверителя
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН участника оборота товаров
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Предельное количество записей Значение по умолчанию: 10"
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Наименование организации участника оборота товаров
+          disabled: true
+        - name: needTotal
+          value: ""
+          type: query
+          description: 'Признак необходимости подсчёта суммарного числа записей Значение по умолчанию: "true"'
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: "Смещение страницы Значение по умолчанию: 0"
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "inn": "string"
+              }
+            ],
+            "total": 0,
+            "expirationDate": "string",
+            "everyonePermitted": true,
+            "last": true
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/agreement-registry/trusted/:ownerInn/list"
+      method: GET
+      params:
+        - name: ownerInn
+          value: ""
+          type: path
+          description: ИНН доверителя
+        - name: inn
+          value: ""
+          type: query
+          description: ИНН участника оборота товаров
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: "Предельное количество записей Значение по умолчанию: 10"
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Наименование организации участника оборота товаров
+          disabled: true
+        - name: needTotal
+          value: ""
+          type: query
+          description: 'Признак необходимости подсчёта суммарного числа записей Значение по умолчанию: "true"'
+          disabled: true
+        - name: offset
+          value: ""
+          type: query
+          description: "Смещение страницы Значение по умолчанию: 0"
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: Для того, чтобы воспользоваться данным методом у участника оборота товаров должно быть действующее согласие о предоставлении информации.

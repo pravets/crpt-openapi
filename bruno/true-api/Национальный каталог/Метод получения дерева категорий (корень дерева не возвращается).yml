@@ -1,0 +1,307 @@
+info:
+  name: Метод получения дерева категорий (корень дерева не возвращается)
+  type: http
+  seq: 6
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/categories"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+      disabled: true
+    - name: cat_id
+      value: ""
+      type: query
+      description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+      disabled: true
+    - name: gismt_code
+      value: ""
+      type: query
+      description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+      disabled: true
+    - name: tnved
+      value: ""
+      type: query
+      description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/categories"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: gismt_code
+          value: ""
+          type: query
+          description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": [
+              {
+                "cat_id": 14001,
+                "cat_name": "Продукты питания",
+                "cat_parent_id": 14000,
+                "cat_level": "1"
+              },
+              {
+                "cat_id": 14002,
+                "cat_name": "Напитки",
+                "cat_parent_id": 14001,
+                "cat_level": 2
+              }
+            ]
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/categories"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: gismt_code
+          value: ""
+          type: query
+          description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <item>
+                      <cat_id>14002</cat_id>
+                      <cat_name>Напитки</cat_name>
+                      <cat_parent_id>14000</cat_parent_id>
+                      <cat_level>2</cat_level>
+                  </item>
+                  <item>
+                      <cat_id>14001</cat_id>
+                      <cat_name>Питание</cat_name>
+                      <cat_parent_id>14000</cat_parent_id>
+                      <cat_level>2</cat_level>
+                  </item>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/categories"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: gismt_code
+          value: ""
+          type: query
+          description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/categories"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: gismt_code
+          value: ""
+          type: query
+          description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/categories"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: gismt_code
+          value: ""
+          type: query
+          description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/categories"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: cat_id
+          value: ""
+          type: query
+          description: Идентификатор категории Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: gismt_code
+          value: ""
+          type: query
+          description: Код маркируемой товарной группы См. « Справочник «Список поддерживаемых товарных групп» ». Не может быть указан одновременно с «tnved» («Код ТН ВЭД»)
+          disabled: true
+        - name: tnved
+          value: ""
+          type: query
+          description: Код ТН ВЭД Код конечного уровня от 4 до 10 цифр. Не может быть указан одновременно с «cat_id» («Идентификатор категории») и «gismt_code» («Код маркируемой товарной группы»)
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения дерева категорий без корня дерева. В ответе возвращается список данных о каждом элементе дерева категорий.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/categories"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

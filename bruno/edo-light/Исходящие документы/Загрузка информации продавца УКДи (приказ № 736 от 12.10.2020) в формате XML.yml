@@ -1,0 +1,317 @@
+info:
+  name: Загрузка информации продавца УКДи (приказ № 736 от 12.10.2020) в формате XML
+  type: http
+  seq: 6
+  tags:
+    - Исходящие документы
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/outgoing-documents/xml/ukdi/736"
+  headers:
+    - name: send_mchd_file
+      value: "false"
+      description: |
+        Способ передачи сведений об МЧД. Параметр необязательный.
+        - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+        - false — сведения об МЧД будут переданы в метаданных.
+        Если параметр не заполнен, значение по умолчанию — false.
+        При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+        берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+  body:
+    type: multipart-form
+    data:
+      - name: content
+        type: file
+        value: []
+        description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+      - name: parent_id
+        type: text
+        value: ""
+        description: Идентификатор родительского документа (UUID)
+      - name: signature
+        type: text
+        value: ""
+        description: Откреплённая УКЭП XML документа в формате base64
+      - name: product_group
+        type: text
+        value: ""
+        description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Файл информации продавца УКДи успешно загружен (при повторной загрузке файла с тем же наименованием вернётся идентификатор ранее загруженного файла)
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/ukdi/736"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+          - name: parent_id
+            type: text
+            value: ""
+            description: Идентификатор родительского документа (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "00000000-0000-0000-0000-000000000000"
+          }
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Отсутствует или неверный формат заголовка запроса: multipart/form-data»;
+      - «В теле запроса отсутствует файл» / «Отсутствует form-data key: content»;
+      - «Неверный тип загружаемого файла: Content-Type: (...)»;
+      - «Неверный тип документа загружаемого xml файла»;
+      - «Неверный формат параметра "product_group" / "signature"»;
+      - «Неверный формат параметра запроса "parent_id"»;
+      - «Нет прав на подписание документа».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/ukdi/736"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+          - name: parent_id
+            type: text
+            value: ""
+            description: Идентификатор родительского документа (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/ukdi/736"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+          - name: parent_id
+            type: text
+            value: ""
+            description: Идентификатор родительского документа (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 422 Response
+    description: |
+      Ошибка обработки документа. Типичные сообщения:
+      - «В ЭДО лайт нельзя создавать документы, содержащие сведения о прослеживаемом товаре» — загружен УКДи с признаком PROS;
+      - «Идентификатор ЭДО получателя документа отличается от Идентификатора получателя, указанного в корректируемом документе...»;
+      - «Неверно заполнены сведения об МЧД в <тег с ошибкой из XML>».
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/ukdi/736"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+          - name: parent_id
+            type: text
+            value: ""
+            description: Идентификатор родительского документа (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/xml/ukdi/736"
+      method: POST
+      headers:
+        - name: send_mchd_file
+          value: "false"
+          description: |
+            Способ передачи сведений об МЧД. Параметр необязательный.
+            - true — будет передана МЧД в виде отдельного файла и подписи к нему, если данная МЧД зарегистрирована в ГИС МТ;
+            - false — сведения об МЧД будут переданы в метаданных.
+            Если параметр не заполнен, значение по умолчанию — false.
+            При заполненном параметре система проверяет наличие информационных полей (ИнфПолФХЖ1) с наименованием «МЧД» в XML,
+            берёт значение МЧД и передаёт указанную МЧД в виде файла в пакете с документом и подписью.
+      body:
+        type: multipart-form
+        data:
+          - name: content
+            type: file
+            value: []
+            description: Файл документа. Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS)
+          - name: parent_id
+            type: text
+            value: ""
+            description: Идентификатор родительского документа (UUID)
+          - name: signature
+            type: text
+            value: ""
+            description: Откреплённая УКЭП XML документа в формате base64
+          - name: product_group
+            type: text
+            value: ""
+            description: Код товарной группы (целое число). См. справочник «Список поддерживаемых товарных групп» документации ЭДО Лайт
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод предназначен для загрузки файла информации продавца УКДи. Формат УКД регламентируется Приказом ФНС от 12 октября 2020 г. № ЕД-7-26/736@
+  (https://www.nalog.gov.ru/rn77/about_fts/docs/10223010/).
+
+  При выполнении метода без параметра «signature» загруженный документ будет находиться в статусе «Черновик»,
+  с параметром «signature» — в статусе «Отправлен».
+
+  Метод не поддерживает загрузку УКД/УКД(и) (ON_NKORSCHFDOPPRPROS) с признаком прослеживаемости (PROS).
+
+  По документации Content-Type: application/json — для интеграции с 1С; multipart/form-data — в остальных случаях.

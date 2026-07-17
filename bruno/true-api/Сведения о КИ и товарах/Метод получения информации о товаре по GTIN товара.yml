@@ -1,0 +1,123 @@
+info:
+  name: Метод получения информации о товаре по GTIN товара
+  type: http
+  seq: 12
+  tags:
+    - Сведения о КИ и товарах
+    - Карточки товара
+
+http:
+  method: POST
+  url: "{{baseUrl}}/product/info"
+  body:
+    type: json
+    data: |-
+      {
+        "gtins": [],
+        "rdInfo": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/product/info"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [],
+            "rdInfo": false
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "name": "ХХХХХХХХХХ ХХХХХХ ХХХХ 1",
+                "gtin": "04611111111111",
+                "brand": "ХХХХХХ",
+                "packageType": "UNDEFINED",
+                "innerUnitCount": 1,
+                "inn": "7777777777",
+                "permittedInns": [
+                  "011111111100",
+                  "2222222222"
+                ],
+                "productGroupId": 8,
+                "productGroup": "milk",
+                "goodSignedFlag": true,
+                "goodMarkFlag": true,
+                "goodTurnFlag": true,
+                "isKit": true,
+                "isTechGtin": false,
+                "isSet": true,
+                "setGtin": [],
+                "level": "trade-unit",
+                "mainGtin": "04611111111111",
+                "multiplier": 1,
+                "conformityDeclaration": "6527112",
+                "permits": {
+                  "conformityDeclaration": [
+                    "6527112"
+                  ]
+                }
+              }
+            ],
+            "total": 1
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/product/info"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "gtins": [],
+            "rdInfo": false
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  В результате успешного выполнения запроса по списку кодов товаров в ответе возвращается массив с информацией о товарах по запрошенным КИ. В результирующем * .json также может содержаться набор полей, специфичных для товара конкретной товарной группы (см. « Справочник «Дополнительные параметры в ответе в зависимости от товарных групп» »).
+
+  Действует следующее ограничение: не более 1000 значений «gtin» («Код товара») в параметре «gtins» («Массив кодов товаров»).
+
+  В ответе метода возвращается информация только по карточкам товаров, для которых значения признаков «goodTurnFlag» («Признак готовности товара к обороту») и «goodMarkFlag» («Признак готовности к маркировке») = «true».
+
+  Пример запроса:
+
+  Пример: curl -X POST "<стенд>/api/v4/true-api/product/info"
+  -H "accept: */*"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+  -d "{\"gtins\":[\"string\"]}"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

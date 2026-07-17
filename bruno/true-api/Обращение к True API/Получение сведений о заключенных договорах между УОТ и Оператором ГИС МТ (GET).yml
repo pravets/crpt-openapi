@@ -1,0 +1,133 @@
+info:
+  name: Получение сведений о заключенных договорах между УОТ и Оператором ГИС МТ (GET)
+  type: http
+  seq: 11
+  tags:
+    - Обращение к True API
+    - Счета и договоры
+
+http:
+  method: GET
+  url: "{{baseUrl}}/elk/incoming-documents/:documentId/content"
+  params:
+    - name: documentId
+      value: ""
+      type: path
+      description: Идентификатор документа в системе ЭДО оператора
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents/:documentId/content"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: 401 Response
+    description: "2.1. Код 401 в случае, если не указан токен:"
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents/:documentId/content"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Токен не действителен. Необходимо получить новый токен аутентификации"
+          }
+  - name: 403 Response
+    description: "2.2. Код 403 в случае, если доступ запрещён:"
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents/:documentId/content"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: 404 Response
+    description: "2.3. Код 404 в случае, если указан невалидный {documentId} в параметре URL запроса:"
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents/:documentId/content"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Документ не найден в ГИС МТ"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/incoming-documents/:documentId/content"
+      method: GET
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Тип приватности: приватный.
+
+  В документации раздел описывает несколько URL; данная операция соответствует варианту: «Для входящих документов».

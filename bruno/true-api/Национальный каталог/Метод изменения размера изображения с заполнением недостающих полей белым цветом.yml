@@ -1,0 +1,269 @@
+info:
+  name: Метод изменения размера изображения с заполнением недостающих полей белым цветом
+  type: http
+  seq: 14
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/image"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+      disabled: true
+    - name: height
+      value: ""
+      type: query
+      description: Высота рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая высота в пикселях)
+      disabled: true
+    - name: name
+      value: ""
+      type: query
+      description: Полный URI изображения
+      disabled: true
+    - name: no-background
+      value: ""
+      type: query
+      description: "Параметр добавления белого фона к рисунку для соблюдения размеров Возможные значения: «1» — фон не добавлять; «0» — фон добавлять (значение по умолчанию)"
+      disabled: true
+    - name: width
+      value: ""
+      type: query
+      description: Ширина рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая ширина в пикселях)
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/image"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: height
+          value: ""
+          type: query
+          description: Высота рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая высота в пикселях)
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Полный URI изображения
+          disabled: true
+        - name: no-background
+          value: ""
+          type: query
+          description: "Параметр добавления белого фона к рисунку для соблюдения размеров Возможные значения: «1» — фон не добавлять; «0» — фон добавлять (значение по умолчанию)"
+          disabled: true
+        - name: width
+          value: ""
+          type: query
+          description: Ширина рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая ширина в пикселях)
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: image/jpeg
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/image"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: height
+          value: ""
+          type: query
+          description: Высота рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая высота в пикселях)
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Полный URI изображения
+          disabled: true
+        - name: no-background
+          value: ""
+          type: query
+          description: "Параметр добавления белого фона к рисунку для соблюдения размеров Возможные значения: «1» — фон не добавлять; «0» — фон добавлять (значение по умолчанию)"
+          disabled: true
+        - name: width
+          value: ""
+          type: query
+          description: Ширина рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая ширина в пикселях)
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/image"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: height
+          value: ""
+          type: query
+          description: Высота рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая высота в пикселях)
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Полный URI изображения
+          disabled: true
+        - name: no-background
+          value: ""
+          type: query
+          description: "Параметр добавления белого фона к рисунку для соблюдения размеров Возможные значения: «1» — фон не добавлять; «0» — фон добавлять (значение по умолчанию)"
+          disabled: true
+        - name: width
+          value: ""
+          type: query
+          description: Ширина рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая ширина в пикселях)
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/image"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: height
+          value: ""
+          type: query
+          description: Высота рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая высота в пикселях)
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Полный URI изображения
+          disabled: true
+        - name: no-background
+          value: ""
+          type: query
+          description: "Параметр добавления белого фона к рисунку для соблюдения размеров Возможные значения: «1» — фон не добавлять; «0» — фон добавлять (значение по умолчанию)"
+          disabled: true
+        - name: width
+          value: ""
+          type: query
+          description: Ширина рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая ширина в пикселях)
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/image"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: height
+          value: ""
+          type: query
+          description: Высота рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая высота в пикселях)
+          disabled: true
+        - name: name
+          value: ""
+          type: query
+          description: Полный URI изображения
+          disabled: true
+        - name: no-background
+          value: ""
+          type: query
+          description: "Параметр добавления белого фона к рисунку для соблюдения размеров Возможные значения: «1» — фон не добавлять; «0» — фон добавлять (значение по умолчанию)"
+          disabled: true
+        - name: width
+          value: ""
+          type: query
+          description: Ширина рисунка на выходе в пикселях Должен быть в границах [100, 1000] (результирующая ширина в пикселях)
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для пропорционального изменения размера изображения с заполнением недостающих полей белым цветом. При отправке данных об изображении в ответе возвращается JPEG изменённого изображения.
+
+  Метод не используется для работы с карточками индустриальной маркировки (префикс 004).
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/image?name=https://национальный-каталог.рф/i/300x200/5a7eb614-13d3-69ed-caf7-420624d1bdd3.jpg&width=300&height=400"
+  -H "accept: image/jpeg"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

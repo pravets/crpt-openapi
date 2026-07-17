@@ -1,0 +1,7 @@
+info:
+  name: Квитанции
+  type: folder
+  seq: 1
+
+request:
+  auth: inherit

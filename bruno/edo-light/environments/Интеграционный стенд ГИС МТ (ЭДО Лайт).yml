@@ -1,0 +1,4 @@
+name: Интеграционный стенд ГИС МТ (ЭДО Лайт)
+variables:
+  - name: baseUrl
+    value: https://edo.sandbox.crptech.ru

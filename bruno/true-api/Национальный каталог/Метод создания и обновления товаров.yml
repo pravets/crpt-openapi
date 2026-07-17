@@ -1,0 +1,497 @@
+info:
+  name: Метод создания и обновления товаров
+  type: http
+  seq: 16
+  tags:
+    - Национальный каталог
+
+http:
+  method: POST
+  url: "{{baseUrl}}/nk/feed"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: supplier_key
+      value: ""
+      type: query
+      description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "good_id": 0,
+        "gtin": "",
+        "is_set": false,
+        "is_tech_gtin": false,
+        "is_sim": false,
+        "is_kit": false,
+        "good_name": "",
+        "tnved": "",
+        "brand": "",
+        "moderation": false,
+        "set_gtins": [
+          {}
+        ],
+        "quantity": 0,
+        "identified_by": [],
+        "value": "",
+        "type": "",
+        "level": "",
+        "multiplier": 0,
+        "unit": "",
+        "categories": [],
+        "good_attrs": [],
+        "attr_id": 0,
+        "attr_value": "",
+        "attr_value_type": "",
+        "delete": 0,
+        "good_images": [],
+        "photo_type": "",
+        "photo_date": "",
+        "photo_url": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "good_id": 0,
+            "gtin": "",
+            "is_set": false,
+            "is_tech_gtin": false,
+            "is_sim": false,
+            "is_kit": false,
+            "good_name": "",
+            "tnved": "",
+            "brand": "",
+            "moderation": false,
+            "set_gtins": [
+              {}
+            ],
+            "quantity": 0,
+            "identified_by": [],
+            "value": "",
+            "type": "",
+            "level": "",
+            "multiplier": 0,
+            "unit": "",
+            "categories": [],
+            "good_attrs": [],
+            "attr_id": 0,
+            "attr_value": "",
+            "attr_value_type": "",
+            "delete": 0,
+            "good_images": [],
+            "photo_type": "",
+            "photo_date": "",
+            "photo_url": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "feed_id": 2131
+            }
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "good_id": 0,
+            "gtin": "",
+            "is_set": false,
+            "is_tech_gtin": false,
+            "is_sim": false,
+            "is_kit": false,
+            "good_name": "",
+            "tnved": "",
+            "brand": "",
+            "moderation": false,
+            "set_gtins": [
+              {}
+            ],
+            "quantity": 0,
+            "identified_by": [],
+            "value": "",
+            "type": "",
+            "level": "",
+            "multiplier": 0,
+            "unit": "",
+            "categories": [],
+            "good_attrs": [],
+            "attr_id": 0,
+            "attr_value": "",
+            "attr_value_type": "",
+            "delete": 0,
+            "good_images": [],
+            "photo_type": "",
+            "photo_date": "",
+            "photo_url": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+          <root>
+              <apiversion>3</apiversion>
+              <result>
+                  <feed_id>2131</feed_id>
+              </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/feed"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "good_id": 0,
+            "gtin": "",
+            "is_set": false,
+            "is_tech_gtin": false,
+            "is_sim": false,
+            "is_kit": false,
+            "good_name": "",
+            "tnved": "",
+            "brand": "",
+            "moderation": false,
+            "set_gtins": [
+              {}
+            ],
+            "quantity": 0,
+            "identified_by": [],
+            "value": "",
+            "type": "",
+            "level": "",
+            "multiplier": 0,
+            "unit": "",
+            "categories": [],
+            "good_attrs": [],
+            "attr_id": 0,
+            "attr_value": "",
+            "attr_value_type": "",
+            "delete": 0,
+            "good_images": [],
+            "photo_type": "",
+            "photo_date": "",
+            "photo_url": ""
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/feed"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "good_id": 0,
+            "gtin": "",
+            "is_set": false,
+            "is_tech_gtin": false,
+            "is_sim": false,
+            "is_kit": false,
+            "good_name": "",
+            "tnved": "",
+            "brand": "",
+            "moderation": false,
+            "set_gtins": [
+              {}
+            ],
+            "quantity": 0,
+            "identified_by": [],
+            "value": "",
+            "type": "",
+            "level": "",
+            "multiplier": 0,
+            "unit": "",
+            "categories": [],
+            "good_attrs": [],
+            "attr_id": 0,
+            "attr_value": "",
+            "attr_value_type": "",
+            "delete": 0,
+            "good_images": [],
+            "photo_type": "",
+            "photo_date": "",
+            "photo_url": ""
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/feed"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "good_id": 0,
+            "gtin": "",
+            "is_set": false,
+            "is_tech_gtin": false,
+            "is_sim": false,
+            "is_kit": false,
+            "good_name": "",
+            "tnved": "",
+            "brand": "",
+            "moderation": false,
+            "set_gtins": [
+              {}
+            ],
+            "quantity": 0,
+            "identified_by": [],
+            "value": "",
+            "type": "",
+            "level": "",
+            "multiplier": 0,
+            "unit": "",
+            "categories": [],
+            "good_attrs": [],
+            "attr_id": 0,
+            "attr_value": "",
+            "attr_value_type": "",
+            "delete": 0,
+            "good_images": [],
+            "photo_type": "",
+            "photo_date": "",
+            "photo_url": ""
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ поставщика или производителя товаров Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте. Представляет собой «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта владельца товаров
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "good_id": 0,
+            "gtin": "",
+            "is_set": false,
+            "is_tech_gtin": false,
+            "is_sim": false,
+            "is_kit": false,
+            "good_name": "",
+            "tnved": "",
+            "brand": "",
+            "moderation": false,
+            "set_gtins": [
+              {}
+            ],
+            "quantity": 0,
+            "identified_by": [],
+            "value": "",
+            "type": "",
+            "level": "",
+            "multiplier": 0,
+            "unit": "",
+            "categories": [],
+            "good_attrs": [],
+            "attr_id": 0,
+            "attr_value": "",
+            "attr_value_type": "",
+            "delete": 0,
+            "good_images": [],
+            "photo_type": "",
+            "photo_date": "",
+            "photo_url": ""
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод даёт возможность компаниям-владельцам товаров создавать и обновлять товары. Создание и обновление карточек товаров осуществляется при помощи фидов — пакетов обновлений, формируемых на стороне пользователя.
+
+  Фид передаётся в теле запроса. Поддерживается 2 формата для отправки фида: * .json и * .xml.
+
+  Метод возвращает feed_id (идентификатор полученного фида) или ошибку.
+
+  "Content-Type: application/xml" , если фид в формате xml; "Content-Type: application/json" , если фид в формате json.
+
+  Ограничения: При превышении лимита на размер фида или на количество товаров в фиде будет вызвана ошибка с кодом 413. При ошибке в схеме данных будет получена ошибка с кодом 400. Примечание: Информация о направленных пакетах обновлений хранится в течение одного года.
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

@@ -1,0 +1,122 @@
+info:
+  name: Метод генерации номеров партий
+  type: http
+  seq: 3
+  tags:
+    - Подача сведений
+    - Резервирование партий
+
+http:
+  method: POST
+  url: "{{baseUrl}}/party-numbers/generate"
+  body:
+    type: json
+    data: |-
+      {
+        "pg": "milk",
+        "partyNumberInfo": [
+          {
+            "gtin": 4811111111111,
+            "productionDate": "2025-07-14T00:00:00.000Z",
+            "count": 1
+          },
+          {
+            "gtin": 4875777777777,
+            "productionDate": "2025-07-14T00:00:00.000Z",
+            "count": 1
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/party-numbers/generate"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": "milk",
+            "partyNumberInfo": [
+              {
+                "gtin": 4811111111111,
+                "productionDate": "2025-07-14T00:00:00.000Z",
+                "count": 1
+              },
+              {
+                "gtin": 4875777777777,
+                "productionDate": "2025-07-14T00:00:00.000Z",
+                "count": 1
+              }
+            ]
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "inn": "",
+            "partyNumberInfo": [
+              {}
+            ],
+            "partyNumber": [],
+            "gtin": [],
+            "productionDate": "",
+            "errorMessage": "",
+            "errorResult": {}
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/party-numbers/generate"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "pg": "milk",
+            "partyNumberInfo": [
+              {
+                "gtin": 4811111111111,
+                "productionDate": "2025-07-14T00:00:00.000Z",
+                "count": 1
+              },
+              {
+                "gtin": 4875777777777,
+                "productionDate": "2025-07-14T00:00:00.000Z",
+                "count": 1
+              }
+            ]
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для автоматической генерации номеров партий в Системе маркировки для товарной группы «Молочная продукция».
+
+  Важно Максимальный размер резерва — 1 000 партий. Если вы захотите удалить партии из резерва, то нужно будет обратиться в службу технической поддержки по телефону 8 (800) 222-15-23 или по электронной почте support@crpt.ru
+
+  Тип приватности: приватный.

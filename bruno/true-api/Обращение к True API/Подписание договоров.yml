@@ -1,0 +1,99 @@
+info:
+  name: Подписание договоров
+  type: http
+  seq: 7
+  tags:
+    - Обращение к True API
+    - Счета и договоры
+    - Рекомендации по работе с API
+    - Регистрация УОТ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/elk/outgoing-documents/:documentId/signature"
+  params:
+    - name: documentId
+      value: ""
+      type: path
+      description: Идентификатор документа в системе ЭДО оператора. Можно найти по методу /elk/crm-api/documents в ответе которого будет нужный параметр "document" ("ID документа")
+  body:
+    type: json
+    data: |-
+      {
+        "signature": ""
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/outgoing-documents/:documentId/signature"
+      method: POST
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора. Можно найти по методу /elk/crm-api/documents в ответе которого будет нужный параметр "document" ("ID документа")
+      body:
+        type: json
+        data: |-
+          {
+            "signature": ""
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "string"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/outgoing-documents/:documentId/signature"
+      method: POST
+      params:
+        - name: documentId
+          value: ""
+          type: path
+          description: Идентификатор документа в системе ЭДО оператора. Можно найти по методу /elk/crm-api/documents в ответе которого будет нужный параметр "document" ("ID документа")
+      body:
+        type: json
+        data: |-
+          {
+            "signature": ""
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для подписания УОТ договоров с ГИС МТ с помощью УКЭП.
+
+  В результате передачи в запросе ЭП к договору с указываемым идентификатором на выходе возвращается статус обработки запроса и информация об ошибке (при её наличии).
+
+  Content-Type: text/plain
+
+  Тип приватности: приватный.
+
+  Тот же метод описан в разделе 2.1.4 «Шаг 4: подписание договоров» (сценарий регистрации УОТ), который отсылает к подробному описанию в разделе 3.7.3 «Подписание договоров»: УОТ должен подписать загруженный договор УКЭП; шаги 4 и 5 необходимо повторить для всех договоров, информация о которых возвращается на шаге 3. Для договоров, обработанных со стороны Оператора и подписанных УОТ, при вызове метода на шаге 3 в поле "status" возвращается код "2" ("Оформлен\Подписан").

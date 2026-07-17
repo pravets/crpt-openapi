@@ -1,0 +1,681 @@
+info:
+  name: Метод получения информации о списке КИ по заданным фильтрам
+  type: http
+  seq: 1
+  tags:
+    - Сведения о КИ и товарах
+    - Данные о КИ
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/search"
+  body:
+    type: json
+    data: |-
+      {
+        "filter": {
+          "emissionDatePeriod": {
+            "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+            "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+          },
+          "applicationDatePeriod": {
+            "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+            "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+          },
+          "productionDatePeriod": {
+            "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+            "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+          },
+          "introducedDatePeriod": {
+            "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+            "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+          },
+          "gtins": [
+            "string",
+            "string"
+          ],
+          "producerInns": [
+            "string",
+            "string"
+          ],
+          "generalPackageTypes": [
+            "string",
+            "string"
+          ],
+          "turnoverTypes": [
+            "string",
+            "string"
+          ],
+          "states": [
+            {
+              "status": "string",
+              "statusExt": "string"
+            },
+            {
+              "status": "string"
+            },
+            {
+              "statusExt": "string"
+            },
+            {
+              "status": "string",
+              "isStatusExtNull": true
+            }
+          ],
+          "tnVed": "string",
+          "tnVed10": "string",
+          "emissionTypes": [
+            "string",
+            "string"
+          ],
+          "isAggregated": false,
+          "productGroups": [
+            "string",
+            "string"
+          ],
+          "eliminationReasons": [
+            "string",
+            "string"
+          ],
+          "prVetDoc": "string",
+          "haveChildren": false,
+          "serviceProviderIdPresented": true,
+          "serviceProviderTypes": [
+            "string",
+            "string"
+          ],
+          "orderIds": [
+            "string",
+            "string"
+          ]
+        },
+        "pagination": {
+          "perPage": 0,
+          "lastEmissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+          "sgtin": "string",
+          "direction": 0
+        }
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "emissionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "applicationDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "productionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "introducedDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "gtins": [
+                "string",
+                "string"
+              ],
+              "producerInns": [
+                "string",
+                "string"
+              ],
+              "generalPackageTypes": [
+                "string",
+                "string"
+              ],
+              "turnoverTypes": [
+                "string",
+                "string"
+              ],
+              "states": [
+                {
+                  "status": "string",
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string"
+                },
+                {
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string",
+                  "isStatusExtNull": true
+                }
+              ],
+              "tnVed": "string",
+              "tnVed10": "string",
+              "emissionTypes": [
+                "string",
+                "string"
+              ],
+              "isAggregated": false,
+              "productGroups": [
+                "string",
+                "string"
+              ],
+              "eliminationReasons": [
+                "string",
+                "string"
+              ],
+              "prVetDoc": "string",
+              "haveChildren": false,
+              "serviceProviderIdPresented": true,
+              "serviceProviderTypes": [
+                "string",
+                "string"
+              ],
+              "orderIds": [
+                "string",
+                "string"
+              ]
+            },
+            "pagination": {
+              "perPage": 0,
+              "lastEmissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+              "sgtin": "string",
+              "direction": 0
+            }
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "isLastPage": true,
+            "result": [
+              {
+                "sgtin": "string",
+                "cis": "string",
+                "gtin": "string",
+                "producerInn": "string",
+                "status": "string",
+                "statusExt": "string",
+                "emissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "applicationDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "productionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "generalPackageType": "string",
+                "ownerInn": "string",
+                "tnVed": "string",
+                "tnVed10": "string",
+                "emissionType": "string",
+                "productGroup": "string",
+                "haveChildren": false,
+                "parent": "string",
+                "eliminationReason": "string",
+                "expirationDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "prVetDocument": "string",
+                "mrp": 0,
+                "introducedDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "receiptDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "turnoverType": "string",
+                "color": "string",
+                "productSize": "string",
+                "country": "string",
+                "inGrayZone": false,
+                "serviceProviderId": "string",
+                "serviceProviderType": "string",
+                "returnType": "string",
+                "eliminationReasonOther": "string",
+                "modId": "string",
+                "productWeight": 0,
+                "expiration": [
+                  {
+                    "expirationStorageDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                    "storageConditionId": "string"
+                  }
+                ],
+                "emissionCountryCode": 0,
+                "exportCountryCode": 0,
+                "orderId": "string",
+                "operationIntroducedDate": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              }
+            ]
+          }
+  - name: 400 Response
+    description: "2.2. Код 400 при неверном формате указанных значений:"
+    request:
+      url: "{{baseUrl}}/cises/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "emissionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "applicationDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "productionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "introducedDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "gtins": [
+                "string",
+                "string"
+              ],
+              "producerInns": [
+                "string",
+                "string"
+              ],
+              "generalPackageTypes": [
+                "string",
+                "string"
+              ],
+              "turnoverTypes": [
+                "string",
+                "string"
+              ],
+              "states": [
+                {
+                  "status": "string",
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string"
+                },
+                {
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string",
+                  "isStatusExtNull": true
+                }
+              ],
+              "tnVed": "string",
+              "tnVed10": "string",
+              "emissionTypes": [
+                "string",
+                "string"
+              ],
+              "isAggregated": false,
+              "productGroups": [
+                "string",
+                "string"
+              ],
+              "eliminationReasons": [
+                "string",
+                "string"
+              ],
+              "prVetDoc": "string",
+              "haveChildren": false,
+              "serviceProviderIdPresented": true,
+              "serviceProviderTypes": [
+                "string",
+                "string"
+              ],
+              "orderIds": [
+                "string",
+                "string"
+              ]
+            },
+            "pagination": {
+              "perPage": 0,
+              "lastEmissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+              "sgtin": "string",
+              "direction": 0
+            }
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Ошибка в параметрах запроса <наименование_параметра>"
+          }
+  - name: 401 Response
+    description: "2.6. Код 401 при непройденной авторизации, если в запросе не указан токен:"
+    request:
+      url: "{{baseUrl}}/cises/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "emissionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "applicationDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "productionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "introducedDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "gtins": [
+                "string",
+                "string"
+              ],
+              "producerInns": [
+                "string",
+                "string"
+              ],
+              "generalPackageTypes": [
+                "string",
+                "string"
+              ],
+              "turnoverTypes": [
+                "string",
+                "string"
+              ],
+              "states": [
+                {
+                  "status": "string",
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string"
+                },
+                {
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string",
+                  "isStatusExtNull": true
+                }
+              ],
+              "tnVed": "string",
+              "tnVed10": "string",
+              "emissionTypes": [
+                "string",
+                "string"
+              ],
+              "isAggregated": false,
+              "productGroups": [
+                "string",
+                "string"
+              ],
+              "eliminationReasons": [
+                "string",
+                "string"
+              ],
+              "prVetDoc": "string",
+              "haveChildren": false,
+              "serviceProviderIdPresented": true,
+              "serviceProviderTypes": [
+                "string",
+                "string"
+              ],
+              "orderIds": [
+                "string",
+                "string"
+              ]
+            },
+            "pagination": {
+              "perPage": 0,
+              "lastEmissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+              "sgtin": "string",
+              "direction": 0
+            }
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Для доступа к этому ресурсу требуется полная аутентификация. Проверьте токен"
+          }
+  - name: 403 Response
+    description: "2.8. Код 403, если не подписан договор:"
+    request:
+      url: "{{baseUrl}}/cises/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "emissionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "applicationDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "productionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "introducedDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "gtins": [
+                "string",
+                "string"
+              ],
+              "producerInns": [
+                "string",
+                "string"
+              ],
+              "generalPackageTypes": [
+                "string",
+                "string"
+              ],
+              "turnoverTypes": [
+                "string",
+                "string"
+              ],
+              "states": [
+                {
+                  "status": "string",
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string"
+                },
+                {
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string",
+                  "isStatusExtNull": true
+                }
+              ],
+              "tnVed": "string",
+              "tnVed10": "string",
+              "emissionTypes": [
+                "string",
+                "string"
+              ],
+              "isAggregated": false,
+              "productGroups": [
+                "string",
+                "string"
+              ],
+              "eliminationReasons": [
+                "string",
+                "string"
+              ],
+              "prVetDoc": "string",
+              "haveChildren": false,
+              "serviceProviderIdPresented": true,
+              "serviceProviderTypes": [
+                "string",
+                "string"
+              ],
+              "orderIds": [
+                "string",
+                "string"
+              ]
+            },
+            "pagination": {
+              "perPage": 0,
+              "lastEmissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+              "sgtin": "string",
+              "direction": 0
+            }
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует действующий договор по <pg>"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/search"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "filter": {
+              "emissionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "applicationDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "productionDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "introducedDatePeriod": {
+                "from": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+                "to": "yyyy-MM-ddTHH:mm:ss.SSSZ"
+              },
+              "gtins": [
+                "string",
+                "string"
+              ],
+              "producerInns": [
+                "string",
+                "string"
+              ],
+              "generalPackageTypes": [
+                "string",
+                "string"
+              ],
+              "turnoverTypes": [
+                "string",
+                "string"
+              ],
+              "states": [
+                {
+                  "status": "string",
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string"
+                },
+                {
+                  "statusExt": "string"
+                },
+                {
+                  "status": "string",
+                  "isStatusExtNull": true
+                }
+              ],
+              "tnVed": "string",
+              "tnVed10": "string",
+              "emissionTypes": [
+                "string",
+                "string"
+              ],
+              "isAggregated": false,
+              "productGroups": [
+                "string",
+                "string"
+              ],
+              "eliminationReasons": [
+                "string",
+                "string"
+              ],
+              "prVetDoc": "string",
+              "haveChildren": false,
+              "serviceProviderIdPresented": true,
+              "serviceProviderTypes": [
+                "string",
+                "string"
+              ],
+              "orderIds": [
+                "string",
+                "string"
+              ]
+            },
+            "pagination": {
+              "perPage": 0,
+              "lastEmissionDate": "yyyy-MM-ddTHH:mm:ss.SSSZ",
+              "sgtin": "string",
+              "direction": 0
+            }
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод позволяет получить информацию по КИ / КиЗ, числящихся на участнике оборота товаров по заданным фильтрам. Максимальный лимит кодов в ответе с учётом пагинации 10 000.
+
+  Примечание Информация о кодах, списанных из-за отсутствия нанесения КМ на единицы товара или комплекты, по которым последнее событие происходило месяц назад, в данном методе не возвращается
+
+  Тип приватности: c токеном авторизации.

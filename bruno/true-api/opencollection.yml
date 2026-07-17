@@ -1,0 +1,30 @@
+opencollection: 1.0.0
+
+info:
+  name: True API — ГИС МТ «Честный знак»
+config:
+  proxy:
+    inherit: false
+    config:
+      protocol: http
+      hostname: 10.0.0.1
+      port: 3128
+      auth:
+        username: ""
+        password: ""
+        disabled: true
+      bypassProxy: ""
+
+request:
+  auth:
+    type: bearer
+    token: e8660d76-eab5-4ba0-affd-89fab6008005
+  variables:
+    - name: baseUrl
+      value: https://markirovka.sandbox.crptech.ru/api/v4/true-api
+bundled: false
+extensions:
+  bruno:
+    ignore:
+      - node_modules
+      - .git

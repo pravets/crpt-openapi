@@ -1,0 +1,140 @@
+info:
+  name: Получение XML файла информации покупателя (УПД/УПДи/УКД) или квитанции
+  type: http
+  seq: 3
+  tags:
+    - Квитанции
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/events/:event_id/content"
+  params:
+    - name: doc_id
+      value: ""
+      type: path
+      description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+    - name: event_id
+      value: ""
+      type: path
+      description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Содержимое квитанции или файла информации покупателя в формате XML
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/events/:event_id/content"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: ""
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/events/:event_id/content"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: Документ или квитанция не найдены в базе данных
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/events/:event_id/content"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/incoming-documents/:doc_id/events/:event_id/content"
+      method: GET
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+        - name: event_id
+          value: ""
+          type: path
+          description: Идентификатор события / квитанции (UUID), полученный в ответе на создание файла информации покупателя или файла квитанции. В документации указан тип integer, однако в примерах используется UUID-строка
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: Метод возвращает содержимое файла информации покупателя или квитанции в виде XML-файла.

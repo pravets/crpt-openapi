@@ -1,0 +1,176 @@
+info:
+  name: Метод получения истории движения КИ
+  type: http
+  seq: 8
+  tags:
+    - Сведения о КИ и товарах
+
+http:
+  method: POST
+  url: "{{baseUrl}}/cises/history"
+  params:
+    - name: cis
+      value: ""
+      type: query
+      description: Код идентификации Указывается только нормализованное значение КИ (без скобок, обрамляющих идентификаторы применения)
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/cises/history"
+      method: POST
+      params:
+        - name: cis
+          value: ""
+          type: query
+          description: Код идентификации Указывается только нормализованное значение КИ (без скобок, обрамляющих идентификаторы применения)
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "cis": "string",
+              "gtin": "string",
+              "productName": "string",
+              "producedDate": "2023-03-03T13:21:03.071Z",
+              "packageType": "string",
+              "ownerInn": "string",
+              "ownerName": "string",
+              "status": "string",
+              "maxRetailPrice": 0,
+              "child": [
+                "array [string]"
+              ],
+              "parent": "string",
+              "producerInn": "string",
+              "producerName": "string",
+              "timestamp": "2023-03-03T13:21:03.071Z",
+              "operationDate": "2023-03-03T13:21:03.071Z",
+              "emissionDate": "2023-03-03T13:21:03.071Z",
+              "docId": "string",
+              "partialSaleInfo": {
+                "innerUnitCount": 0,
+                "soldUnitCount": 0,
+                "rest": 0,
+                "correctRest": true
+              },
+              "turnoverType": "string",
+              "productGroup": "string"
+            }
+          ]
+  - name: 400 Response
+    description: "2.1. Код 400 При неправильном формате КИ в URL:"
+    request:
+      url: "{{baseUrl}}/cises/history"
+      method: POST
+      params:
+        - name: cis
+          value: ""
+          type: query
+          description: Код идентификации Указывается только нормализованное значение КИ (без скобок, обрамляющих идентификаторы применения)
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Неверный формат КМ"
+          }
+  - name: 401 Response
+    description: "2.2. Код 401 В случае, когда указан устаревший токен:"
+    request:
+      url: "{{baseUrl}}/cises/history"
+      method: POST
+      params:
+        - name: cis
+          value: ""
+          type: query
+          description: Код идентификации Указывается только нормализованное значение КИ (без скобок, обрамляющих идентификаторы применения)
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Токен не действителен. Необходимо получить новый токен аутентификации"
+          }
+  - name: 404 Response
+    description: "2.3. Код 404 Если по КИ не найдены операции:"
+    request:
+      url: "{{baseUrl}}/cises/history"
+      method: POST
+      params:
+        - name: cis
+          value: ""
+          type: query
+          description: Код идентификации Указывается только нормализованное значение КИ (без скобок, обрамляющих идентификаторы применения)
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Не найдены операции по запрашиваемому КИ"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/cises/history"
+      method: POST
+      params:
+        - name: cis
+          value: ""
+          type: query
+          description: Код идентификации Указывается только нормализованное значение КИ (без скобок, обрамляющих идентификаторы применения)
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает информацию о движении (истории) запрашиваемых КИ (в одном запросе указывается один КИ) по событиям, в которых участник оборота товаров принимал участие, чей токен используется при выполнении запроса.
+
+  Каждому участнику оборота товаров доступна информация о производителе продукции, продавце и текущем владельце. Если КИ выведен из оборота, то информация о текущем владельце не возвращается.
+
+  Данный метод рекомендуется использовать вместо «Метода получения истории движения КИ товарной группы «Табачная продукция»», снятого с поддержки.
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/cises/history?cis=0104600266012258215n4Jh5D"
+  -H "accept: */*"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный (с использованием токена).

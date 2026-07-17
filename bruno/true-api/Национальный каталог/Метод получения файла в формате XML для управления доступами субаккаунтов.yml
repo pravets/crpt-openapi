@@ -1,0 +1,260 @@
+info:
+  name: Метод получения файла в формате XML для управления доступами субаккаунтов
+  type: http
+  seq: 5
+  tags:
+    - Национальный каталог
+
+http:
+  method: POST
+  url: "{{baseUrl}}/nk/linked-accounts-documents"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "linked_account_inn": "",
+        "is_access_allowed": false,
+        "linked_goods": []
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/linked-accounts-documents"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "linked_account_inn": "",
+            "is_access_allowed": false,
+            "linked_goods": []
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "result": {
+              "xmls": [
+                {
+                  "linked_account_inn": "0000000001",
+                  "xml": "<xml></xml>"
+                },
+                {
+                  "linked_account_inn": "0000000002",
+                  "xml": "<xml></xml>"
+                }
+              ],
+              "errors": [
+                {
+                  "linked_account_inn": "0000000003",
+                  "gtin": "gtin1",
+                  "message": "text",
+                  "code": "11"
+                },
+                {
+                  "linked_account_inn": "0000000003",
+                  "gtin": "gtin2",
+                  "message": "text",
+                  "code": "12"
+                },
+                {
+                  "linked_account_inn": "0000000004",
+                  "message": "text",
+                  "code": "11"
+                }
+              ]
+            }
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/linked-accounts-documents"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "linked_account_inn": "",
+            "is_access_allowed": false,
+            "linked_goods": []
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <?xml version="1.0" encoding="UTF-8"?>
+            <root>
+              <apiversion>3</apiversion>
+              <result>
+                <xmls>
+                  <item>
+                    <linked_account_inn>0000000001</linked_account_inn>
+                    <xml><?xml version="1.0" encoding="UTF-8"?>
+          <account><schemaVersion>6.0</schemaVersion><mainAccountInn>0000000002</mainAccountInn><linkedAccountInn>0000000001</linkedAccountInn><isAccessAllowed value="1">Я разрешаю 0000000001 использовать свои коды товара для заказа кодов маркировки и ввода товаров в оборот</isAccessAllowed></account>
+          </xml>
+                  </item>
+                </xmls>
+              </result>
+            </root>
+  - name: 400 Response
+    description: "Возможные ошибки:"
+    request:
+      url: "{{baseUrl}}/nk/linked-accounts-documents"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "linked_account_inn": "",
+            "is_access_allowed": false,
+            "linked_goods": []
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/linked-accounts-documents"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "linked_account_inn": "",
+            "is_access_allowed": false,
+            "linked_goods": []
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод возвращает файл в формате XML, необходимый для управления доступами субаккаунтов. Полученный файл необходимо подписать: то есть предоставить или отозвать доступ для субакканута.
+
+  Примечание По механизму настройки субаккаунтов компания-владелец кодов товаров может предоставить доступ только к российским кодам товаров (046) и кодам товаров индустриальной маркировки (004)
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/nk/linked-accounts-documents?format=json"
+  -H "accept: application/json"
+  -H "Content-Type: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+  --data-raw "[{\"linked_account_inn\":\"string\",\"is_access_allowed\":true}]"
+
+  Пример запроса в формате JSON:
+
+  Пример: [
+   {
+   "linked_account_inn":"6310000012",
+   "linked_goods":[
+   "04600000000001",
+   "04600000000002"
+   ],
+   "is_access_allowed":true
+   }
+  ]
+
+  Пример запроса в формате XML:
+
+  Пример: <?xml version="1.0" encoding="UTF-8"?>
+   <account>
+   <schemaVersion>6.0</schemaVersion>
+   <mainAccountInn>0000000001</mainAccountInn>
+   <linkedAccountInn>0000000002</linkedAccountInn>
+   <isAccessAllowed value="1">Я разрешаю 0000000002 использовать свои коды товара для заказа кодов маркировки и ввода товаров в оборот</isAccessAllowed>
+   </account>
+
+  Тип приватности: приватный.

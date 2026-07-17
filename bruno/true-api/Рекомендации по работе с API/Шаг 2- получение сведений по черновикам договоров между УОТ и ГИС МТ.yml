@@ -1,0 +1,52 @@
+info:
+  name: "Шаг 2: получение сведений по черновикам договоров между УОТ и ГИС МТ"
+  type: http
+  seq: 1
+  tags:
+    - Рекомендации по работе с API
+    - Регистрация УОТ
+
+http:
+  method: GET
+  url: "{{baseUrl}}/elk/crm-api/documents"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/elk/crm-api/documents"
+      method: GET
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/elk/crm-api/documents"
+      method: GET
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Подробное описание метода см. в разделе " Получение сведений по черновикам заключённых договоров между УОТ и Оператором ГИС МТ ". После обработки заявки на регистрацию для начала работы с товарными группами, указанными в заявке на регистрацию, УОТ должен подписать соответствующие договора. Если запрос успешно обработан, в ответ вернётся структура JSON, содержащая перечень данных по договорам, которые УОТ должен подписать. Все договора, которые УОТ заключает с ГИС МТ в рамках маркировки товаров, являются исходящими от УОТ и должны быть подписаны.
+
+  Этот же метод (path+HTTP-метод) описан также в разделе 3.7.1 «Получение сведений по черновикам заключённых договоров между УОТ и Оператором ГИС МТ» документации.

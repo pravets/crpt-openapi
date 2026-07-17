@@ -1,0 +1,175 @@
+info:
+  name: Подписание исходящего документа
+  type: http
+  seq: 8
+  tags:
+    - Исходящие документы
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/signature"
+  params:
+    - name: doc_id
+      value: ""
+      type: path
+      description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+  body:
+    type: text
+    data: ""
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Документ подписан и отправлен получателю
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 200
+      statusText: OK
+      body:
+        type: text
+        data: ""
+  - name: 400 Response
+    description: |
+      Ошибка запроса. Типичные сообщения:
+      - «Невозможно создать документ. <наименование организации> не зарегистрирован в ГИС МТ»;
+      - «Нет прав на подписание документа» — не пройдена проверка подписи.
+
+      Полный перечень ошибок см. в документации ЭДО Лайт.
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 401 Response
+    description: "Ошибка авторизации — токен не прошёл проверку, истёк срок жизни токена или запрос выполнен без токена («Access denied: token not valid» / «Access denied: token not found»)"
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 404 Response
+    description: Документ или квитанция не найдены в базе данных
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+  - name: 500 Response
+    description: Внутренняя ошибка сервиса / сервис недоступен
+    request:
+      url: "{{baseUrl}}/api/v1/outgoing-documents/:doc_id/signature"
+      method: POST
+      params:
+        - name: doc_id
+          value: ""
+          type: path
+          description: Идентификатор документа (UUID). В документации указан тип integer, однако во всех примерах используется UUID-строка
+      body:
+        type: text
+        data: ""
+    response:
+      status: 500
+      statusText: Internal Server Error
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "message": "",
+            "error_message": "",
+            "code": "",
+            "description": ""
+          }
+
+docs: |
+  Метод используется для добавления электронной откреплённой подписи к черновику файла информации продавца (УПД/УПДи/УКД/УКДи).
+  В результате выполнения метода к документу добавляется откреплённая подпись, после чего документ отправляется получателю.
+
+  Пример создания и подписания титула:
+  1. Создаётся черновик документа методами загрузки файла информации продавца (УПД/УПДи/УКД) — возвращается doc_id документа.
+  2. Запрашивается XML документа методом «Получение содержимого XML документа» с использованием doc_id — возвращается XML.
+  3. XML подписывается и отправляется с использованием doc_id.
+
+  Примечание: при попытке подписания и отправки документа участнику оборота товаров, не зарегистрированному в ГИС МТ,
+  возвращается ошибка с кодом 400 («Невозможно создать документ. <наименование организации> не зарегистрирован в ГИС МТ»).

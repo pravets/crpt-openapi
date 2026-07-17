@@ -1,0 +1,284 @@
+info:
+  name: Метод расчёта количества КИ на основании веса товара
+  type: http
+  seq: 26
+  tags:
+    - Сведения о КИ и товарах
+
+http:
+  method: POST
+  url: "{{baseUrl}}/product/gtin-weight/cis-count"
+  body:
+    type: json
+    data: |-
+      {
+        "products": [
+          {
+            "gtin": "string",
+            "weight": "string"
+          },
+          {
+            "gtin": "string",
+            "weight": "string"
+          }
+        ]
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "gtin": "string",
+                "weight": 5,
+                "cisCount": 2
+              },
+              {
+                "gtin": "string",
+                "weight": 5,
+                "cisCount": 2
+              }
+            ]
+          }
+  - name: 400 Response
+    description: "2.1. Код 400 при неверной структуре * .json в теле запроса:"
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Некорректный JSON. Данные ошибки: <системное описание ошибки>"
+          }
+  - name: 401 Response
+    description: "2.7. Код 401 при указании невалидного токена или валидного токена с истёкшим сроком действия:"
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Токен не действителен. Необходимо получить новый токен аутентификации"
+          }
+  - name: 404 Response
+    description: "2.8. Код 404 при отсутствии всех запрошенных кодов товаров в НКМТ:"
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      status: 404
+      statusText: Not Found
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "По запрашиваемым gtin информация не найдена в ГИС МТ"
+          }
+  - name: 422 Response
+    description: '2.10. Код 422 при отсутствии вычисленного веса (среднего веса) товара в граммах в НКМТ для кода товара, указанного в параметре тела запроса "gtin" ("Код товара"):'
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      status: 422
+      statusText: Unprocessable Entity
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "gtin": "string",
+                "weight": 0,
+                "errorMessage": "Для GTIN не указан вес в описании карточки",
+                "errorCode": 422
+              }
+            ]
+          }
+  - name: 504 Response
+    description: "2.11. Код 504 при отсутствии ответа из НКМТ, в том числе при получении системной ошибки:"
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      status: 504
+      statusText: Gateway Timeout
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует ответ системы"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/product/gtin-weight/cis-count"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "products": [
+              {
+                "gtin": "string",
+                "weight": "string"
+              },
+              {
+                "gtin": "string",
+                "weight": "string"
+              }
+            ]
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  В ответе метода возвращается информация о количестве единиц товара для каждой запрашиваемой пары кода товара и веса в граммах. Если в карточке товара в НКМТ не заполнены или некорректно заполнены атрибуты по весовым характеристикам товара, то в ответе метода информация о количестве КИ будет отсутствовать.
+
+  Метод доступен для товарных групп, в которых реализован объёмно-сортовой учёт (в документе указывается количество товаров и их коды товаров) по весу товара.
+
+  Для метода действует ограничение на частоту запросов. Минимальный интервал между запросами — 30 секунд.
+
+  Тип приватности: c токеном авторизации участника оборота товаров или Оператора ЭДО.

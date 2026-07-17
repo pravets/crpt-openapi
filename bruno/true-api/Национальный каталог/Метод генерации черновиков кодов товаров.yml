@@ -1,0 +1,309 @@
+info:
+  name: Метод генерации черновиков кодов товаров
+  type: http
+  seq: 15
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/generate-gtins"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+      disabled: true
+    - name: exist
+      value: ""
+      type: query
+      description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+      disabled: true
+    - name: quantity
+      value: ""
+      type: query
+      description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+    - name: supplier_key
+      value: ""
+      type: query
+      description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/generate-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: exist
+          value: ""
+          type: query
+          description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+          disabled: true
+        - name: quantity
+          value: ""
+          type: query
+          description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+        - name: supplier_key
+          value: ""
+          type: query
+          description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": {
+              "monthly-limit": {
+                "limit": 100,
+                "usage": 6
+              },
+              "drafts": [
+                {
+                  "gtin": "12345678900987"
+                },
+                {
+                  "gtin": 9876543211234
+                }
+              ]
+            }
+          }
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/generate-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: exist
+          value: ""
+          type: query
+          description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+          disabled: true
+        - name: quantity
+          value: ""
+          type: query
+          description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+        - name: supplier_key
+          value: ""
+          type: query
+          description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/xml
+      body:
+        type: xml
+        data: |-
+          <root>
+          <apiversion>3</apiversion>
+          <result>
+              <monthly-limit>
+                  <limit>100</limit>
+                  <usage>6</usage>
+              </monthly-limit>
+              <drafts>
+                  <gtin>12345678900987</gtin>
+                  <gtin>09876543211234</gtin>
+              </drafts>
+          </result>
+          </root>
+  - name: 400 Response
+    description: "2.1. Код 400, если одновременно указан и «apikey» в URL запроса, и аутентификационный токен ГИС МТ в заголовке запроса (параметр «Authorization: Bearer <token>»):"
+    request:
+      url: "{{baseUrl}}/nk/generate-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: exist
+          value: ""
+          type: query
+          description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+          disabled: true
+        - name: quantity
+          value: ""
+          type: query
+          description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+        - name: supplier_key
+          value: ""
+          type: query
+          description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Недопустимо использование apikey вместе с <token>"
+          }
+  - name: 401 Response
+    description: "2.3. Код 401, если в заголовке запроса (параметр «Authorization: Bearer <token>») указан неактуальный для аккаунта аутентификационный токен ГИС МТ:"
+    request:
+      url: "{{baseUrl}}/nk/generate-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: exist
+          value: ""
+          type: query
+          description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+          disabled: true
+        - name: quantity
+          value: ""
+          type: query
+          description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+        - name: supplier_key
+          value: ""
+          type: query
+          description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+          disabled: true
+    response:
+      status: 401
+      statusText: Unauthorized
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Указан неактуальный для аккаунта <token>"
+          }
+  - name: 403 Response
+    description: "2.5. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/generate-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: exist
+          value: ""
+          type: query
+          description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+          disabled: true
+        - name: quantity
+          value: ""
+          type: query
+          description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+        - name: supplier_key
+          value: ""
+          type: query
+          description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+          disabled: true
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/generate-gtins"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел « Единая аутентификация »)
+          disabled: true
+        - name: exist
+          value: ""
+          type: query
+          description: Признак, обозначающий запрос уже сгенерированных и имеющихся в базе пользователя gtin Принимает значения 1 / 0 (true / false)
+          disabled: true
+        - name: quantity
+          value: ""
+          type: query
+          description: Количество новых черновиков кодов товаров, которые нужно сгенерировать Обязателен при запросе генерации новых черновиков gtin
+        - name: supplier_key
+          value: ""
+          type: query
+          description: «api-key» поставщика или производителя товаров При выставлении данного параметра генерируется карточка товара поставщика / производителя товаров (GTIN) в НКМТ. При этом используется GCP / GLN организации поставщика / производителя товаров
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для генерации и получения списка черновиков кодов товаров. При отправке числа новых кодов товаров и (при необходимости) ключа поставщика / производителя товаров в ответе возвращается число доступных в течение месяца для генерации кодов товаров, число уже сгенерированных кодов товаров, список новых кодов товаров.
+
+  Метод не используется для работы с карточками индустриальной маркировки (префикс 004).
+
+  Пример запроса генерации новых черновиков gtin:
+
+  Пример: curl -X GET "<url стенда>/nk/generate-gtins?quantity=3"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Пример запроса генерации новых черновиков gtin от имени поставщика контента или лаборатории:
+
+  Пример: curl -X GET "<url стенда>/nk/generate-gtins?quantity=3&supplier_key=YYY"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Пример запроса, возвращающий уже имеющиеся черновики gtin:
+
+  Пример: curl -X GET "<url стенда>/nk/generate-gtins?exist=1"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

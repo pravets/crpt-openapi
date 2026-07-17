@@ -1,0 +1,152 @@
+info:
+  name: Метод создания документа согласия о предоставлении сведений о КИ
+  type: http
+  seq: 15
+  tags:
+    - Сведения о КИ и товарах
+    - Согласие на предоставление информации
+
+http:
+  method: POST
+  url: "{{baseUrl}}/agreement-registry/agreement"
+  body:
+    type: json
+    data: |-
+      {
+        "trustedInns": [
+          "string"
+        ],
+        "everyonePermitted": true,
+        "expirationDate": "string"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 201 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "trustedInns": [
+              "string"
+            ],
+            "everyonePermitted": true,
+            "expirationDate": "string"
+          }
+    response:
+      status: 201
+      statusText: Created
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "id": "3fa85f64-5717-4562-b3fc-2c963f66afa6"
+          }
+  - name: 400 Response
+    description: 2.В случае ошибки 400 (документ не прошёл валидацию);
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "trustedInns": [
+              "string"
+            ],
+            "everyonePermitted": true,
+            "expirationDate": "string"
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          [
+            {
+              "message": "Для опубликованной ревизии согласия существует документ аннулирования в статусе 'На подготовке'",
+              "object": []
+            },
+            {
+              "message": "Срок действия документа не должен заканчиваться позже даты окончания действия сертификата",
+              "object": []
+            },
+            {
+              "message": "ИНН не зарегистрированы в системе",
+              "object": [
+                "string"
+              ]
+            },
+            {
+              "message": "ИНН организации, создающей документ согласия, не может находиться в списке доверенных ИНН",
+              "object": [
+                "string"
+              ]
+            },
+            {
+              "message": "Срок действия документа не должен заканчиваться раньше текущей даты",
+              "object": [
+                "string"
+              ]
+            },
+            {
+              "message": "У УОТа уже есть актуальная ревизия согласия",
+              "object": [
+                "string"
+              ]
+            },
+            {
+              "message": "Список доверенных ИНН пустой",
+              "object": [
+                "string"
+              ]
+            }
+          ]
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/agreement-registry/agreement"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "trustedInns": [
+              "string"
+            ],
+            "everyonePermitted": true,
+            "expirationDate": "string"
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод формирует черновик, который подписывается УКЭП генерального директора в личном кабинете ГИС МТ. В ГИС МТ может находиться только один действующий документ согласия о предоставлении сведений.
+
+  Тип приватности: приватный.

@@ -1,0 +1,398 @@
+info:
+  name: Метод получения списка загруженных документов в ГИС МТ
+  type: http
+  seq: 1
+  tags:
+    - Документы и чеки
+
+http:
+  method: GET
+  url: "{{baseUrl}}/doc/list"
+  params:
+    - name: dateFrom
+      value: ""
+      type: query
+      description: Дата документа, от Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+      disabled: true
+    - name: dateTo
+      value: ""
+      type: query
+      description: Дата документа, до Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+      disabled: true
+    - name: did
+      value: ""
+      type: query
+      description: Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка) Использовать только совместно с параметром «orderedColumnValue" ("Значение столбца, «точки отсчета" (запись, с которой начинается выборка), по которому сортируются записи")
+      disabled: true
+    - name: documentFormat
+      value: ""
+      type: query
+      description: "Тип документа Возможные значения: «MANUAL» – формат * .json; «UPD» – документы в формате ЭДО; «XML» – формат * .xml; «CSV» – формат * .csv"
+      disabled: true
+    - name: documentStatus
+      value: ""
+      type: query
+      description: Статус документа См. « Справочник «Статусы документов» »
+      disabled: true
+    - name: documentType
+      value: "[]"
+      type: query
+      description: Тип документа Cм. « Справочник «Типы документов» »
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: Количество записей в ответе Значение устанавливает количество записей в ответе. Максимальное значение — 1000. Значение по умолчанию — 50
+      disabled: true
+    - name: number
+      value: ""
+      type: query
+      description: Идентификатор документа При указании данного параметра, параметр «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» - запись, с которой начнётся выборка)») будет игнорироваться
+      disabled: true
+    - name: order
+      value: ""
+      type: query
+      description: "Направление сортировки Возможные значения: «ASC» – по возрастанию; «DESC» – по убыванию"
+      disabled: true
+    - name: orderColumn
+      value: ""
+      type: query
+      description: Название столбца, по которому будет производиться сортировка Данный параметр считается устаревшим. Сортировка возможна только по параметру ответа «docDate» («Дата и время документа») и устанавливается по умолчанию
+      disabled: true
+    - name: orderedColumnValue
+      value: ""
+      type: query
+      description: Значение столбца, «точки отсчёта» (запись, с которой начинается выборка), по которому сортируются записи Параметр обязательный при указании параметра «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка)»), в других случаях параметр неприменим
+      disabled: true
+    - name: pageDir
+      value: ""
+      type: query
+      description: "Выбор направления Возможные значения: «PREV» – предыдущий раздел; «NEXT» – следующий раздел"
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+    - name: receiverInn
+      value: ""
+      type: query
+      description: ИНН получателя документа Обязательный, если нет «senderInn» («ИНН отправителя документа»). Одновременное указание параметров «receiverInn» («ИНН получателя документа») и «senderInn» («ИНН отправителя документа») не допускается
+      disabled: true
+    - name: senderInn
+      value: ""
+      type: query
+      description: ИНН отправителя документа Обязательный, если нет «receiverInn» («ИНН получателя документа»). Одновременное указание параметров «senderInn» («ИНН отправителя документа») и «receiverInn» («ИНН получателя документа») не допускается
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/doc/list"
+      method: GET
+      params:
+        - name: dateFrom
+          value: ""
+          type: query
+          description: Дата документа, от Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: dateTo
+          value: ""
+          type: query
+          description: Дата документа, до Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: did
+          value: ""
+          type: query
+          description: Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка) Использовать только совместно с параметром «orderedColumnValue" ("Значение столбца, «точки отсчета" (запись, с которой начинается выборка), по которому сортируются записи")
+          disabled: true
+        - name: documentFormat
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: «MANUAL» – формат * .json; «UPD» – документы в формате ЭДО; «XML» – формат * .xml; «CSV» – формат * .csv"
+          disabled: true
+        - name: documentStatus
+          value: ""
+          type: query
+          description: Статус документа См. « Справочник «Статусы документов» »
+          disabled: true
+        - name: documentType
+          value: "[]"
+          type: query
+          description: Тип документа Cм. « Справочник «Типы документов» »
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество записей в ответе Значение устанавливает количество записей в ответе. Максимальное значение — 1000. Значение по умолчанию — 50
+          disabled: true
+        - name: number
+          value: ""
+          type: query
+          description: Идентификатор документа При указании данного параметра, параметр «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» - запись, с которой начнётся выборка)») будет игнорироваться
+          disabled: true
+        - name: order
+          value: ""
+          type: query
+          description: "Направление сортировки Возможные значения: «ASC» – по возрастанию; «DESC» – по убыванию"
+          disabled: true
+        - name: orderColumn
+          value: ""
+          type: query
+          description: Название столбца, по которому будет производиться сортировка Данный параметр считается устаревшим. Сортировка возможна только по параметру ответа «docDate» («Дата и время документа») и устанавливается по умолчанию
+          disabled: true
+        - name: orderedColumnValue
+          value: ""
+          type: query
+          description: Значение столбца, «точки отсчёта» (запись, с которой начинается выборка), по которому сортируются записи Параметр обязательный при указании параметра «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка)»), в других случаях параметр неприменим
+          disabled: true
+        - name: pageDir
+          value: ""
+          type: query
+          description: "Выбор направления Возможные значения: «PREV» – предыдущий раздел; «NEXT» – следующий раздел"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+        - name: receiverInn
+          value: ""
+          type: query
+          description: ИНН получателя документа Обязательный, если нет «senderInn» («ИНН отправителя документа»). Одновременное указание параметров «receiverInn» («ИНН получателя документа») и «senderInn» («ИНН отправителя документа») не допускается
+          disabled: true
+        - name: senderInn
+          value: ""
+          type: query
+          description: ИНН отправителя документа Обязательный, если нет «receiverInn» («ИНН получателя документа»). Одновременное указание параметров «senderInn» («ИНН отправителя документа») и «receiverInn» («ИНН получателя документа») не допускается
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "results": [
+              {
+                "number": "00bec0ce-000b-0ad0-a000-a0ef000000c0",
+                "docDate": "2021-06-11T08:15:26.748Z",
+                "receivedAt": "2021-06-11T08:15:26.748Z",
+                "type": "LP_SHIP_GOODS",
+                "status": "ACCEPTED",
+                "senderInn": "0000000000",
+                "senderName": "string",
+                "receiverInn": "1111111111",
+                "receiverName": "string",
+                "invoiceNumber": null,
+                "relatedDocId": "b0af00ca-000d-0e00-a0b0-0b000000a0e0",
+                "downloadDesc": "",
+                "input": false,
+                "errors": null,
+                "productGroup": "lp",
+                "productGroupId": 1
+              }
+            ],
+            "nextPage": true
+          }
+  - name: 400 Response
+    description: "В случае ошибки: Код 400, если одновременно указаны параметры запроса «senderInn» («ИНН отправителя документа») и «receiverInn» («ИНН получателя документа»):"
+    request:
+      url: "{{baseUrl}}/doc/list"
+      method: GET
+      params:
+        - name: dateFrom
+          value: ""
+          type: query
+          description: Дата документа, от Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: dateTo
+          value: ""
+          type: query
+          description: Дата документа, до Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: did
+          value: ""
+          type: query
+          description: Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка) Использовать только совместно с параметром «orderedColumnValue" ("Значение столбца, «точки отсчета" (запись, с которой начинается выборка), по которому сортируются записи")
+          disabled: true
+        - name: documentFormat
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: «MANUAL» – формат * .json; «UPD» – документы в формате ЭДО; «XML» – формат * .xml; «CSV» – формат * .csv"
+          disabled: true
+        - name: documentStatus
+          value: ""
+          type: query
+          description: Статус документа См. « Справочник «Статусы документов» »
+          disabled: true
+        - name: documentType
+          value: "[]"
+          type: query
+          description: Тип документа Cм. « Справочник «Типы документов» »
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество записей в ответе Значение устанавливает количество записей в ответе. Максимальное значение — 1000. Значение по умолчанию — 50
+          disabled: true
+        - name: number
+          value: ""
+          type: query
+          description: Идентификатор документа При указании данного параметра, параметр «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» - запись, с которой начнётся выборка)») будет игнорироваться
+          disabled: true
+        - name: order
+          value: ""
+          type: query
+          description: "Направление сортировки Возможные значения: «ASC» – по возрастанию; «DESC» – по убыванию"
+          disabled: true
+        - name: orderColumn
+          value: ""
+          type: query
+          description: Название столбца, по которому будет производиться сортировка Данный параметр считается устаревшим. Сортировка возможна только по параметру ответа «docDate» («Дата и время документа») и устанавливается по умолчанию
+          disabled: true
+        - name: orderedColumnValue
+          value: ""
+          type: query
+          description: Значение столбца, «точки отсчёта» (запись, с которой начинается выборка), по которому сортируются записи Параметр обязательный при указании параметра «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка)»), в других случаях параметр неприменим
+          disabled: true
+        - name: pageDir
+          value: ""
+          type: query
+          description: "Выбор направления Возможные значения: «PREV» – предыдущий раздел; «NEXT» – следующий раздел"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+        - name: receiverInn
+          value: ""
+          type: query
+          description: ИНН получателя документа Обязательный, если нет «senderInn» («ИНН отправителя документа»). Одновременное указание параметров «receiverInn» («ИНН получателя документа») и «senderInn» («ИНН отправителя документа») не допускается
+          disabled: true
+        - name: senderInn
+          value: ""
+          type: query
+          description: ИНН отправителя документа Обязательный, если нет «receiverInn» («ИНН получателя документа»). Одновременное указание параметров «senderInn» («ИНН отправителя документа») и «receiverInn» («ИНН получателя документа») не допускается
+          disabled: true
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Параметры senderInn и receiverInn не могут быть указаны одновременно"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/doc/list"
+      method: GET
+      params:
+        - name: dateFrom
+          value: ""
+          type: query
+          description: Дата документа, от Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: dateTo
+          value: ""
+          type: query
+          description: Дата документа, до Задаётся в формате yyyy-MM-ddTHH:mm:ss.SSS’Z
+          disabled: true
+        - name: did
+          value: ""
+          type: query
+          description: Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка) Использовать только совместно с параметром «orderedColumnValue" ("Значение столбца, «точки отсчета" (запись, с которой начинается выборка), по которому сортируются записи")
+          disabled: true
+        - name: documentFormat
+          value: ""
+          type: query
+          description: "Тип документа Возможные значения: «MANUAL» – формат * .json; «UPD» – документы в формате ЭДО; «XML» – формат * .xml; «CSV» – формат * .csv"
+          disabled: true
+        - name: documentStatus
+          value: ""
+          type: query
+          description: Статус документа См. « Справочник «Статусы документов» »
+          disabled: true
+        - name: documentType
+          value: "[]"
+          type: query
+          description: Тип документа Cм. « Справочник «Типы документов» »
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество записей в ответе Значение устанавливает количество записей в ответе. Максимальное значение — 1000. Значение по умолчанию — 50
+          disabled: true
+        - name: number
+          value: ""
+          type: query
+          description: Идентификатор документа При указании данного параметра, параметр «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» - запись, с которой начнётся выборка)») будет игнорироваться
+          disabled: true
+        - name: order
+          value: ""
+          type: query
+          description: "Направление сортировки Возможные значения: «ASC» – по возрастанию; «DESC» – по убыванию"
+          disabled: true
+        - name: orderColumn
+          value: ""
+          type: query
+          description: Название столбца, по которому будет производиться сортировка Данный параметр считается устаревшим. Сортировка возможна только по параметру ответа «docDate» («Дата и время документа») и устанавливается по умолчанию
+          disabled: true
+        - name: orderedColumnValue
+          value: ""
+          type: query
+          description: Значение столбца, «точки отсчёта» (запись, с которой начинается выборка), по которому сортируются записи Параметр обязательный при указании параметра «did» («Значение номера документа, по которому сортируются записи («точка отсчёта» — запись, с которой начнётся выборка)»), в других случаях параметр неприменим
+          disabled: true
+        - name: pageDir
+          value: ""
+          type: query
+          description: "Выбор направления Возможные значения: «PREV» – предыдущий раздел; «NEXT» – следующий раздел"
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. « Справочник «Список поддерживаемых товарных групп» »
+        - name: receiverInn
+          value: ""
+          type: query
+          description: ИНН получателя документа Обязательный, если нет «senderInn» («ИНН отправителя документа»). Одновременное указание параметров «receiverInn» («ИНН получателя документа») и «senderInn» («ИНН отправителя документа») не допускается
+          disabled: true
+        - name: senderInn
+          value: ""
+          type: query
+          description: ИНН отправителя документа Обязательный, если нет «receiverInn» («ИНН получателя документа»). Одновременное указание параметров «senderInn» («ИНН отправителя документа») и «receiverInn» («ИНН получателя документа») не допускается
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Запрос:
+
+  Пример: curl "<url стенда v4>/doc/list?pg=lp"
+  -H "accept: */*"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: приватный.

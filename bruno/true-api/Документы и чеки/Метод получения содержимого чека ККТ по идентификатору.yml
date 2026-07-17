@@ -1,0 +1,219 @@
+info:
+  name: Метод получения содержимого чека ККТ по идентификатору
+  type: http
+  seq: 4
+  tags:
+    - Документы и чеки
+
+http:
+  method: GET
+  url: "{{baseUrl}}/receipt/:receiptId/info"
+  params:
+    - name: receiptId
+      value: ""
+      type: path
+      description: Идентификатор чека
+    - name: body
+      value: ""
+      type: query
+      description: "Признак необходимости в теле ответа содержимого чека Возможные значения: true - содержимое отправленного чека возвращается в ответе метода; false - содержимое отправленного чека не возвращается в ответе метода. Значение по умолчанию = false"
+      disabled: true
+    - name: content
+      value: ""
+      type: query
+      description: "Признак необходимости контента чека в теле ответа Возможные значения: true - контент чека возвращается в ответе метода; false - контент чека не возвращается в ответе метода. Значение по умолчанию = false"
+      disabled: true
+    - name: limit
+      value: ""
+      type: query
+      description: Количество кодов в теле чека Значение по умолчанию 5000
+      disabled: true
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/receipt/:receiptId/info"
+      method: GET
+      params:
+        - name: receiptId
+          value: ""
+          type: path
+          description: Идентификатор чека
+        - name: body
+          value: ""
+          type: query
+          description: "Признак необходимости в теле ответа содержимого чека Возможные значения: true - содержимое отправленного чека возвращается в ответе метода; false - содержимое отправленного чека не возвращается в ответе метода. Значение по умолчанию = false"
+          disabled: true
+        - name: content
+          value: ""
+          type: query
+          description: "Признак необходимости контента чека в теле ответа Возможные значения: true - контент чека возвращается в ответе метода; false - контент чека не возвращается в ответе метода. Значение по умолчанию = false"
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество кодов в теле чека Значение по умолчанию 5000
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "documentId": "0000000000000000000",
+            "docDate": "2020-12-20T21:43:00.000Z",
+            "receivedAt": "2021-04-13T05:04:32.013Z",
+            "type": "RECEIPT",
+            "status": "CHECKED_NOT_OK",
+            "senderInn": "7777777777",
+            "senderName": "string",
+            "receiverInn": "2222222222",
+            "receiverName": "string",
+            "total": 55555,
+            "vat": 55555,
+            "body": {
+              "receipt": {
+                "dateTime": 1608500580,
+                "indicationfiscalSign": 0,
+                "provisionSum": 0,
+                "fiscalDocumentFormatVer": 2,
+                "code": 3,
+                "fiscalDriveNumber": "9999999999999999",
+                "shiftNumber": 12,
+                "ofdINN": "6666666666",
+                "operator": "string",
+                "ofdName": "string",
+                "requestNumber": 10,
+                "fnsUrl": "www.nalog.ru",
+                "ecashTotalSum": 0,
+                "fiscalDocumentNumber": 100,
+                "nds18": 18889,
+                "taxationType": 1,
+                "userInn": "2222222222",
+                "kktRegId": "0000000000000000",
+                "creditSum": 0,
+                "cashTotalSum": 113333,
+                "totalSum": 113333,
+                "retailAddress": "Not Found",
+                "operationType": 1,
+                "prepaidSum": 0,
+                "items": [
+                  {
+                    "quantity": 1,
+                    "productCode": "RE0ENgVwP0tTL0kqMlZPUWRFJUYl",
+                    "price": 55555,
+                    "name": "ТОВАР 2",
+                    "sum": 55555,
+                    "nds": 1,
+                    "productType": 1,
+                    "paymentType": 4,
+                    "productUnitMeasure": 0
+                  },
+                  {
+                    "quantity": 1,
+                    "productCode": "MDEwNDcwMTEwMjUwOTIzNjIxS0FKRzd0bGxlckNmMQ==",
+                    "price": 55555,
+                    "name": "ТОВАР 3",
+                    "sum": 55555,
+                    "nds": 1,
+                    "productType": 1,
+                    "paymentType": 4,
+                    "packageType": "UNIT",
+                    "uit": "000000000000000000KqJG0vllerCf0",
+                    "productUnitMeasure": 0
+                  }
+                ],
+                "user": "string",
+                "retailPlace": "string"
+              }
+            },
+            "content": "{\"receipt\":{\"dateTime\":1608500580,\"indicationfiscalSign\":0,\"provisionSum\":0,\"fiscalDocumentFormatVer\":2,\"code\":3,\"fiscalDriveNumber\":\"9999999999999999\",\"shiftNumber\":12,\"ofdINN\":\"6666666666\",\"operator\":\"string\",\"ofdName\":\"string\",\"requestNumber\":10,\"fnsUrl\":\"www.nalog.ru\",\"ecashTotalSum\":0,\"fiscalDocumentNumber\":100,\"nds18\":18889,\"taxationType\":1,\"userInn\":\"2222222222\",\"kktRegId\":\"0000000000000000\",\"creditSum\":0,\"cashTotalSum\":113333,\"totalSum\":113333,\"retailAddress\":\"Not Found\",\"operationType\":1,\"prepaidSum\":0,\"items\":[{\"quantity\":1.0,\"productCode\":\"RE0ENgVwP0tTL0kqMlZPUWRFJUYl\",\"price\":55555,\"name\":\"ТОВАР 2\",\"sum\":55555,\"nds\":1,\"productType\":1,\"paymentType\":4},{\"quantity\":1.0,\"productCode\":\"MDEwNDcwMTEwMjUwOTIzNjIxS3FKRzd2bGxlckNmMQ==\",\"price\":55555,\"name\":\"ТОВАР 3\",\"sum\":55555,\"nds\":1,\"productType\":1,\"paymentType\":4}],\"user\":\"string\",\"retailPlace\":\"string\"}}",
+            "commonErrors": [
+              {
+                "errorCode": "ERROR_104",
+                "errorMessage": "Код Маркировки неподдерживаемого формата",
+                "errorObject": "RE0ENgVwP0tTL0kqMlZPUWRFJUYl"
+              },
+              {
+                "errorCode": "ERROR_85",
+                "errorMessage": "Тип упаковки Кода Маркировки 000000000000000000KqJG0vllerCf0 не соответствует выполняемой операции",
+                "errorObject": "000000000000000000KqJG0vllerCf0"
+              }
+            ],
+            "productGroup": null,
+            "productGroupId": null
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/receipt/:receiptId/info"
+      method: GET
+      params:
+        - name: receiptId
+          value: ""
+          type: path
+          description: Идентификатор чека
+        - name: body
+          value: ""
+          type: query
+          description: "Признак необходимости в теле ответа содержимого чека Возможные значения: true - содержимое отправленного чека возвращается в ответе метода; false - содержимое отправленного чека не возвращается в ответе метода. Значение по умолчанию = false"
+          disabled: true
+        - name: content
+          value: ""
+          type: query
+          description: "Признак необходимости контента чека в теле ответа Возможные значения: true - контент чека возвращается в ответе метода; false - контент чека не возвращается в ответе метода. Значение по умолчанию = false"
+          disabled: true
+        - name: limit
+          value: ""
+          type: query
+          description: Количество кодов в теле чека Значение по умолчанию 5000
+          disabled: true
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа См. " Справочник «Список поддерживаемых товарных групп» "
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Получение ошибок по чекам доступно в методе получения квитанции результата обработки чека по идентификатору чека .
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда v4>/receipt/{receiptId}/info"
+   -H "accept: */*"
+  -H "Authorization: Bearer <Токен>"
+
+  Тип приватности: приватный.

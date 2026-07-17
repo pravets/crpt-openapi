@@ -1,0 +1,229 @@
+info:
+  name: Метод получения XML товаров по массиву ID товаров или коду товара
+  type: http
+  seq: 11
+  tags:
+    - Национальный каталог
+
+http:
+  method: POST
+  url: "{{baseUrl}}/nk/feed-product-document"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+      disabled: true
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+  body:
+    type: json
+    data: |-
+      {
+        "goodIds": [],
+        "gtins": [],
+        "publicationAgreement": false
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-product-document"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "goodIds": [],
+            "gtins": [],
+            "publicationAgreement": false
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 3,
+            "result": [
+              {
+                "xmls": [
+                  {
+                    "goodId": 123,
+                    "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>...",
+                    "gtin": 11111111
+                  },
+                  {
+                    "goodId": 234,
+                    "xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>...",
+                    "gtin": 11111111
+                  }
+                ],
+                "errors": [
+                  {
+                    "goodId": 345,
+                    "message": "Информация о товаре ... устарела или скомпрометирована. Попробуйте еще раз."
+                  },
+                  {
+                    "GTIN": "123123123123",
+                    "message": "Не удалось получить товар по GTIN"
+                  }
+                ]
+              }
+            ]
+          }
+  - name: 400 Response
+    description: "2.2. Код 413, если больше 10 запрашиваемых идентификаторов в теле запроса:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product-document"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "goodIds": [],
+            "gtins": [],
+            "publicationAgreement": false
+          }
+    response:
+      status: 400
+      statusText: Bad Request
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Слишком большой запрос"
+          }
+  - name: 403 Response
+    description: "2.1. Код 403, если указан неправильный ключ API:"
+    request:
+      url: "{{baseUrl}}/nk/feed-product-document"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "goodIds": [],
+            "gtins": [],
+            "publicationAgreement": false
+          }
+    response:
+      status: 403
+      statusText: Forbidden
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_message": "Отсутствует доступ к ресурсу"
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed-product-document"
+      method: POST
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. «Единая аутентификация»)
+          disabled: true
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+      body:
+        type: json
+        data: |-
+          {
+            "goodIds": [],
+            "gtins": [],
+            "publicationAgreement": false
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения * .xml товаров для подписи по goodId или коду товара. При отправке массива ID товаров либо массива строк кодов товаров в ответе возвращается массив * .xml товаров для подписания и (при наличии) массив объектов с информацией об ошибках при отсутствии товаров по ID / коду товара.
+
+  Пример запроса:
+
+  Пример: curl -X POST "<url стенда>/nk/feed-product-document?apikey=XXX"
+  -H "accept: application/json"
+  -H "Content-Type: application/json; charset=utf-8"
+  --data-raw "{
+   "goodIds": [
+   123, 234, 345
+   ],
+   "gtins": [
+   "1111111111111", "123123123123"
+   ],
+   "publicationAgreement": false
+  }"
+
+  Ограничения: Количество товаров в запросе — не более 10.
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

@@ -1,0 +1,140 @@
+info:
+  name: Метод получения результирующих ID выгрузок данных
+  type: http
+  seq: 5
+  tags:
+    - Выгрузки данных
+
+http:
+  method: GET
+  url: "{{baseUrl}}/dispenser/results"
+  params:
+    - name: page
+      value: ""
+      type: query
+      description: Номер страницы (отсчёт с «0»)
+    - name: pg
+      value: ""
+      type: query
+      description: Товарная группа. Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Указанное значение должно совпадать с «productGroupCode» («Товарная группа»), сформированных ранее заданий на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+      disabled: true
+    - name: size
+      value: ""
+      type: query
+      description: Количество записей на странице
+    - name: task_ids
+      value: "[]"
+      type: query
+      description: Список идентификаторов заданий на выгрузку
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/dispenser/results"
+      method: GET
+      params:
+        - name: page
+          value: ""
+          type: query
+          description: Номер страницы (отсчёт с «0»)
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа. Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Указанное значение должно совпадать с «productGroupCode» («Товарная группа»), сформированных ранее заданий на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+        - name: size
+          value: ""
+          type: query
+          description: Количество записей на странице
+        - name: task_ids
+          value: "[]"
+          type: query
+          description: Список идентификаторов заданий на выгрузку
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "list": [
+              {
+                "id": "string",
+                "archiveSize": 0,
+                "available": "string",
+                "dataStartDate": "string",
+                "dataEndDate": "string",
+                "downloadStatus": "string",
+                "downloadingTime": 0,
+                "downloadFormat": "XLSX",
+                "errorMessage": "string",
+                "fullErrorMessage": "string",
+                "fileDeleteDate": "string",
+                "generationStartDate": "string",
+                "generationEndDate": "string",
+                "notEditable": true,
+                "taskId": "00000000-0000-0000-0000-000000000000",
+                "fileFormat": "CSV"
+              }
+            ]
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/dispenser/results"
+      method: GET
+      params:
+        - name: page
+          value: ""
+          type: query
+          description: Номер страницы (отсчёт с «0»)
+        - name: pg
+          value: ""
+          type: query
+          description: Товарная группа. Цифровой код товарной группы (см. « Справочник «Список поддерживаемых товарных групп» »). Указанное значение должно совпадать с «productGroupCode» («Товарная группа»), сформированных ранее заданий на выгрузку. Если при формировании задания на выгрузку параметр «productGroupCode» («Товарная группа») не передавался, то в данном запросе параметр указывать не требуется
+          disabled: true
+        - name: size
+          value: ""
+          type: query
+          description: Количество записей на странице
+        - name: task_ids
+          value: "[]"
+          type: query
+          description: Список идентификаторов заданий на выгрузку
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Данный метод позволяет получить список результирующих идентификаторов выгрузок для скачивания сформированных файлов с данными.
+
+  Максимальное количество запросов в минуту — 12.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>dispenser/results?page=1&pg=1&size=12"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

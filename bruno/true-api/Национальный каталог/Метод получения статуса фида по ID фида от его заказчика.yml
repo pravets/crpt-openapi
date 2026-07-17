@@ -1,0 +1,146 @@
+info:
+  name: Метод получения статуса фида по ID фида от его заказчика
+  type: http
+  seq: 17
+  tags:
+    - Национальный каталог
+
+http:
+  method: GET
+  url: "{{baseUrl}}/nk/feed-status"
+  params:
+    - name: apikey
+      value: ""
+      type: query
+      description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+      disabled: true
+    - name: feed_id
+      value: ""
+      type: query
+      description: Идентификатор фида Идентификатор ранее отправленного пакета обновлений
+    - name: format
+      value: ""
+      type: query
+      description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+      disabled: true
+    - name: supplier_key
+      value: ""
+      type: query
+      description: Ключ аккаунта владельца товаров Значение «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта, принадлежащего владельцу товаров. Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте
+      disabled: true
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/nk/feed-status"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: feed_id
+          value: ""
+          type: query
+          description: Идентификатор фида Идентификатор ранее отправленного пакета обновлений
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ аккаунта владельца товаров Значение «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта, принадлежащего владельцу товаров. Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте
+          disabled: true
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "apiversion": 0,
+            "result": [],
+            "feed_id": 0,
+            "status": "",
+            "status_id": 0,
+            "received_at": "",
+            "status_updated_at": "",
+            "error_details": {},
+            "id": 0,
+            "gtin": "",
+            "errors": {},
+            "code": 0,
+            "text": "",
+            "attr_id": "",
+            "items": [],
+            "good_id": 0,
+            "attribute_id": 0,
+            "attribute_name": "",
+            "status_code": 0,
+            "status_message": "",
+            "message": "",
+            "commonError": {}
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/nk/feed-status"
+      method: GET
+      params:
+        - name: apikey
+          value: ""
+          type: query
+          description: Параметр, необходимый для авторизации и совершения запросов API Параметр обязательный, если в заголовке запроса не указан «token» («Токен аутентификации») (см. раздел «Единая аутентификация»)
+          disabled: true
+        - name: feed_id
+          value: ""
+          type: query
+          description: Идентификатор фида Идентификатор ранее отправленного пакета обновлений
+        - name: format
+          value: ""
+          type: query
+          description: "Формат вывода ответа Возможные значения: «json» (по умолчанию); «xml»"
+          disabled: true
+        - name: supplier_key
+          value: ""
+          type: query
+          description: Ключ аккаунта владельца товаров Значение «apikey» («Параметр, необходимый для авторизации и совершения запросов API») аккаунта, принадлежащего владельцу товаров. Предназначен для лабораторий и других поставщиков контента, которые от имени владельца товаров размещают карточки товаров в его аккаунте
+          disabled: true
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для проверки статуса ранее отправленного пакета обновлений (фида). Результат возможно получить только для тех фидов, которые были отправлены компанией (лабораторией).
+
+  Примечание: Если пакет обновлений находится в статусе «Processing» более суток, то будет автоматически переведен в статус «Rejected» и его потребуется направить на обработку повторно.
+
+  Пример запроса:
+
+  Пример: curl -X GET "<url стенда>/nk/feed-status?feed_id=7126"
+  -H "accept: application/json"
+  -H "Authorization: Bearer <ТОКЕН>"
+
+  Тип приватности: публичный — метод доступен без аутентификации (токен не требуется).

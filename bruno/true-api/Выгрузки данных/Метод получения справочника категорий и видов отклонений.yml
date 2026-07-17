@@ -1,0 +1,121 @@
+info:
+  name: Метод получения справочника категорий и видов отклонений
+  type: http
+  seq: 3
+  tags:
+    - Выгрузки данных
+    - Задания на выгрузку
+
+http:
+  method: POST
+  url: "{{baseUrl}}/directory/statistics"
+  body:
+    type: json
+    data: |-
+      {
+        "data_set": "",
+        "filters": {},
+        "level": 0,
+        "date": "",
+        "status_groups": [],
+        "reg_end_date": "",
+        "product_groups": []
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+
+examples:
+  - name: 200 Response
+    description: Успешный ответ
+    request:
+      url: "{{baseUrl}}/directory/statistics"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "data_set": "",
+            "filters": {},
+            "level": 0,
+            "date": "",
+            "status_groups": [],
+            "reg_end_date": "",
+            "product_groups": []
+          }
+    response:
+      status: 200
+      statusText: OK
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "violation_category": [
+              {}
+            ],
+            "code": 0,
+            "name": "",
+            "short_name": "",
+            "violation_kind": [
+              {}
+            ],
+            "violation_result": [
+              {}
+            ],
+            "rd_status_for_inn": [
+              {}
+            ],
+            "rd_for_inn": [
+              {}
+            ],
+            "indx": 0,
+            "status_group": 0,
+            "reg_end_date": "",
+            "missing_rd_for_inn": [
+              {}
+            ],
+            "rd_gtin_for_inn": [
+              {}
+            ],
+            "gtin": ""
+          }
+  - name: default Response
+    description: Ошибка по умолчанию
+    request:
+      url: "{{baseUrl}}/directory/statistics"
+      method: POST
+      body:
+        type: json
+        data: |-
+          {
+            "data_set": "",
+            "filters": {},
+            "level": 0,
+            "date": "",
+            "status_groups": [],
+            "reg_end_date": "",
+            "product_groups": []
+          }
+    response:
+      headers:
+        - name: Content-Type
+          value: application/json
+      body:
+        type: json
+        data: |-
+          {
+            "error_code": "",
+            "error_message": ""
+          }
+
+docs: |-
+  Метод предназначен для получения справочника категорий, видов и результатов выявления отклонений, связанных с оборотом товаров, подлежащих обязательной маркировке.
+
+  Тип приватности: приватный.
