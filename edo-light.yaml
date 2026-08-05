@@ -14,35 +14,35 @@ info:
     - При работе через API ЭДО Лайт действует ограничение на 1000 исходящих документов в год.
   version: "1.0.0"
 servers:
-  - url: https://edo-gismt.crpt.ru
-    description: Промышленный стенд ГИС МТ (ЭДО Лайт)
-  - url: https://edo.sandbox.crptech.ru
-    description: Интеграционный стенд ГИС МТ (ЭДО Лайт)
+- url: https://edo-gismt.crpt.ru
+  description: Промышленный стенд ГИС МТ (ЭДО Лайт)
+- url: https://edo.sandbox.crptech.ru
+  description: Интеграционный стенд ГИС МТ (ЭДО Лайт)
 tags:
-  - name: Аутентификация
-    description: Методы True API для получения токена аутентификации (выполняются на отдельных базовых URL)
-  - name: Исходящие документы
-    description: Загрузка, подписание и получение исходящих документов (УПД, УПДи, УКД, УКДи)
-  - name: Входящие документы
-    description: Получение входящих документов и загрузка файлов информации (титулов) покупателя
-  - name: Квитанции
-    description: 'Работа с квитанциями: извещения о получении, уведомления об уточнении, аннулирование'
-  - name: Универсальные сообщения
-    description: Создание универсальных сообщений (УС) к документам и квитанциям
-  - name: МЧД
-    description: Получение данных о машиночитаемых доверенностях (МЧД)
+- name: Аутентификация
+  description: Методы True API для получения токена аутентификации (выполняются на отдельных базовых URL)
+- name: Исходящие документы
+  description: Загрузка, подписание и получение исходящих документов (УПД, УПДи, УКД, УКДи)
+- name: Входящие документы
+  description: Получение входящих документов и загрузка файлов информации (титулов) покупателя
+- name: Квитанции
+  description: 'Работа с квитанциями: извещения о получении, уведомления об уточнении, аннулирование'
+- name: Универсальные сообщения
+  description: Создание универсальных сообщений (УС) к документам и квитанциям
+- name: МЧД
+  description: Получение данных о машиночитаемых доверенностях (МЧД)
 security:
-  - bearerAuth: []
+- bearerAuth: []
 paths:
   /auth/key:
     servers:
-      - url: https://markirovka.sandbox.crptech.ru/api/v3/true-api
-        description: Демонстрационный контур (True API)
-      - url: https://markirovka.crpt.ru/api/v3/true-api
-        description: Промышленный контур (True API)
+    - url: https://markirovka.sandbox.crptech.ru/api/v3/true-api
+      description: Демонстрационный контур (True API)
+    - url: https://markirovka.crpt.ru/api/v3/true-api
+      description: Промышленный контур (True API)
     get:
       tags:
-        - Аутентификация
+      - Аутентификация
       summary: Запрос авторизации при единой аутентификации
       description: |
         Метод используется для получения уникальной пары: UUID (идентификатора текущей аутентификации) и сгенерированных случайных данных,
@@ -69,35 +69,39 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/auth/key", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/auth/key", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/auth/key", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/auth/key", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /auth/simpleSignIn:
     servers:
-      - url: https://markirovka.sandbox.crptech.ru/api/v3/true-api
-        description: Демонстрационный контур (True API)
-      - url: https://markirovka.crpt.ru/api/v3/true-api
-        description: Промышленный контур (True API)
+    - url: https://markirovka.sandbox.crptech.ru/api/v3/true-api
+      description: Демонстрационный контур (True API)
+    - url: https://markirovka.crpt.ru/api/v3/true-api
+      description: Промышленный контур (True API)
     post:
       tags:
-        - Аутентификация
+      - Аутентификация
       summary: Получение ключа сессии при единой аутентификации
       description: |
         Метод используется для получения токена аутентификации (ключа сессии) в формате JWT или UUID по подписанным УКЭП случайным данным,
@@ -166,55 +170,55 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/auth/simpleSignIn", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{""uuid"": ""a63ff582-b723-4da7-958b-453da27a6c62"", ""data"": ""string"", ""inn"": ""string"", ""details"": ""string"", ""unitedToken"": true}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/auth/simpleSignIn", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{""uuid"": ""a63ff582-b723-4da7-958b-453da27a6c62"", ""data"": ""string"", ""inn"": ""string"", ""details"": ""string"", ""unitedToken"": true}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
-            Данные.Вставить("uuid", "a63ff582-b723-4da7-958b-453da27a6c62");
-            Данные.Вставить("data", "string");
-            Данные.Вставить("inn", "string");
-            Данные.Вставить("details", "string");
-            Данные.Вставить("unitedToken", Истина);
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
+          Данные.Вставить("uuid", "a63ff582-b723-4da7-958b-453da27a6c62");
+          Данные.Вставить("data", "string");
+          Данные.Вставить("inn", "string");
+          Данные.Вставить("details", "string");
+          Данные.Вставить("unitedToken", Истина);
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/auth/simpleSignIn", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/auth/simpleSignIn", , ДополнительныеПараметры);
   /api/v1/outgoing-documents:
     get:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Получение списка исходящих документов
       description: Метод возвращает список групп исходящих документов, найденных по заданным параметрам фильтрации, с постраничной выдачей.
       operationId: getOutgoingDocumentList
       parameters:
-        - $ref: '#/components/parameters/LimitQuery'
-        - $ref: '#/components/parameters/OffsetQuery'
-        - $ref: '#/components/parameters/CreatedFromQuery'
-        - $ref: '#/components/parameters/CreatedToQuery'
-        - $ref: '#/components/parameters/PartnerInnQuery'
-        - $ref: '#/components/parameters/PartnerIdQuery'
-        - $ref: '#/components/parameters/StatusQuery'
-        - $ref: '#/components/parameters/TypeQuery'
-        - $ref: '#/components/parameters/FolderQuery'
-        - $ref: '#/components/parameters/SortByQuery'
-        - $ref: '#/components/parameters/AscQuery'
-        - $ref: '#/components/parameters/ProductGroupQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - $ref: '#/components/parameters/OffsetQuery'
+      - $ref: '#/components/parameters/CreatedFromQuery'
+      - $ref: '#/components/parameters/CreatedToQuery'
+      - $ref: '#/components/parameters/PartnerInnQuery'
+      - $ref: '#/components/parameters/PartnerIdQuery'
+      - $ref: '#/components/parameters/StatusQuery'
+      - $ref: '#/components/parameters/TypeQuery'
+      - $ref: '#/components/parameters/FolderQuery'
+      - $ref: '#/components/parameters/SortByQuery'
+      - $ref: '#/components/parameters/AscQuery'
+      - $ref: '#/components/parameters/ProductGroupQuery'
       responses:
         '200':
           description: Список групп документов, найденных по заданным параметрам
@@ -224,73 +228,73 @@ paths:
                 $ref: '#/components/schemas/DocumentListResponse'
               example:
                 items:
+                - id: 11ecae1e-1ff1-11c1-be11-1e1111111b1c
+                  created_at: 1582090925
+                  date: 1582059600
+                  documents:
                   - id: 11ecae1e-1ff1-11c1-be11-1e1111111b1c
                     created_at: 1582090925
                     date: 1582059600
-                    documents:
-                      - id: 11ecae1e-1ff1-11c1-be11-1e1111111b1c
-                        created_at: 1582090925
-                        date: 1582059600
-                        number: номер документа
-                        processed_at: 1582097248
-                        status: 0
-                        total_price: 1930500
-                        total_vat_amount: 279500
-                        type: 504
-                    group_id: b22a22ce-2222-22ec-b22b-a222fd2bd22a
                     number: номер документа
-                    recipient:
-                      id: 666666666
-                      extra_id: 00000000-23c4-3685-0000-000000000000
-                      inn: '0000000000'
-                      name: ООО
+                    processed_at: 1582097248
                     status: 0
                     total_price: 1930500
                     total_vat_amount: 279500
                     type: 504
-                    create_time_stamp: 1582059600
-                    export_time_stamp: 1582097248
-                  - id: 33a333ee-3cb3-3aae-3f33-d33ce333333c
-                    created_at: 1582097164
-                    date: 1582059600
-                    documents:
-                      - id: 220262cf-0fe7-4d3f-996a-038181ba7812
-                        created_at: 1776253164
-                        date: 1775077200
-                        number: УПД № группсы от 02.04.2026
-                        processed_at: 1776253164
-                        revision:
-                        status: 3
-                        total_price: 100
-                        total_vat_amount: 0
-                        type: 520
-                        is_title_signed: false
-                        created_by: 0
-                        created_hub: false
-                        is_closed_lm_part:
-                        package_status:
-                        uni_new_msg:
-                    group_id: 4d44444e-4d44-4444-4e44-a4cd444ed444
-                    number: номер документа
-                    recipient:
-                      id: 999999999
-                      extra_id: 00000000-23c4-3685-0000-000000000000
-                      inn: '0000000000'
-                      kpp: '111111111'
-                      ogrn: '1111111111111'
-                      name: ООО
-                      fio:
-                      address:
-                      legal_address:
-                      status: REGISTERED
-                    status: 1
-                    total_price: 1930500
-                    total_vat_amount: 279500
-                    type: 504
-                    create_time_stamp: 1582059600
-                    export_time_stamp: 1582097180
-                    product_group: -1
-                    active_type: 0
+                  group_id: b22a22ce-2222-22ec-b22b-a222fd2bd22a
+                  number: номер документа
+                  recipient:
+                    id: 666666666
+                    extra_id: 00000000-23c4-3685-0000-000000000000
+                    inn: '0000000000'
+                    name: ООО
+                  status: 0
+                  total_price: 1930500
+                  total_vat_amount: 279500
+                  type: 504
+                  create_time_stamp: 1582059600
+                  export_time_stamp: 1582097248
+                - id: 33a333ee-3cb3-3aae-3f33-d33ce333333c
+                  created_at: 1582097164
+                  date: 1582059600
+                  documents:
+                  - id: 220262cf-0fe7-4d3f-996a-038181ba7812
+                    created_at: 1776253164
+                    date: 1775077200
+                    number: УПД № группсы от 02.04.2026
+                    processed_at: 1776253164
+                    revision:
+                    status: 3
+                    total_price: 100
+                    total_vat_amount: 0
+                    type: 520
+                    is_title_signed: false
+                    created_by: 0
+                    created_hub: false
+                    is_closed_lm_part:
+                    package_status:
+                    uni_new_msg:
+                  group_id: 4d44444e-4d44-4444-4e44-a4cd444ed444
+                  number: номер документа
+                  recipient:
+                    id: 999999999
+                    extra_id: 00000000-23c4-3685-0000-000000000000
+                    inn: '0000000000'
+                    kpp: '111111111'
+                    ogrn: '1111111111111'
+                    name: ООО
+                    fio:
+                    address:
+                    legal_address:
+                    status: REGISTERED
+                  status: 1
+                  total_price: 1930500
+                  total_vat_amount: 279500
+                  type: 504
+                  create_time_stamp: 1582059600
+                  export_time_stamp: 1582097180
+                  product_group: -1
+                  active_type: 0
                 has_next_page: true
         '401':
           $ref: '#/components/responses/Unauthorized'
@@ -299,31 +303,35 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Загрузка файла информации продавца УПД в формате XML
       description: |
         Метод предназначен для загрузки файла информации продавца (титула продавца) УПД по формату Приказа ФНС России № ЕД-7-26/970@ от 19.12.2023.
@@ -342,7 +350,7 @@ paths:
         Форматы и XSD-схема размещены на сайте ФНС: https://www.nalog.gov.ru/rn77/about_fts/docs/8335278/
       operationId: uploadUpdSellerXml
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -394,36 +402,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/updi:
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Загрузка файла информации продавца УПДи в формате XML
       description: |
         Метод предназначен для загрузки файла информации продавца (титула продавца) УПДи по формату Приказа ФНС России № ЕД-7-26/970@ от 19.12.2023.
@@ -434,7 +442,7 @@ paths:
         Метод не поддерживает загрузку УПДи (ON_NSCHFDOPPRPROS) с признаком прослеживаемости (PROS).
       operationId: uploadUpdiSellerXml
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -483,36 +491,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/updi", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/updi", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/updi", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/updi", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/ukd:
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Загрузка информации продавца УКД (приказ № 189 от 13.04.2016) в формате XML
       description: |
         Метод предназначен для загрузки файла информации продавца УКД. Формат УКД регламентируется Приказом ФНС от 13 апреля 2016 г. № ММВ-7-15/189
@@ -557,36 +565,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/ukd", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/ukd", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/ukd", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/ukd", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/ukd/736:
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Загрузка информации продавца УКД (приказ № 736 от 12.10.2020) в формате XML
       description: |
         Метод предназначен для загрузки файла информации продавца УКД. Формат УКД регламентируется Приказом ФНС от 12 октября 2020 г. № ЕД-7-26/736@
@@ -601,7 +609,7 @@ paths:
         (структура JSON-тела для интеграции с 1С в документации не приведена).
       operationId: uploadUkdSellerXml736
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -654,36 +662,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/ukd/736", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/ukd/736", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/ukd/736", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/ukd/736", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/ukdi/736:
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Загрузка информации продавца УКДи (приказ № 736 от 12.10.2020) в формате XML
       description: |
         Метод предназначен для загрузки файла информации продавца УКДи. Формат УКД регламентируется Приказом ФНС от 12 октября 2020 г. № ЕД-7-26/736@
@@ -697,7 +705,7 @@ paths:
         По документации Content-Type: application/json — для интеграции с 1С; multipart/form-data — в остальных случаях.
       operationId: uploadUkdiSellerXml736
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -750,41 +758,41 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/ukdi/736", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/ukdi/736", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/ukdi/736", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/ukdi/736", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/{doc_id}/content:
     get:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Получение содержимого XML исходящего документа
       description: Метод возвращает содержимое исходящего документа в формате *.xml.
       operationId: getOutgoingDocumentContent
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: Содержимое документа в формате XML
@@ -800,32 +808,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/content", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/content", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/content", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/content", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}/content:
     get:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Получение содержимого XML входящего документа
       description: |
         Метод возвращает содержимое входящего документа в формате *.xml.
@@ -833,7 +845,7 @@ paths:
         Вызов метода автоматически создаёт неподписанную квитанцию «Извещение о получении УПД» (DP_IZVPOL).
       operationId: getIncomingDocumentContent
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: Содержимое документа в формате XML
@@ -849,32 +861,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/content", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/content", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/content", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/content", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/outgoing-documents/{doc_id}/signature:
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Подписание исходящего документа
       description: |
         Метод используется для добавления электронной откреплённой подписи к черновику файла информации продавца (УПД/УПДи/УКД/УКДи).
@@ -889,7 +905,7 @@ paths:
         возвращается ошибка с кодом 400 («Невозможно создать документ. <наименование организации> не зарегистрирован в ГИС МТ»).
       operationId: signOutgoingDocument
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       requestBody:
         required: true
         content:
@@ -918,36 +934,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/signature", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/signature", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/signature", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/signature", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/{doc_id}/print:
     get:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Получение печатной формы исходящего документа (УПД/УПДи/УКД)
       description: |
         Метод возвращает PDF-файл печатной формы исходящего документа.
@@ -955,7 +971,7 @@ paths:
         Примечание: недоступно получение печатной формы для документов, сформированных по приказам № ММВ-7-15/155@ и № ММВ-7-15/189@.
       operationId: getOutgoingDocumentPrintForm
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: PDF-файл печатной формы документа
@@ -982,32 +998,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/print", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/print", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/print", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/print", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}/print:
     get:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Получение печатной формы входящего документа (УПД/УПДи/УКД)
       description: |
         Метод возвращает PDF-файл печатной формы входящего документа.
@@ -1015,7 +1035,7 @@ paths:
         Примечание: недоступно получение печатной формы для документов, сформированных по приказам № ММВ-7-15/155@ и № ММВ-7-15/189@.
       operationId: getIncomingDocumentPrintForm
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: PDF-файл печатной формы документа
@@ -1042,32 +1062,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/print", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/print", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/print", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/print", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/outgoing-documents/{doc_id}:
     get:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Получение ZIP-архива с документооборотом исходящего документа (УПД/УПДи/УКД)
       description: |
         Метод возвращает ZIP-архив с документооборотом исходящего документа, в котором будет документ с подписью,
@@ -1077,7 +1101,7 @@ paths:
         Заголовок запроса: Accept: application/zip.
       operationId: getOutgoingDocumentZip
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: ZIP-архив с документом, подписью, квитанциями с подписями и печатной формой документа
@@ -1093,32 +1117,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}:
     get:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Получение ZIP-архива с документооборотом входящего документа (УПД/УПДи/УКД)
       description: |
         Метод возвращает ZIP-архив с документооборотом входящего документа, в котором будет документ с подписью,
@@ -1128,7 +1156,7 @@ paths:
         Заголовок запроса: Accept: application/zip.
       operationId: getIncomingDocumentZip
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: ZIP-архив с документом, подписью, квитанциями с подписями и печатной формой документа
@@ -1144,48 +1172,52 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents:
     get:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Получение списка входящих документов
       description: Метод возвращает список групп входящих документов, найденных по заданным параметрам фильтрации, с постраничной выдачей.
       operationId: getIncomingDocumentList
       parameters:
-        - $ref: '#/components/parameters/LimitQuery'
-        - $ref: '#/components/parameters/OffsetQuery'
-        - $ref: '#/components/parameters/CreatedFromQuery'
-        - $ref: '#/components/parameters/CreatedToQuery'
-        - $ref: '#/components/parameters/PartnerInnQuery'
-        - $ref: '#/components/parameters/PartnerIdQuery'
-        - $ref: '#/components/parameters/StatusQuery'
-        - $ref: '#/components/parameters/TypeQuery'
-        - $ref: '#/components/parameters/FolderQuery'
-        - $ref: '#/components/parameters/SortByQuery'
-        - $ref: '#/components/parameters/AscQuery'
-        - $ref: '#/components/parameters/ProductGroupQuery'
+      - $ref: '#/components/parameters/LimitQuery'
+      - $ref: '#/components/parameters/OffsetQuery'
+      - $ref: '#/components/parameters/CreatedFromQuery'
+      - $ref: '#/components/parameters/CreatedToQuery'
+      - $ref: '#/components/parameters/PartnerInnQuery'
+      - $ref: '#/components/parameters/PartnerIdQuery'
+      - $ref: '#/components/parameters/StatusQuery'
+      - $ref: '#/components/parameters/TypeQuery'
+      - $ref: '#/components/parameters/FolderQuery'
+      - $ref: '#/components/parameters/SortByQuery'
+      - $ref: '#/components/parameters/AscQuery'
+      - $ref: '#/components/parameters/ProductGroupQuery'
       responses:
         '200':
           description: Список групп документов, найденных по заданным параметрам
@@ -1200,32 +1232,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/xml/upd/title:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла информации покупателя УПД (приказ № 820 от 19.12.2018) в формате XML
       description: |
         Метод предназначен для загрузки файла информации покупателя УПД согласно приказу ФНС № ММВ-7-15/820@ от 19.12.2018.
@@ -1233,7 +1269,7 @@ paths:
         (редактирование, подписание и т. д.).
       operationId: uploadUpdBuyerInfo820
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -1284,36 +1320,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/upd/title", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/upd/title", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/upd/title", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/upd/title", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/updi/title:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла информации покупателя УПДи (приказ № 820 от 19.12.2018) в формате XML
       description: |
         Метод предназначен для загрузки файла информации покупателя УПДи согласно приказу ФНС № ММВ-7-15/820@ от 19.12.2018.
@@ -1321,7 +1357,7 @@ paths:
         (редактирование, подписание и т. д.).
       operationId: uploadUpdiBuyerInfo820
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -1372,36 +1408,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/updi/title", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/updi/title", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/updi/title", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/updi/title", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/upd/title/970:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла титула покупателя УПД (приказ № ЕД-7-26/970@ от 20.12.2023) в формате XML
       description: |
         Метод предназначен для загрузки файла титула покупателя УПД согласно приказу ФНС № ЕД-7-26/970@ от 20.12.2023.
@@ -1468,36 +1504,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/upd/title/970", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/upd/title/970", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/upd/title/970", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/upd/title/970", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/updi/title/970:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла титула покупателя УПДи (приказ № ЕД-7-26/970@ от 20.12.2023) в формате XML
       description: |
         Метод предназначен для загрузки файла титула покупателя УПДи согласно приказу ФНС № ЕД-7-26/970@ от 20.12.2023.
@@ -1564,36 +1600,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/updi/title/970", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/updi/title/970", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/updi/title/970", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/updi/title/970", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/ukd/title:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла информации покупателя УКД (приказ № 189 от 13.04.2016) в формате XML
       description: |
         Метод предназначен для загрузки файла информации покупателя УКД согласно приказу ФНС № ММВ-7-15/189 от 13.04.2016.
@@ -1641,36 +1677,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/ukd/title", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/ukd/title", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/ukd/title", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/ukd/title", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/ukd/title/736:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла информации покупателя УКД (приказ № 736 от 12.10.2020) в формате XML
       description: |
         Метод предназначен для загрузки файла информации покупателя УКД согласно приказу ФНС № ЕД-7-26/736@ от 12.10.2020.
@@ -1679,7 +1715,7 @@ paths:
         (структура JSON-тела для интеграции с 1С в документации не приведена).
       operationId: uploadUkdBuyerInfo736
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -1734,36 +1770,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/ukd/title/736", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/ukd/title/736", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/ukd/title/736", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/ukd/title/736", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/ukdi/title/736:
     post:
       tags:
-        - Входящие документы
+      - Входящие документы
       summary: Загрузка файла информации покупателя УКДи (приказ № 736 от 12.10.2020) в формате XML
       description: |
         Метод предназначен для загрузки файла информации покупателя УКДи согласно приказу ФНС № ЕД-7-26/736@ от 12.10.2020.
@@ -1772,7 +1808,7 @@ paths:
         (структура JSON-тела для интеграции с 1С в документации не приведена).
       operationId: uploadUkdiBuyerInfo736
       parameters:
-        - $ref: '#/components/parameters/SendMchdFileHeader'
+      - $ref: '#/components/parameters/SendMchdFileHeader'
       requestBody:
         required: true
         content:
@@ -1827,36 +1863,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/ukdi/title/736", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/ukdi/title/736", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/ukdi/title/736", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/ukdi/title/736", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/unsigned-events:
     get:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Получение списка неподписанных квитанций исходящих документов
       description: Метод возвращает список квитанций, ожидающих подписания, которые относятся к исходящим документам.
       operationId: getOutgoingUnsignedEvents
@@ -1869,41 +1905,45 @@ paths:
                 $ref: '#/components/schemas/UnsignedEventsResponse'
               example:
                 items:
-                  - id: cffce1db-195f-4770-9738-d50c2fd9ca8a
-                    type: 113
-                    document:
-                      id: 8c6000fc-a18e-4711-88b7-11b3e16e6e2c
+                - id: cffce1db-195f-4770-9738-d50c2fd9ca8a
+                  type: 113
+                  document:
+                    id: 8c6000fc-a18e-4711-88b7-11b3e16e6e2c
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/unsigned-events", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/unsigned-events", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/unsigned-events", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/unsigned-events", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/unsigned-events:
     get:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Получение списка неподписанных квитанций входящих документов
       description: Метод возвращает список квитанций, ожидающих подписания, которые относятся к входящим документам.
       operationId: getIncomingUnsignedEvents
@@ -1916,47 +1956,51 @@ paths:
                 $ref: '#/components/schemas/UnsignedEventsResponse'
               example:
                 items:
-                  - id: cffce1db-195f-4770-9738-d50c2fd9ca8a
-                    type: 113
-                    document:
-                      id: 8c6000fc-a18e-4711-88b7-11b3e16e6e2c
+                - id: cffce1db-195f-4770-9738-d50c2fd9ca8a
+                  type: 113
+                  document:
+                    id: 8c6000fc-a18e-4711-88b7-11b3e16e6e2c
         '401':
           $ref: '#/components/responses/Unauthorized'
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/unsigned-events", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/unsigned-events", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/unsigned-events", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/unsigned-events", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}/events/{event_id}/content:
     get:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Получение XML файла информации покупателя (УПД/УПДи/УКД) или квитанции
       description: Метод возвращает содержимое файла информации покупателя или квитанции в виде XML-файла.
       operationId: getIncomingEventContent
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       responses:
         '200':
           description: Содержимое квитанции или файла информации покупателя в формате XML
@@ -1972,34 +2016,38 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/events/{event_id}/content", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/events/{event_id}/content", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/events/{event_id}/content",
-            	,
-            	ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/events/{event_id}/content",
+          	,
+          	ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}/events/{event_id}/signature:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Подписание квитанций / файла информации покупателя; приём аннулирования документа
       description: |
         Метод используется в двух сценариях (в документации ЭДО Лайт — разделы 3.16 и 3.19, URL и тело запроса совпадают,
@@ -2013,8 +2061,8 @@ paths:
         Тело запроса — откреплённая подпись под документом в base64 (заголовок Content-encoding: base64).
       operationId: signIncomingEvent
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       requestBody:
         required: true
         content:
@@ -2046,38 +2094,38 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/events/{event_id}/signature", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/events/{event_id}/signature", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/events/{event_id}/signature",
-            	,
-            	ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/events/{event_id}/signature",
+          	,
+          	ДополнительныеПараметры);
   /api/v1/outgoing-documents/{doc_id}/events/{event_id}/signature:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Приём аннулирования исходящего документа
       description: |
         Метод используется для приёма (согласия с) аннулирования исходящего документа — подписания квитанции DP_PRANNUL.
@@ -2087,8 +2135,8 @@ paths:
         Тело запроса — откреплённая подпись в base64 (заголовок Content-encoding: base64).
       operationId: acceptOutgoingAnnulment
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       requestBody:
         required: true
         content:
@@ -2118,38 +2166,38 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/events/{event_id}/signature", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/events/{event_id}/signature", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/events/{event_id}/signature",
-            	,
-            	ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/events/{event_id}/signature",
+          	,
+          	ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/uvtoch:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Создание уведомления об уточнении через загрузку файла XML
       description: Метод предназначен для создания уведомления об уточнении (DP_UVUTOCH) к входящему документу через загрузку XML-файла.
       operationId: createUvtoch
@@ -2189,36 +2237,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/uvtoch", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/uvtoch", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/uvtoch", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/uvtoch", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/annul_02:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Запрос аннулирования исходящего документа через загрузку файла XML
       description: |
         Метод предназначен для создания запроса (предложения) аннулирования исходящего документа — квитанции DP_PRANNUL — через загрузку XML-файла.
@@ -2266,36 +2314,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/annul_02", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/annul_02", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/annul_02", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/annul_02", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/annul_02:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Запрос аннулирования входящего документа через загрузку файла XML
       description: |
         Метод предназначен для создания запроса (предложения) аннулирования входящего документа — квитанции DP_PRANNUL — через загрузку XML-файла.
@@ -2343,36 +2391,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/annul_02", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/annul_02", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/annul_02", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/annul_02", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/annul_uvtoch:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Отклонение аннулирования исходящего документа через загрузку файла XML УвТоч
       description: Метод предназначен для отклонения предложения об аннулировании исходящего документа — создания уведомления об уточнении (DP_UVUTOCH) на предложение об аннулировании (DP_PRANNUL).
       operationId: rejectOutgoingAnnulment
@@ -2415,36 +2463,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/annul_uvtoch", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/annul_uvtoch", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/annul_uvtoch", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/annul_uvtoch", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/annul_uvtoch:
     post:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Отклонение аннулирования входящего документа через загрузку файла XML УвТоч
       description: Метод предназначен для отклонения предложения об аннулировании входящего документа — создания уведомления об уточнении (DP_UVUTOCH) на предложение об аннулировании (DP_PRANNUL).
       operationId: rejectIncomingAnnulment
@@ -2487,36 +2535,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/annul_uvtoch", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/annul_uvtoch", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/annul_uvtoch", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/annul_uvtoch", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/{doc_id}/events/{event_id}:
     get:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Получение JSON квитанции исходящего документа
       description: |
         Метод предназначен для получения содержимого квитанции исходящего документа в формате *.json.
@@ -2528,8 +2576,8 @@ paths:
         event_id (UUID) по аналогии с остальными методами — фактический формат следует уточнять по документации.
       operationId: getOutgoingReceiptJson
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       responses:
         '200':
           description: Содержимое квитанции в формате JSON (структура зависит от типа квитанции — см. справочник «Типы квитанций»)
@@ -2545,32 +2593,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/events/{event_id}", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/events/{event_id}", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/events/{event_id}", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/events/{event_id}", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}/events/{event_id}:
     get:
       tags:
-        - Квитанции
+      - Квитанции
       summary: Получение JSON квитанции входящего документа
       description: |
         Метод предназначен для получения содержимого квитанции входящего документа в формате *.json.
@@ -2582,8 +2634,8 @@ paths:
         event_id (UUID) по аналогии с остальными методами — фактический формат следует уточнять по документации.
       operationId: getIncomingReceiptJson
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       responses:
         '200':
           description: Содержимое квитанции в формате JSON (структура зависит от типа квитанции — см. справочник «Типы квитанций»)
@@ -2599,32 +2651,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/events/{event_id}", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/events/{event_id}", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/events/{event_id}", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/events/{event_id}", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/outgoing-documents/xml/updi/970:
     post:
       tags:
-        - Исходящие документы
+      - Исходящие документы
       summary: Создание УПДи через XML (приказ № ЕД-7-26/970@ от 19.12.2023)
       description: |
         Метод предназначен для создания УПДи через XML. Формирование УПДи производится по формату приказа ФНС России от 19.12.2023 № ЕД-7-26/970@,
@@ -2689,36 +2745,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/updi/970", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/updi/970", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/updi/970", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/updi/970", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/unimsg/{doc_id}:
     post:
       tags:
-        - Универсальные сообщения
+      - Универсальные сообщения
       summary: Создание универсального сообщения через XML к исходящему документу / титулу продавца
       description: |
         Метод предназначен для создания универсального сообщения (УС) в формате XML к исходящему документу / титулу продавца.
@@ -2734,7 +2790,7 @@ paths:
         Для исходящих документов доступно только создание УС-комментариев (11540021).
       operationId: createOutgoingUniversalMessage
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       requestBody:
         required: true
         content:
@@ -2783,36 +2839,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/unimsg/{doc_id}", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/unimsg/{doc_id}", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/unimsg/{doc_id}", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/unimsg/{doc_id}", , ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/unimsg/{doc_id}:
     post:
       tags:
-        - Универсальные сообщения
+      - Универсальные сообщения
       summary: Создание универсального сообщения через XML к входящему документу / титулу продавца
       description: |
         Метод предназначен для создания универсального сообщения (УС) в формате XML к входящему документу / титулу продавца.
@@ -2828,7 +2884,7 @@ paths:
         2, 3, 12, 13, 4, 61, 62, 63, 7, 18, 19, 64, 65, 66 (см. справочник «Статусы документов»).
       operationId: createIncomingUniversalMessage
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       requestBody:
         required: true
         content:
@@ -2877,36 +2933,36 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/unimsg/{doc_id}", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/unimsg/{doc_id}", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/unimsg/{doc_id}", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/unimsg/{doc_id}", , ДополнительныеПараметры);
   /api/v1/outgoing-documents/xml/unimsg/{doc_id}/event/{event_id}:
     post:
       tags:
-        - Универсальные сообщения
+      - Универсальные сообщения
       summary: Создание универсального сообщения через XML к предложению об аннулировании / титулу покупателя (исходящий документ)
       description: |
         Метод предназначен для создания универсального сообщения (УС) в формате XML к предложению об аннулировании или
@@ -2916,8 +2972,8 @@ paths:
         на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
       operationId: createOutgoingUniversalMessageForEvent
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       requestBody:
         required: true
         content:
@@ -2967,38 +3023,38 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/unimsg/{doc_id}/event/{event_id}", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/xml/unimsg/{doc_id}/event/{event_id}", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/unimsg/{doc_id}/event/{event_id}",
-            	,
-            	ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/xml/unimsg/{doc_id}/event/{event_id}",
+          	,
+          	ДополнительныеПараметры);
   /api/v1/incoming-documents/xml/unimsg/{doc_id}/event/{event_id}:
     post:
       tags:
-        - Универсальные сообщения
+      - Универсальные сообщения
       summary: Создание универсального сообщения через XML к предложению об аннулировании / титулу покупателя (входящий документ)
       description: |
         Метод предназначен для создания универсального сообщения (УС) в формате XML к предложению об аннулировании или
@@ -3008,8 +3064,8 @@ paths:
         на методы True API (см. «Планируемые изменения в True API»: https://docs.crpt.ru/gismt/Exchange/).
       operationId: createIncomingUniversalMessageForEvent
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
-        - $ref: '#/components/parameters/EventIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/EventIdPath'
       requestBody:
         required: true
         content:
@@ -3059,38 +3115,38 @@ paths:
         '500':
           $ref: '#/components/responses/InternalError'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/unimsg/{doc_id}/event/{event_id}", Заголовки);
-            HTTPЗапрос.УстановитьТелоИзСтроки("{}");
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/xml/unimsg/{doc_id}/event/{event_id}", Заголовки);
+          HTTPЗапрос.УстановитьТелоИзСтроки("{}");
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Данные = Новый Соответствие();
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("POST", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Данные = Новый Соответствие();
 
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
-            ДополнительныеПараметры.Вставить("Json", Данные);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры.Вставить("Json", Данные);
 
-            Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/unimsg/{doc_id}/event/{event_id}",
-            	,
-            	ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Post("https://edo-gismt.crpt.ru/api/v1/incoming-documents/xml/unimsg/{doc_id}/event/{event_id}",
+          	,
+          	ДополнительныеПараметры);
   /api/v1/outgoing-documents/{doc_id}/mchd-list:
     get:
       tags:
-        - МЧД
+      - МЧД
       summary: Получение данных об МЧД по исходящему документу
       description: |
         Метод возвращает информацию о всех МЧД в документообороте исходящего документа, если документы были подписаны пользователем с МЧД.
@@ -3099,7 +3155,7 @@ paths:
         Если данные об МЧД запрашиваются по документу / квитанции, которые подписаны без МЧД, то в ответе вернётся код 200 и пустой JSON.
       operationId: getOutgoingMchdList
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: Информация об МЧД в документообороте (пустой JSON, если документ подписан без МЧД)
@@ -3135,32 +3191,36 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/mchd-list", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/outgoing-documents/{doc_id}/mchd-list", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/mchd-list", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/outgoing-documents/{doc_id}/mchd-list", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
   /api/v1/incoming-documents/{doc_id}/mchd-list:
     get:
       tags:
-        - МЧД
+      - МЧД
       summary: Получение данных об МЧД по входящему документу
       description: |
         Метод возвращает информацию о всех МЧД в документообороте входящего документа, если документы были подписаны пользователем с МЧД.
@@ -3169,7 +3229,7 @@ paths:
         Если данные об МЧД запрашиваются по документу / квитанции, которые подписаны без МЧД, то в ответе вернётся код 200 и пустой JSON.
       operationId: getIncomingMchdList
       parameters:
-        - $ref: '#/components/parameters/DocIdPath'
+      - $ref: '#/components/parameters/DocIdPath'
       responses:
         '200':
           description: Информация об МЧД в документообороте (пустой JSON, если документ подписан без МЧД)
@@ -3192,28 +3252,32 @@ paths:
               schema:
                 $ref: '#/components/schemas/Error'
       x-codeSamples:
-        - lang: 1С (чистый)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+      - lang: 1С (чистый)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
+          ЗащищенноеСоединение = Новый ЗащищенноеСоединениеOpenSSL();
 
-            Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
-            HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/mchd-list", Заголовки);
+          Соединение = Новый HTTPСоединение("edo-gismt.crpt.ru", 443, , , , , ЗащищенноеСоединение);
+          HTTPЗапрос = Новый HTTPЗапрос("/api/v1/incoming-documents/{doc_id}/mchd-list", Заголовки);
 
-            HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
-        - lang: 1С (Connector)
-          source: |-
-            Заголовки = Новый Соответствие();
-            Заголовки.Вставить("Content-Type", "application/json");
-            Заголовки.Вставить("Authorization", "Bearer ***");
+          HTTPОтвет = Соединение.ВызватьHTTPМетод("GET", HTTPЗапрос);
+      - lang: 1С (Connector)
+        source: |-
+          Заголовки = Новый Соответствие();
+          Заголовки.Вставить("Content-Type", "application/json");
+          Заголовки.Вставить("Authorization", "Bearer ***");
 
-            ДополнительныеПараметры = Новый Структура();
-            ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
+          ДополнительныеПараметры = Новый Структура();
+          ДополнительныеПараметры.Вставить("Заголовки", Заголовки);
 
-            Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/mchd-list", , ДополнительныеПараметры);
+          Результат = КоннекторHTTP.Get("https://edo-gismt.crpt.ru/api/v1/incoming-documents/{doc_id}/mchd-list", , ДополнительныеПараметры);
+      requestBody:
+        content:
+          application/json:
+            example: {}
 components:
   securitySchemes:
     bearerAuth:
@@ -3400,8 +3464,8 @@ components:
       type: object
       description: Уникальная пара «uuid — data» для единой аутентификации
       required:
-        - uuid
-        - data
+      - uuid
+      - data
       properties:
         uuid:
           type: string
@@ -3412,8 +3476,8 @@ components:
     SimpleSignInRequest:
       type: object
       required:
-        - uuid
-        - data
+      - uuid
+      - data
       properties:
         uuid:
           type: string
@@ -3460,7 +3524,7 @@ components:
       type: object
       description: Идентификатор созданного объекта (документа, события, квитанции, универсального сообщения) в формате UUID
       required:
-        - id
+      - id
       properties:
         id:
           type: string
@@ -3469,7 +3533,7 @@ components:
       type: object
       description: Идентификатор события, полученный в ответе на создание файла информации покупателя или файла квитанции
       required:
-        - event_id
+      - event_id
       properties:
         event_id:
           type: string
@@ -3478,7 +3542,7 @@ components:
       type: object
       description: Данные для загрузки файла информации продавца УПД (multipart/form-data)
       required:
-        - content
+      - content
       properties:
         content:
           type: string
@@ -3491,7 +3555,7 @@ components:
       type: object
       description: Данные для загрузки файла информации продавца УПДи (multipart/form-data)
       required:
-        - content
+      - content
       properties:
         content:
           type: string
@@ -3507,7 +3571,7 @@ components:
       type: object
       description: Данные для загрузки файла информации продавца УКД по приказу № 189 (multipart/form-data)
       required:
-        - content
+      - content
       properties:
         content:
           type: string
@@ -3523,8 +3587,8 @@ components:
       type: object
       description: Данные для загрузки файла информации продавца УКД/УКДи по приказу № 736 (multipart/form-data)
       required:
-        - content
-        - parent_id
+      - content
+      - parent_id
       properties:
         content:
           type: string
@@ -3543,9 +3607,9 @@ components:
       type: object
       description: Данные для загрузки файла информации (титула) покупателя (multipart/form-data)
       required:
-        - content
-        - doc_id
-        - signature
+      - content
+      - doc_id
+      - signature
       properties:
         content:
           type: string
@@ -3561,9 +3625,9 @@ components:
       type: object
       description: Данные для создания уведомления об уточнении (multipart/form-data)
       required:
-        - content
-        - doc_id
-        - signature
+      - content
+      - doc_id
+      - signature
       properties:
         content:
           type: string
@@ -3579,9 +3643,9 @@ components:
       type: object
       description: Данные для запроса аннулирования документа (multipart/form-data)
       required:
-        - content
-        - doc_id
-        - signature
+      - content
+      - doc_id
+      - signature
       properties:
         content:
           type: string
@@ -3597,10 +3661,10 @@ components:
       type: object
       description: Данные для отклонения аннулирования документа (multipart/form-data)
       required:
-        - content
-        - doc_id
-        - annul_id
-        - signature
+      - content
+      - doc_id
+      - annul_id
+      - signature
       properties:
         content:
           type: string
@@ -3619,7 +3683,7 @@ components:
       type: object
       description: Данные для создания УПДи через XML по приказу № ЕД-7-26/970@ (multipart/form-data)
       required:
-        - content
+      - content
       properties:
         content:
           type: string
@@ -3659,7 +3723,7 @@ components:
       type: object
       description: Данные для создания универсального сообщения (multipart/form-data)
       required:
-        - content
+      - content
       properties:
         content:
           type: string
@@ -3669,8 +3733,8 @@ components:
       type: object
       description: Список групп документов, найденных по заданным параметрам
       required:
-        - items
-        - has_next_page
+      - items
+      - has_next_page
       properties:
         items:
           type: array
@@ -3868,12 +3932,12 @@ components:
       type: object
       description: Информация о МЧД в документообороте. Если документ / квитанция подписаны без МЧД, возвращается пустой JSON
       required:
-        - id
-        - type
-        - created_at
-        - mchd_id
-        - mchd_inn_dov
-        - mchd_status
+      - id
+      - type
+      - created_at
+      - mchd_id
+      - mchd_inn_dov
+      - mchd_status
       properties:
         id:
           type: string
