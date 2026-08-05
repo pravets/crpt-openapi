@@ -1,0 +1,26 @@
+{
+  "name": "crpt-openapi",
+  "version": "1.0.0",
+  "description": "![License](https://img.shields.io/github/license/pravets/crpt-openapi) [![Telegram](https://telegram-badge.vercel.app/api/telegram-badge?channelId=@pravets_IT)](https://t.me/+GKGRmAwghxllYzIy)",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pravets/crpt-openapi.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/pravets/crpt-openapi/issues"
+  },
+  "homepage": "https://github.com/pravets/crpt-openapi#readme",
+  "dependencies": {
+    "swagger-ui-dist": "^5.32.12"
+  }
+}
