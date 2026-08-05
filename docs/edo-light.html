@@ -3,20 +3,11 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ЭДО Лайт API — ГИС МТ «Честный знак»</title>
+  <title>ЭДО Лайт — ГИС МТ «Честный знак»</title>
+  <style> body { margin: 0; } </style>
 </head>
-<body style="margin: 0;">
-  <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
-  <script>
-    Scalar.createApiReference('#app', {
-      url: './edo-light.yaml',
-      theme: 'default',
-      metaData: {
-        title: 'ЭДО Лайт API (Честный знак / ГИС МТ)',
-        description: 'Спецификация API «ЭДО Лайт» системы «Честный знак» (ГИС МТ). Работа с УПД/УКД, подписание, квитанции, МЧД и универсальные сообщения.',
-      },
-    })
-  </script>
+<body>
+  <redoc spec-url="../openapi/edo-light.yaml" scroll-y-offset=".navbar" />
+  <script src="https://cdn.redoc.ly/redoc/latest/bundles/redoc.standalone.js"></script>
 </body>
 </html>
