@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>True API — ГИС МТ «Честный знак»</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
+  <style>
+    .code-samples-wrapper { margin: 0 20px 20px; }
+    .code-samples-wrapper h4 { font-size: 14px; font-weight: 700; color: #3b4151; margin: 0 0 10px 0; }
+    .code-sample { margin-bottom: 12px; border: 1px solid #d9d9d9; border-radius: 4px; overflow: hidden; }
+    .code-sample-lang { background: #f7f7f7; padding: 6px 12px; font-size: 12px; font-weight: 600; color: #555; border-bottom: 1px solid #d9d9d9; font-family: monospace; }
+    .code-sample pre { margin: 0; padding: 12px; background: #fafafa; font-size: 12px; line-height: 1.5; overflow-x: auto; white-space: pre; font-family: 'SF Mono', Menlo, Monaco, monospace; }
+  </style>
 </head>
 <body>
   <div id="swagger-ui"></div>
@@ -14,9 +21,73 @@
       url: '../openapi/true-api.yaml',
       dom_id: '#swagger-ui',
       deepLinking: true,
-      presets: [SwaggerUIBundle.presets.apis],
-      layout: 'StandaloneLayout',
-      defaultModelsExpandDepth: -1
+      defaultModelsExpandDepth: -1,
+      onComplete: function() {
+        const spec = SwaggerUIBundle.getSystem().spec().toJS();
+        const paths = spec.paths || {};
+
+        function escapeHtml(text) {
+          const div = document.createElement('div');
+          div.textContent = text;
+          return div.innerHTML;
+        }
+
+        function injectSamples(opBlock) {
+          if (opBlock.querySelector('.code-samples-wrapper')) return;
+
+          const method = ['get','post','put','delete','patch'].find(m => opBlock.classList.contains('opblock-' + m));
+          if (!method) return;
+
+          const pathLink = opBlock.querySelector('.opblock-summary-path a');
+          if (!pathLink) return;
+
+          const rawPath = pathLink.getAttribute('data-path') ||
+                          pathLink.textContent.replace(/\u200B/g, '').trim();
+
+          const op = paths[rawPath] && paths[rawPath][method];
+          const samples = op && op['x-codeSamples'];
+          if (!samples || samples.length === 0) return;
+
+          const body = opBlock.querySelector('.opblock-body');
+          if (!body) return;
+
+          const wrapper = document.createElement('div');
+          wrapper.className = 'code-samples-wrapper';
+          wrapper.innerHTML = '<h4>Примеры кода 1С</h4>';
+
+          samples.forEach(s => {
+            const block = document.createElement('div');
+            block.className = 'code-sample';
+            block.innerHTML =
+              '<div class="code-sample-lang">' + escapeHtml(s.lang) + '</div>' +
+              '<pre><code>' + escapeHtml(s.source) + '</code></pre>';
+            wrapper.appendChild(block);
+          });
+
+          const respWrap = body.querySelector('.responses-wrapper');
+          if (respWrap) {
+            body.insertBefore(wrapper, respWrap);
+          } else {
+            body.appendChild(wrapper);
+          }
+        }
+
+        // Ждём пока Swagger UI отрендерит все операции
+        setTimeout(function() {
+          document.querySelectorAll('.opblock').forEach(injectSamples);
+        }, 500);
+
+        // Фаза захвата — Swagger UI стопит всплытие
+        document.addEventListener('click', function(e) {
+          const summary = e.target.closest('.opblock-summary');
+          if (summary) {
+            setTimeout(function() {
+              const opBlock = summary.closest('.opblock');
+              if (opBlock) injectSamples(opBlock);
+            }, 100);
+          }
+        }, true);
+      }
     });
   </script>
 </body>
