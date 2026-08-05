@@ -4,19 +4,20 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>True API — ГИС МТ «Честный знак»</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
 </head>
-<body style="margin: 0;">
-  <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
   <script>
-    Scalar.createApiReference('#app', {
-      url: './true-api.yaml',
-      theme: 'default',
-      metaData: {
-        title: 'True API — ГИС МТ «Честный знак»',
-        description: 'Спецификация True API системы маркировки «Честный знак» (ГИС МТ). Подача сведений, национальный каталог, СУЗ, выгрузки данных, ЭДО Лайт и др.',
-      },
-    })
+    SwaggerUIBundle({
+      url: '../openapi/true-api.yaml',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      presets: [SwaggerUIBundle.presets.apis],
+      layout: 'StandaloneLayout',
+      defaultModelsExpandDepth: -1
+    });
   </script>
 </body>
 </html>

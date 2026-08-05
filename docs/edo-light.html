@@ -3,20 +3,21 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ЭДО Лайт API — ГИС МТ «Честный знак»</title>
+  <title>ЭДО Лайт — ГИС МТ «Честный знак»</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui.css" />
 </head>
-<body style="margin: 0;">
-  <div id="app"></div>
-  <script src="https://cdn.jsdelivr.net/npm/@scalar/api-reference"></script>
+<body>
+  <div id="swagger-ui"></div>
+  <script src="https://cdn.jsdelivr.net/npm/swagger-ui-dist@5/swagger-ui-bundle.js" crossorigin></script>
   <script>
-    Scalar.createApiReference('#app', {
-      url: './edo-light.yaml',
-      theme: 'default',
-      metaData: {
-        title: 'ЭДО Лайт API (Честный знак / ГИС МТ)',
-        description: 'Спецификация API «ЭДО Лайт» системы «Честный знак» (ГИС МТ). Работа с УПД/УКД, подписание, квитанции, МЧД и универсальные сообщения.',
-      },
-    })
+    SwaggerUIBundle({
+      url: '../openapi/edo-light.yaml',
+      dom_id: '#swagger-ui',
+      deepLinking: true,
+      presets: [SwaggerUIBundle.presets.apis],
+      layout: 'StandaloneLayout',
+      defaultModelsExpandDepth: -1
+    });
   </script>
 </body>
 </html>
